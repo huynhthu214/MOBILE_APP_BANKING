@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640726802588",
+    "project_id": "zybanking",
+    "storage_bucket": "zybanking.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640726802588:android:d6dfc4373ac32811e58d59",
+        "android_client_info": {
+          "package_name": "com.example.zybanking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQwuwp1OSvHQnDi8umuhwxT-yMh-gPpv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

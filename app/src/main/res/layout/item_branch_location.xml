@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+    <!-- Nền của mục là màu trắng -->
+
+    <!-- Khối nội dung, có padding -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="20dp">
+        <!-- Thêm padding ngang ở đây -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_branch_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ZY Bank - Chi nhánh Quận 1"
+                    android:textColor="#333333"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_branch_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="123 Nguyễn Huệ, P. Bến Nghé, Q.1"
+                    android:textColor="#8A8A8A"
+                    android:textSize="14sp"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <!-- Nút chỉ đường -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_directions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chỉ đường"
+                android:textSize="12sp"
+                app:icon="@android:drawable/ic_menu_directions"
+                app:iconSize="16dp"
+                app:backgroundTint="#E6E1FF"
+                android:textColor="#6A5AED"
+                app:iconTint="#6A5AED"
+                app:cornerRadius="18dp"
+                app:elevation="0dp"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_branch_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cách 1.2 km  |  Đang mở cửa"
+            android:textColor="#5A5A5A"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!--
+        ĐÂY LÀ ĐƯỜNG KẺ (DIVIDER)
+        Thay thế cho borderBottomWidth
+    -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0F0F0"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+    <!-- Căn lề cho đường kẻ -->
+
+</LinearLayout>
