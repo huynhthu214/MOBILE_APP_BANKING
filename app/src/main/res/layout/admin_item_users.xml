@@ -77,8 +77,9 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="#1565C0"
-                android:background="@drawable/bg_tag_premium"
                 android:layout_marginEnd="6dp"/>
+<!--                android:background="@drawable/bg_tag_premium"-->
+
 
             <!-- Account Status -->
             <TextView

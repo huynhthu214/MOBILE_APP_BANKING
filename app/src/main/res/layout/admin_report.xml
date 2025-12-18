@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thống kê & Phân tích"
+            android:text="Thống kê và Phân tích"
             android:textSize="14sp"
             android:textColor="#6B7280"
             android:layout_marginBottom="16dp" />

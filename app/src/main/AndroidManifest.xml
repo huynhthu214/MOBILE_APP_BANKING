@@ -14,25 +14,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".ItemBranchLocationActivity"
+            android:name=".ui.map.ItemBranchLocationActivity"
             android:exported="false" />
         <activity
-            android:name=".MapActivity"
+            android:name=".ui.map.MapActivity"
             android:exported="false" />
         <activity
-            android:name=".TransactionActivity"
+            android:name=".ui.transaction.TransactionActivity"
             android:exported="false" />
         <activity
             android:name=".ItemEmployeeActivity"
             android:exported="false" />
         <activity
-            android:name=".AccountInfoActivity"
+            android:name=".ui.account.AccountInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".ui.dashboard.DashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.OtpVerificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

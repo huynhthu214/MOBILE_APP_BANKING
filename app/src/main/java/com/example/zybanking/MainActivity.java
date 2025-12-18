@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.zybanking.ui.auth.LoginActivity;
+import com.example.zybanking.ui.dashboard.DashboardActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

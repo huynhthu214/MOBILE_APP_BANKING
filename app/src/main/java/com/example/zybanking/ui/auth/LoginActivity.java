@@ -1,4 +1,4 @@
-package com.example.zybanking;
+package com.example.zybanking.ui.auth;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
+
+import com.example.zybanking.R;
+import com.example.zybanking.ui.dashboard.DashboardActivity;
 import com.google.gson.Gson;
 
 import com.example.zybanking.data.remote.ApiService;
@@ -41,6 +44,12 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = (TextInputEditText) tilPassword.getEditText();
         btnLogin = findViewById(R.id.btn_login);
         tvForgot = findViewById(R.id.tv_forgot);
+
+        tvForgot.setOnClickListener(v -> {
+            // Chuyển sang màn hình ForgotPasswordActivity
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
         btnLogin.setOnClickListener(v -> {
 

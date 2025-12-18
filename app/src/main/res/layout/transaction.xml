@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#F5F5F7"
     android:fitsSystemWindows="true"
-    tools:context=".TransactionActivity">
+    tools:context=".ui.transaction.TransactionActivity">
 
     <!-- 1. Thanh AppBar ở trên cùng -->
     <com.google.android.material.appbar.AppBarLayout

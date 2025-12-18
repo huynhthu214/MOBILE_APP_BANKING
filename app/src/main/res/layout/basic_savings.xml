@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F5F5F7"
-        tools:context=".DashboardActivity">
+        tools:context=".ui.dashboard.DashboardActivity">
 
         <!-- Nội dung chính có thể cuộn -->
         <androidx.core.widget.NestedScrollView
