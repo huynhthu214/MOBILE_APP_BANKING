@@ -162,6 +162,13 @@
                             android:layout_marginTop="6dp"
                             android:padding="10dp"
                             android:background="#F4F6FA"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Tổng tiền giao dịch: 6000000"
+                            android:layout_marginTop="6dp"
+                            android:padding="10dp"
+                            android:background="#F4F6FA"/>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -169,8 +176,9 @@
             <!-- ACTION BUTTONS -->
             <GridLayout
                 android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="100dp"
                 android:columnCount="3"
+                android:layout_gravity="center"
                 android:useDefaultMargins="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -180,6 +188,7 @@
                     android:layout_height="wrap_content"
                     app:layout_columnWeight="1"
                     app:cardCornerRadius="16dp"
+                    android:layout_gravity="center"
                     app:cardElevation="6dp"
                     app:cardBackgroundColor="#FFEBEE">
 
@@ -194,6 +203,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     app:layout_columnWeight="1"
                     app:cardCornerRadius="16dp"
@@ -203,6 +213,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="👑\nNâng VIP"
                         android:gravity="center"
                         android:textStyle="bold"

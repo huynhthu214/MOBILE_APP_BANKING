@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#F5F5F5">
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xác Thực Danh Tính (eKYC)"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#333"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Ảnh người dùng -->
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_baseline_person_24"
+        android:background="@drawable/rounded_bg"
+        android:padding="10dp"
+        android:scaleType="centerCrop" />
+
+    <!-- Nút chọn ảnh -->
+    <Button
+        android:id="@+id/btnPickImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn ảnh từ thư viện"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Nút gửi yêu cầu xác thực -->
+    <Button
+        android:id="@+id/btnSubmitKyc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gửi xác thực"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFF"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Hiển thị trạng thái -->
+    <TextView
+        android:id="@+id/tvKycStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trạng thái: Chưa xác thực"
+        android:textSize="16sp"
+        android:textColor="#555" />
+
+</LinearLayout>

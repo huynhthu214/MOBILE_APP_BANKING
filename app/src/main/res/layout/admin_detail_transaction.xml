@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6FA"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ================= HEADER ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:background="@drawable/bg_status_active"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Back + Title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="#333"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Chi tiết giao dịch"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#222"/>
+            </LinearLayout>
+
+            <!-- Status Icon -->
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_check"
+                    app:tint="#22C55E" />
+            </FrameLayout>
+
+            <!-- Amount -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:text="1.500.000đ"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#111"/>
+
+            <!-- Status -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:text="Thành công"
+                android:textColor="#22C55E"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- ================= CONTENT ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_marginTop="-100dp">
+
+            <!-- FLOW CARD -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center">
+
+                    <!-- Sender -->
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#2563EB"
+                            android:background="@drawable/ic_user"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Minh"
+                            android:textStyle="bold"
+                            android:layout_marginTop="6dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Người gửi"
+                            android:textSize="12sp"
+                            android:textColor="#888"/>
+                    </LinearLayout>
+
+                    <!-- Arrow -->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_swap_horiz"
+                        app:tint="#999"/>
+
+                    <!-- Receiver -->
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#9333EA"
+                            android:background="@drawable/ic_user"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="An"
+                            android:textStyle="bold"
+                            android:layout_marginTop="6dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:text="Người nhận"
+                            android:textSize="12sp"
+                            android:textColor="#888"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- INFO CARD -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin giao dịch"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardBackgroundColor="#FAE7E6E6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <TextView
+                                android:gravity=""
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="Mã giao dịch: TXN123456" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardBackgroundColor="#FAE7E6E6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <TextView
+                                android:gravity=""
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="Số tiền: 1.500.000đ" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        app:cardCornerRadius="8dp"
+                        android:layout_marginTop="8dp"
+                        app:cardBackgroundColor="#FAE7E6E6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <TextView
+                                android:gravity=""
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="Phí: 5.000đ" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        app:cardCornerRadius="8dp"
+                        android:layout_marginTop="8dp"
+                        app:cardBackgroundColor="#FAE7E6E6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <TextView
+                                android:gravity=""
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="Thời gian: 18/12/2025 14:30" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        app:cardCornerRadius="8dp"
+                        android:layout_marginTop="8dp"
+                        app:cardBackgroundColor="#FAE7E6E6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <TextView
+                                android:gravity=""
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="Nội dung: Thanh toán học phí" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Hoàn tiền"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#16A34A"/>
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="0dp"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Đánh dấu bất thường"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#DC2626"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
