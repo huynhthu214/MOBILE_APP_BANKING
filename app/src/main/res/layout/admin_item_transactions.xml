@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="14dp">
+
+        <!-- ICON GIAO DỊCH -->
+        <FrameLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="#E8F5E9"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                app:tint="#2E7D32"
+                android:src="@drawable/ic_card" />
+        </FrameLayout>
+
+        <!-- MÃ GD -->
+        <TextView
+            android:id="@+id/tvCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GD#100245"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#111"
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
+            app:layout_constraintTop_toTopOf="@id/iconContainer"
+            android:layout_marginStart="12dp"/>
+
+        <!-- TRẠNG THÁI -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thành công"
+            android:textSize="11sp"
+            android:textColor="#2E7D32"
+            android:background="#E8F5E9"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            app:layout_constraintStart_toEndOf="@id/tvCode"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvCode"
+            android:layout_marginStart="8dp"/>
+
+        <!-- NGƯỜI CHUYỂN -->
+        <TextView
+            android:id="@+id/tvUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Nguyễn A → Trần B"
+            android:textSize="13sp"
+            android:textColor="#333"
+            app:layout_constraintStart_toStartOf="@id/tvCode"
+            app:layout_constraintEnd_toStartOf="@id/tvAmount"
+            app:layout_constraintTop_toBottomOf="@id/tvCode"
+            android:layout_marginTop="4dp"/>
+
+        <!-- THỜI GIAN -->
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:32 • 12/03"
+            android:textSize="11sp"
+            android:textColor="#777"
+            app:layout_constraintStart_toStartOf="@id/tvCode"
+            app:layout_constraintTop_toBottomOf="@id/tvUser"
+            android:layout_marginTop="2dp"/>
+
+        <!-- SỐ TIỀN -->
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2,500,000đ"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#111"
+            app:layout_constraintEnd_toStartOf="@id/ivArrow"
+            app:layout_constraintTop_toTopOf="@id/tvUser"/>
+
+        <!-- MŨI TÊN -->
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_marginTop="5dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="3dp"
+            android:src="@drawable/ic_more"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
