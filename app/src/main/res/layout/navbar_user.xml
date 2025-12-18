@@ -5,7 +5,8 @@
     android:background="@android:color/white"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:id="@+id/btn_nav_home">
 
     <!-- TRANSFER -->
     <LinearLayout
