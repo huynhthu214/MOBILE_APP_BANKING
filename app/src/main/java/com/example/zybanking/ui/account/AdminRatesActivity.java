@@ -1,18 +1,19 @@
 package com.example.zybanking.ui.account;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.R;
 
-public class AccountInfoActivity extends AppCompatActivity {
-
+public class AdminRatesActivity extends AppCompatActivity {
+    ImageView btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.account_info);
+        setContentView(R.layout.admin_rates);
+        btnBack = findViewById(R.id.btn_back_rates);
+        btnBack.setOnClickListener(v -> finish());
     }
 }

@@ -6,7 +6,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.ui.auth.LoginActivity;
-import com.example.zybanking.ui.dashboard.DashboardActivity;
+import com.example.zybanking.ui.dashboard.AdminDashboardActivity;
+import com.example.zybanking.ui.dashboard.HomeActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,15 +17,28 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
         String token = pref.getString("access_token", null);
+        String role  = pref.getString("role", null);
 
-        if (token == null) {
-            // chưa login
-            startActivity(new Intent(this, LoginActivity.class));
+        Intent intent;
+
+        if (token == null || role == null) {
+            // Chưa đăng nhập hoặc session lỗi
+            intent = new Intent(this, LoginActivity.class);
+        } else if ("admin".equalsIgnoreCase(role)) {
+            // Admin
+            intent = new Intent(this, AdminDashboardActivity.class);
         } else {
-            // đã login
-            startActivity(new Intent(this, DashboardActivity.class));
+            // User thường
+            intent = new Intent(this, HomeActivity.class);
         }
 
-        finish();
+        startActivity(intent);
+        finish(); // chặn quay lại MainActivity
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+        pref.edit().clear().apply(); // xóa tất cả token/role
     }
 }

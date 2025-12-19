@@ -2,108 +2,113 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="6dp">
+    android:layout_marginBottom="8dp"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="14dp">
+        android:padding="12dp">
 
-        <!-- ICON GIAO DỊCH -->
-        <FrameLayout
-            android:id="@+id/iconContainer"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="#E8F5E9"
-            android:gravity="center"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_icon_container"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F3F4F6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
+                android:id="@+id/img_trans_type"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp"
-                app:tint="#2E7D32"
-                android:src="@drawable/ic_card" />
-        </FrameLayout>
+                android:padding="10dp"
+                android:src="@drawable/ic_bill"
+                app:tint="#4B5563" />
+        </androidx.cardview.widget.CardView>
 
-        <!-- MÃ GD -->
         <TextView
-            android:id="@+id/tvCode"
+            android:id="@+id/tv_trans_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GD#100245"
+            android:text="#GD100245"
             android:textStyle="bold"
+            android:textColor="#111827"
             android:textSize="14sp"
-            android:textColor="#111"
-            app:layout_constraintStart_toEndOf="@id/iconContainer"
-            app:layout_constraintTop_toTopOf="@id/iconContainer"
-            android:layout_marginStart="12dp"/>
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/card_icon_container"
+            app:layout_constraintTop_toTopOf="@id/card_icon_container"/>
 
-        <!-- TRẠNG THÁI -->
         <TextView
-            android:id="@+id/tvStatus"
+            android:id="@+id/tv_trans_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" • 10:30 12/03"
+            android:textSize="12sp"
+            android:textColor="#6B7280"
+            app:layout_constraintStart_toEndOf="@id/tv_trans_code"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_trans_code"/>
+
+        <TextView
+            android:id="@+id/tv_trans_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+2,500,000đ"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="#16A34A"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@id/btn_options"
+            app:layout_constraintTop_toTopOf="@id/tv_trans_code"
+            app:layout_constraintBottom_toBottomOf="@id/tv_trans_code"/>
+
+        <TextView
+            android:id="@+id/tv_trans_users"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Nguyễn Văn A → Trần Thị B"
+            android:textSize="13sp"
+            android:textColor="#374151"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="@id/tv_trans_code"
+            app:layout_constraintEnd_toStartOf="@id/btn_options"
+            app:layout_constraintTop_toBottomOf="@id/tv_trans_code"/>
+
+        <TextView
+            android:id="@+id/tv_trans_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thành công"
             android:textSize="11sp"
-            android:textColor="#2E7D32"
-            android:background="#E8F5E9"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="2dp"
-            app:layout_constraintStart_toEndOf="@id/tvCode"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvCode"
-            android:layout_marginStart="8dp"/>
-
-        <!-- NGƯỜI CHUYỂN -->
-        <TextView
-            android:id="@+id/tvUser"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Nguyễn A → Trần B"
-            android:textSize="13sp"
-            android:textColor="#333"
-            app:layout_constraintStart_toStartOf="@id/tvCode"
-            app:layout_constraintEnd_toStartOf="@id/tvAmount"
-            app:layout_constraintTop_toBottomOf="@id/tvCode"
-            android:layout_marginTop="4dp"/>
-
-        <!-- THỜI GIAN -->
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="10:32 • 12/03"
-            android:textSize="11sp"
-            android:textColor="#777"
-            app:layout_constraintStart_toStartOf="@id/tvCode"
-            app:layout_constraintTop_toBottomOf="@id/tvUser"
-            android:layout_marginTop="2dp"/>
-
-        <!-- SỐ TIỀN -->
-        <TextView
-            android:id="@+id/tvAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2,500,000đ"
-            android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#111"
-            app:layout_constraintEnd_toStartOf="@id/ivArrow"
-            app:layout_constraintTop_toTopOf="@id/tvUser"/>
+            android:textColor="#16A34A"
+            android:background="@drawable/bg_chip_outline"
+            android:backgroundTint="#F0FDF4"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toStartOf="@id/tv_trans_code"
+            app:layout_constraintTop_toBottomOf="@id/tv_trans_users"/>
 
-        <!-- MŨI TÊN -->
         <ImageView
-            android:id="@+id/ivArrow"
-            android:layout_marginTop="5dp"
+            android:id="@+id/btn_options"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:padding="3dp"
             android:src="@drawable/ic_more"
+            app:tint="#9CA3AF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

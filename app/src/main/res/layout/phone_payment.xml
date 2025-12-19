@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6FA"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+        <ImageView
+            android:id="@+id/btn_back_topup"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            app:tint="#000000" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Nạp tiền điện thoại"
+            android:textColor="#111827"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="24dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số điện thoại"
+                        android:textColor="#6B7280"/>
+                    <EditText
+                        android:id="@+id/et_phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0912 345 678"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:layout_marginTop="8dp"
+                        android:inputType="phone"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn mệnh giá"
+                android:textStyle="bold"
+                android:textColor="#111827"
+                android:layout_marginBottom="12dp"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:rowCount="3"
+                android:useDefaultMargins="true">
+
+                <Button android:text="10.000" style="@style/Widget.AppCompat.Button.Borderless" android:backgroundTint="#FFFFFF" android:textColor="#2563EB" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                <Button android:text="20.000" style="@style/Widget.AppCompat.Button.Borderless" android:backgroundTint="#FFFFFF" android:textColor="#2563EB" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                <Button android:text="50.000" style="@style/Widget.AppCompat.Button.Borderless" android:backgroundTint="#2563EB" android:textColor="#FFFFFF" android:layout_columnWeight="1" android:layout_margin="4dp"/> <Button android:text="100.000" style="@style/Widget.AppCompat.Button.Borderless" android:backgroundTint="#FFFFFF" android:textColor="#2563EB" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                <Button android:text="200.000" style="@style/Widget.AppCompat.Button.Borderless" android:backgroundTint="#FFFFFF" android:textColor="#2563EB" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                <Button android:text="500.000" style="@style/Widget.AppCompat.Button.Borderless" android:backgroundTint="#FFFFFF" android:textColor="#2563EB" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+            </GridLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_confirm_topup"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="20dp"
+        android:text="Nạp ngay - 50.000 VND"
+        android:backgroundTint="#2563EB"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"/>
+</LinearLayout>

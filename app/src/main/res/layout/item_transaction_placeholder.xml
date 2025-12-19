@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="12dp"
+    android:paddingHorizontal="4dp">
+
+    <ImageView
+        android:id="@+id/img_trans_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_next"
+        android:rotation="-90"
+        android:padding="10dp"
+        android:background="@drawable/bg_edittext_rounded"
+        android:backgroundTint="#F3F4F6"
+        android:contentDescription="Icon"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="12dp">
+
+        <TextView
+            android:id="@+id/tv_trans_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chuyển tiền đến Nguyen Van B"
+            android:textColor="#111827"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tv_trans_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="19/12/2025 - 14:30"
+            android:textColor="#6B7280"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_trans_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-500,000"
+        android:textColor="#DC2626"
+        android:textStyle="bold"
+        android:textSize="14sp"/>
+
+</LinearLayout>

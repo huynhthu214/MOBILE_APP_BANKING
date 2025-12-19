@@ -75,14 +75,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 // Kiểm tra phản hồi thành công (HTTP 200)
                 if (response.isSuccessful() && response.body() != null) {
                     ForgotPasswordResponse res = response.body();
-
-                    // Giả sử server trả về status="success"
                     if ("success".equalsIgnoreCase(res.status)) {
-
-                        String userId = res.data.USER_ID;
-
                         Intent intent = new Intent(ForgotPasswordActivity.this, OtpVerificationActivity.class);
-                        intent.putExtra("USER_ID", userId);
+                        intent.putExtra("user_id", res.data.user_id); // backend phải trả
                         startActivity(intent);
                     }else {
                         // Server trả về 200 nhưng logic lỗi (ví dụ email ko tồn tại)

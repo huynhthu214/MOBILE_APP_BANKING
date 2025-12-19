@@ -135,56 +135,46 @@
         app:layout_constraintTop_toBottomOf="@id/btn_login"
         app:layout_constraintVertical_bias="0.4">
 
-        <!--
-            Thay thế các CardView này (hoặc chỉ ImageView)
-            bằng các biểu tượng thực tế của bạn.
-        -->
         <androidx.cardview.widget.CardView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="4dp"
             android:layout_margin="12dp">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@android:drawable/sym_def_app_icon"
-                android:padding="4dp"/>
+                android:src="@drawable/ic_google"
+                android:padding="12dp"
+                android:scaleType="centerInside"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="4dp"
             android:layout_margin="12dp">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@android:drawable/sym_def_app_icon"
-                android:padding="4dp"/>
+                android:src="@drawable/ic_facebook"
+                android:padding="12dp"
+                android:scaleType="centerInside"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="4dp"
             android:layout_margin="12dp">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@android:drawable/sym_def_app_icon"
-                android:padding="4dp"/>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
-            android:layout_margin="12dp">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@android:drawable/sym_def_app_icon"
-                android:padding="4dp"/>
+                android:src="@drawable/ic_twitter"
+                android:padding="12dp"
+                android:scaleType="centerInside"/>
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>

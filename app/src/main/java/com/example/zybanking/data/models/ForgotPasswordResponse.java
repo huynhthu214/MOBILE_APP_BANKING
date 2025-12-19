@@ -8,6 +8,6 @@ public class ForgotPasswordResponse {
     public static class Data {
         public String otp_id;
         public String otp_code_dev;
-        public String USER_ID; // App cần cái này để reset pass
+        public String user_id;
     }
 }

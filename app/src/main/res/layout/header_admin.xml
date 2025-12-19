@@ -14,19 +14,19 @@
             android:layout_height="56dp"
             android:paddingHorizontal="16dp">
 
-            <!-- Icon bên trái -->
             <ImageView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_admin"
-                app:tint="#1976D2" />
+                app:tint="#1976D2"
+                android:layout_gravity="start|center_vertical"/>
 
-            <!-- Title + subtitle -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:orientation="vertical">
+                android:layout_marginStart="16dp"
+                android:orientation="vertical"
+                android:layout_gravity="start|center_vertical">
 
                 <TextView
                     android:id="@+id/tvTitle"
@@ -35,39 +35,47 @@
                     android:text="TỔNG QUAN"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#000" />
-
+                    android:textColor="#000"
+                    android:padding="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    android:background="?attr/selectableItemBackground"/>
                 <TextView
                     android:id="@+id/tvSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Xin chào, Quản trị viên"
                     android:textSize="12sp"
-                    android:textColor="#666" />
+                    android:textColor="#666"
+                    android:paddingStart="4dp"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="end|center_vertical">
 
-            <!-- Thông báo -->
-            <ImageButton
-                android:id="@+id/btnNotification"
-                android:layout_marginStart="140dp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_noti"
-                android:contentDescription="Thông báo"
-                app:tint="#000" />
+                <ImageButton
+                    android:id="@+id/btnNotification"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_noti"
+                    android:contentDescription="Thông báo"
+                    app:tint="#000" />
 
-            <!-- Đăng xuất -->
-            <ImageButton
-                android:id="@+id/btnLogout"
-                android:layout_marginStart="8dp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_logout"
-                android:contentDescription="Đăng xuất"
-                app:tint="#000" />
+                <ImageButton
+                    android:id="@+id/btnLogout"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_logout"
+                    android:contentDescription="Đăng xuất"
+                    app:tint="#000" />
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -1,60 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_horizontal"
-    android:background="#F5F5F5">
+    android:background="#F4F6FA"
+    android:orientation="vertical">
 
-    <!-- Tiêu đề -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Xác Thực Danh Tính (eKYC)"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#333"
-        android:layout_marginBottom="24dp" />
-
-    <!-- Ảnh người dùng -->
-    <ImageView
-        android:id="@+id/imgPreview"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:padding="10dp"
-        android:scaleType="centerCrop" />
-<!--        android:layout_marginBottom="24dp"-->
-<!--        android:src="@drawable/ic_baseline_person_24"-->
-<!--        android:background="@drawable/rounded_bg"-->
-
-
-    <!-- Nút chọn ảnh -->
-    <Button
-        android:id="@+id/btnPickImage"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Chọn ảnh từ thư viện"
-        android:layout_marginBottom="16dp" />
+        android:background="#2563EB"
+        android:gravity="center_vertical"
+        android:padding="16dp">
 
-    <!-- Nút gửi yêu cầu xác thực -->
-    <Button
-        android:id="@+id/btnSubmitKyc"
+        <ImageView
+            android:id="@+id/btn_back_ekyc"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Xác thực danh tính (eKYC)"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vui lòng cung cấp hình ảnh giấy tờ tùy thân và ảnh chân dung để xác minh tài khoản."
+                android:textColor="#6B7280"
+                android:textSize="14sp"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Ảnh CCCD / CMND"
+                android:textStyle="bold"
+                android:textColor="#111827"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_front_id"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#FFFFFF">
+
+                        <ImageView
+                            android:id="@+id/img_front_preview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_camera_alt"
+                                app:tint="#2563EB"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mặt trước"
+                                android:textSize="12sp"
+                                android:textColor="#2563EB"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_back_id"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#FFFFFF">
+
+                        <ImageView
+                            android:id="@+id/img_back_preview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_camera_alt"
+                                app:tint="#2563EB"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mặt sau"
+                                android:textSize="12sp"
+                                android:textColor="#2563EB"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. Ảnh chân dung (Selfie)"
+                android:textStyle="bold"
+                android:textColor="#111827"
+                android:textSize="16sp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_selfie"
+                android:layout_width="160dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="4dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF">
+
+                    <ImageView
+                        android:id="@+id/img_selfie_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_face"
+                            app:tint="#2563EB"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tải ảnh"
+                            android:textSize="14sp"
+                            android:textColor="#2563EB"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FEF3C7"
+                android:padding="12dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_info"
+                    app:tint="#D97706"/>
+
+                <TextView
+                    android:id="@+id/tv_kyc_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trạng thái: Chưa xác thực"
+                    android:textColor="#92400E"
+                    android:textStyle="bold"
+                    android:layout_marginStart="12dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gửi xác thực"
-        android:backgroundTint="#4CAF50"
-        android:textColor="#FFF"
-        android:layout_marginBottom="24dp" />
+        android:padding="20dp"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
 
-    <!-- Hiển thị trạng thái -->
-    <TextView
-        android:id="@+id/tvKycStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trạng thái: Chưa xác thực"
-        android:textSize="16sp"
-        android:textColor="#555" />
+        <Button
+            android:id="@+id/btn_submit_kyc"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Gửi yêu cầu xác thực"
+            android:backgroundTint="#2563EB"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:cornerRadius="12dp"/>
+    </LinearLayout>
 
 </LinearLayout>

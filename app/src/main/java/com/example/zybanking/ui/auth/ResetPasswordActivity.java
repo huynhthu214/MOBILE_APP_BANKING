@@ -3,6 +3,7 @@ package com.example.zybanking.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.zybanking.R;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,7 @@ import com.example.zybanking.data.remote.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class ResetPasswordActivity extends AppCompatActivity {
-
+    private TextView tvBack;
     private String userId;
     private String otpCode;
     private TextInputEditText edtNewPass, edtConfirmPass;
@@ -27,11 +28,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reset_password);
 
-        // Nhận dữ liệu từ các màn trước dồn lại
-        userId = getIntent().getStringExtra("USER_ID");
-        otpCode = getIntent().getStringExtra("OTP_CODE");
+        tvBack = findViewById(R.id.tv_back);
+        userId = getIntent().getStringExtra("user_id");
+        otpCode = getIntent().getStringExtra("otp_code");
 
-        // Ánh xạ
+        tvBack.setOnClickListener(v -> finish());
+        if (userId == null || otpCode == null) {
+            Toast.makeText(this, "Dữ liệu không hợp lệ", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         edtNewPass = findViewById(R.id.edt_new_pass);
         edtConfirmPass = findViewById(R.id.edt_confirm_pass);
         Button btnReset = findViewById(R.id.btn_reset);
@@ -40,15 +47,24 @@ public class ResetPasswordActivity extends AppCompatActivity {
             String newPass = edtNewPass.getText().toString().trim();
             String confirmPass = edtConfirmPass.getText().toString().trim();
 
-            if (newPass.isEmpty() || !newPass.equals(confirmPass)) {
-                Toast.makeText(this, "Mật khẩu không khớp hoặc để trống", Toast.LENGTH_SHORT).show();
+            if (!newPass.equals(confirmPass)) {
+                Toast.makeText(this, "Mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // GỌI API RESET PASSWORD
+            if (!isValidPassword(newPass)) {
+                Toast.makeText(
+                        this,
+                        "Mật khẩu phải ≥ 8 ký tự, có chữ hoa, số và ký tự đặc biệt",
+                        Toast.LENGTH_LONG
+                ).show();
+                return;
+            }
+
             performReset(newPass);
         });
     }
+
 
     private void performReset(String newPassword) {
         ResetPasswordRequest request = new ResetPasswordRequest(userId, otpCode, newPassword);
@@ -80,5 +96,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 Toast.makeText(ResetPasswordActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return password.matches(regex);
     }
 }

@@ -7,11 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- ================= HEADER / TOOLBAR ================= -->
     <include
         android:id="@+id/layoutHeader"
         layout="@layout/header_admin"/>
-    <!-- SEARCH + CALENDAR cùng hàng -->
+
     <LinearLayout
         android:orientation="horizontal"
         android:padding="5dp"
@@ -19,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- SEARCH BOX (CardView) -->
         <androidx.cardview.widget.CardView
             android:id="@+id/searchBox"
             android:layout_width="0dp"
@@ -35,8 +33,8 @@
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp">
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
 
                 <ImageView
                     android:src="@android:drawable/ic_menu_search"
@@ -46,9 +44,10 @@
 
                 <EditText
                     android:id="@+id/edtSearch"
-                    android:hint="Search..."
+                    android:hint="Tìm kiếm..."
                     android:textColor="#222222"
                     android:textColorHint="#999999"
+                    android:textSize="14sp"
                     android:background="@android:color/transparent"
                     android:layout_marginLeft="8dp"
                     android:layout_width="match_parent"
@@ -56,7 +55,7 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-        <!-- add user -->
+
         <androidx.cardview.widget.CardView
             android:id="@+id/btnAddUser"
             android:layout_width="44dp"
@@ -83,91 +82,111 @@
             </FrameLayout>
         </androidx.cardview.widget.CardView>
 
-
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="0dp"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingBottom="4dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/tabAll"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingHorizontal="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="true"
-            app:cardBackgroundColor="#4A90E2">
+            android:layout_height="wrap_content">
 
-            <TextView
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tabAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tất cả"
-                android:textColor="#FFFFFF"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="14sp" />
-        </androidx.cardview.widget.CardView>
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:cardBackgroundColor="#4A90E2">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/tabBasic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="true"
-            app:cardBackgroundColor="#DDDDDD">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tất cả"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:textSize="14sp" />
+            </androidx.cardview.widget.CardView>
 
-            <TextView
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tabChecking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Basic"
-                android:textColor="#555555"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="14sp" />
-        </androidx.cardview.widget.CardView>
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:cardBackgroundColor="#F3F4F6">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/tabPremium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="true"
-            app:cardBackgroundColor="#DDDDDD">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thanh toán"
+                    android:textColor="#555555"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:textSize="14sp" />
+            </androidx.cardview.widget.CardView>
 
-            <TextView
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tabSavings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Premium"
-                android:textColor="#555555"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="14sp" />
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:cardBackgroundColor="#F3F4F6">
 
-    <!-- LIST -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tiết kiệm"
+                    android:textColor="#555555"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:textSize="14sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tabMortgage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:cardBackgroundColor="#F3F4F6">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thế chấp"
+                    android:textColor="#555555"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:textSize="14sp" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTransactions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
+        android:paddingBottom="10dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/admin_item_users"/>
-
 
 </LinearLayout>
