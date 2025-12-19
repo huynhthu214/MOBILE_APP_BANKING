@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="#0b5394"
         android:gravity="center_vertical"
         android:padding="16dp">
 
@@ -18,14 +18,14 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_back"
-            app:tint="#000000" />
+            app:tint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Thanh toán hóa đơn"
-            android:textColor="#111827"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -59,7 +59,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Điện Lực"
-                    android:backgroundTint="#2563EB"
+                    android:backgroundTint="#3d85c6"
                     android:textColor="#FFFFFF"
                     android:layout_marginEnd="8dp"/>
 
@@ -127,7 +127,7 @@
         android:layout_height="56dp"
         android:layout_margin="20dp"
         android:text="Tra cứu hóa đơn"
-        android:backgroundTint="#2563EB"
+        android:backgroundTint="#0b5394"
         android:textStyle="bold"
         app:cornerRadius="12dp"/>
 </LinearLayout>

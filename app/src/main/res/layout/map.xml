@@ -27,17 +27,17 @@
             android:layout_marginTop="8dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="#0b5394">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar_map"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 app:title="Tìm Chi nhánh &amp; ATM"
-                app:titleTextColor="#111827"
+                app:titleTextColor="@color/white"
                 app:titleTextAppearance="@style/TextAppearance.AppCompat.Body2"
                 app:navigationIcon="@drawable/ic_back"
-                app:navigationIconTint="#111827" />
+                app:navigationIconTint="@color/white" />
         </androidx.cardview.widget.CardView>
     </com.google.android.material.appbar.AppBarLayout>
 

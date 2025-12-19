@@ -75,6 +75,7 @@
                 android:gravity="center">
 
                 <ImageView
+                    android:id="@+id/add_user"
                     android:src="@drawable/ic_add_user"
                     app:tint="#555555"
                     android:layout_width="22dp"

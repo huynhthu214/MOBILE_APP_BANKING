@@ -1,43 +1,45 @@
 package com.example.zybanking.ui.dashboard;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.zybanking.HeaderAdmin;
 import com.example.zybanking.R;
+import com.example.zybanking.ui.account.AdminEditInforActivity;
 import com.example.zybanking.ui.account.AdminRatesActivity;
+import com.example.zybanking.ui.account.AdminSettingActivity;
+import com.example.zybanking.ui.account.AdminUserActivity;
 import com.example.zybanking.ui.account.CreateAccountActivity;
-import com.example.zybanking.ui.auth.LoginActivity;
 import com.example.zybanking.ui.ekyc.VerifyEkycActivity;
 import com.example.zybanking.ui.transaction.AdminTransaction;
 
 public class AdminDashboardActivity extends HeaderAdmin {
 
-    private ImageButton btnLogout;
+    private ImageButton btnAdmin;
     private LinearLayout btnCreateAccount;
     private LinearLayout btnEkyc;
     private LinearLayout btnRates;
     private LinearLayout btnSupport;
-    private CardView cardUser, cardRevenue, cardTransac, cardTransacMoney, cardEKYC, cardCreate, cardRate;
+    private CardView cardUser, cardRevenue, cardTransac, cardTransacMoney, cardEKYC, cardCreate, cardRate, cardEdit;
     private TextView tvMore, tv_More;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_dashboard);
 
-        btnLogout = findViewById(R.id.btnLogout);
+        btnAdmin = findViewById(R.id.btn_admin);
 
-        btnLogout.setOnClickListener(v -> logout());
-        initHeader();
+        if (btnAdmin != null) {
+            btnAdmin.setOnClickListener(v -> {
+                startActivity(new Intent(this, AdminSettingActivity.class));
+            });
+        }
         initDashboardButtons();
+        initHeader();
     }
     private void initDashboardButtons() {
         btnCreateAccount = findViewById(R.id.btn_quick_create_account);
@@ -80,6 +82,7 @@ public class AdminDashboardActivity extends HeaderAdmin {
         cardTransac = findViewById(R.id.card_transac);
         cardUser = findViewById(R.id.card_user);
         cardTransacMoney = findViewById(R.id.card_transac_money);
+        cardEdit = findViewById(R.id.card_edit);
 
         if (cardRate != null) {
             cardRate.setOnClickListener(v -> {startActivity(new Intent(this, AdminRatesActivity.class));});
@@ -94,13 +97,16 @@ public class AdminDashboardActivity extends HeaderAdmin {
             cardRevenue.setOnClickListener(v -> {startActivity(new Intent(this, AdminReportActivity.class));});
         }
         if (cardTransac != null) {
-            cardTransac.setOnClickListener(v -> {startActivity(new Intent(this, AdminReportActivity.class));});
+            cardTransac.setOnClickListener(v -> {startActivity(new Intent(this, AdminTransaction.class));});
         }
         if (cardUser != null) {
-            cardUser.setOnClickListener(v -> {startActivity(new Intent(this, AdminReportActivity.class));});
+            cardUser.setOnClickListener(v -> {startActivity(new Intent(this, AdminUserActivity.class));});
         }
         if (cardTransacMoney != null) {
             cardTransacMoney.setOnClickListener(v -> {startActivity(new Intent(this, AdminReportActivity.class));});
+        }
+        if (cardEdit != null) {
+            cardEdit.setOnClickListener(v -> {startActivity(new Intent(this, AdminEditInforActivity.class));});
         }
 
         tv_More = findViewById(R.id.tv_more);
@@ -112,20 +118,5 @@ public class AdminDashboardActivity extends HeaderAdmin {
         if (tvMore != null) {
             tvMore.setOnClickListener(v -> {startActivity(new Intent(this, AdminTransaction.class));});
         }
-    }
-    private void logout() {
-
-        // 1. Clear local session
-        SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-        pref.edit().clear().apply();
-
-        // 2. Chuyển về Login
-        Intent intent = new Intent(AdminDashboardActivity.this, LoginActivity.class);
-
-        // clear backstack -> không quay lại admin được
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        startActivity(intent);
-        finish();
     }
 }

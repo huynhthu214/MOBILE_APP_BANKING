@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#2563EB"
+        android:background="#0b5394"
         android:gravity="center_vertical"
         android:padding="16dp">
 
@@ -239,7 +239,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="Gửi yêu cầu xác thực"
-            android:backgroundTint="#2563EB"
+            android:backgroundTint="#0b5394"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="16sp"

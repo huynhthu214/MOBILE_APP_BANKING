@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#2563EB"
+        android:background="#0b5394"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
         android:elevation="4dp">
@@ -328,7 +328,7 @@
             android:text="Lưu thay đổi"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:backgroundTint="#2563EB"
+            android:backgroundTint="#0b5394"
             android:textColor="#FFFFFF"
             app:cornerRadius="12dp"/>
     </LinearLayout>

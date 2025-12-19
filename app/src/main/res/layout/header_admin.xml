@@ -5,7 +5,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="#0b5394"
         android:elevation="6dp">
 
         <androidx.appcompat.widget.Toolbar
@@ -15,10 +15,11 @@
             android:paddingHorizontal="16dp">
 
             <ImageView
+                android:id="@+id/img_dashboard"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_admin"
-                app:tint="#1976D2"
+                app:tint="@color/white"
                 android:layout_gravity="start|center_vertical"/>
 
             <LinearLayout
@@ -35,20 +36,13 @@
                     android:text="TỔNG QUAN"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#000"
+                    android:textColor="@color/white"
                     android:padding="4dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="false"
                     android:background="?attr/selectableItemBackground"/>
-                <TextView
-                    android:id="@+id/tvSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xin chào, Quản trị viên"
-                    android:textSize="12sp"
-                    android:textColor="#666"
-                    android:paddingStart="4dp"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -64,17 +58,16 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_noti"
                     android:contentDescription="Thông báo"
-                    app:tint="#000" />
+                    app:tint="@color/white" />
 
                 <ImageButton
-                    android:id="@+id/btnLogout"
+                    android:id="@+id/btn_admin"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_logout"
-                    android:contentDescription="Đăng xuất"
-                    app:tint="#000" />
+                    android:src="@drawable/ic_account_circle"
+                    app:tint="@color/white" />
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>

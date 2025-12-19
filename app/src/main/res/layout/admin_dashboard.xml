@@ -420,7 +420,7 @@
                             android:orientation="vertical">
 
                             <androidx.cardview.widget.CardView
-                                android:id="@+id/card_support"
+                                android:id="@+id/card_edit"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 app:cardBackgroundColor="#FFFFFF"
@@ -439,7 +439,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="Hỗ trợ"
+                                android:text="Chỉnh sửa"
                                 android:textColor="#333"
                                 android:textSize="12sp" />
                         </LinearLayout>

@@ -1,15 +1,37 @@
 package com.example.zybanking.data.models;
 
-import com.example.zybanking.data.models.Transaction;
-
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class AccountSummaryResponse {
-    private String status;
-    private String type;
-    private double balance;
-    private List<Transaction> last_transactions;
+    @SerializedName("status")
+    public String status;
 
-    public double getBalance() { return balance; }
-    public List<Transaction> getLastTransactions() { return last_transactions; }
+    @SerializedName("type")
+    public String type; // "checking", "saving", "mortgage"
+
+    // Dữ liệu chung
+    @SerializedName("balance")
+    public Double balance;
+
+    // Dữ liệu Checking
+    @SerializedName("last_transactions")
+    public List<Transaction> lastTransactions;
+
+    // Dữ liệu Saving
+    @SerializedName("interest_rate")
+    public Double interestRate;
+
+    @SerializedName("monthly_interest")
+    public Double monthlyInterest;
+
+    // Dữ liệu Mortgage
+    @SerializedName("remaining_balance")
+    public Double remainingBalance;
+
+    @SerializedName("next_payment_date")
+    public String nextPaymentDate;
+
+    @SerializedName("account_number")
+    public String accountNumber;
 }

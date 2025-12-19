@@ -46,7 +46,7 @@
             android:id="@+id/btn_home_success"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:backgroundTint="#2563EB"
+            android:backgroundTint="#0b5394"
             android:text="Về màn hình chính"
             app:cornerRadius="25dp" />
 

@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4A6CF7"
+        android:background="#0b5394"
         android:gravity="center_vertical"
         android:padding="16dp"
         android:elevation="4dp">
@@ -169,7 +169,7 @@
             android:text="TẠO TÀI KHOẢN"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:backgroundTint="#4A6CF7"
+            android:backgroundTint="#0b5394"
             android:textColor="#FFFFFF"
             app:cornerRadius="12dp"
             android:stateListAnimator="@null"/>

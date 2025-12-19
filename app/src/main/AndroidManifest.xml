@@ -47,6 +47,27 @@
             android:name=".ui.account.ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.account.CreateAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminRatesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminDetailTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminDetailUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminEditInforActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.dashboard.HomeActivity"
             android:exported="false" />
         <activity
@@ -74,19 +95,13 @@
             android:name=".ui.utilities.UtilitiesActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.account.AdminRatesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.account.CreateAccountActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.ekyc.VerifyEkycActivity"
             android:exported="false" />
         <activity
             android:name=".ui.ekyc.EKYCActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

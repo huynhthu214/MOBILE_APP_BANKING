@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#2563EB"
+            android:background="#0b5394"
             android:orientation="vertical"
             android:padding="20dp"
             android:paddingBottom="40dp">
@@ -283,7 +283,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="#2563EB"
+                        android:backgroundTint="#0b5394"
                         android:text="Xuất biên lai"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>

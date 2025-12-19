@@ -25,7 +25,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
-                android:background="#4A6CF7"/>
+                android:background="#0b5394"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -206,14 +206,29 @@
                     app:cardBackgroundColor="#EFF6FF"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground">
+
                     <LinearLayout
-                        android:padding="16dp"
+                        android:id="@+id/edit_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView android:src="@drawable/ic_edit" app:tint="#2563EB" android:layout_width="24dp" android:layout_height="24dp"/>
-                        <TextView android:text="Sửa thông tin" android:textColor="#2563EB" android:textStyle="bold" android:textSize="12sp" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#2563EB" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Sửa thông tin"
+                            android:textColor="#2563EB"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

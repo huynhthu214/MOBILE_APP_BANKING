@@ -21,26 +21,26 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:background="#2563EB"
-                android:padding="24dp"
-                android:orientation="vertical">
+                android:background="#0b5394"
+                android:orientation="vertical"
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Xin chào,"
                     android:textColor="#BBDEFB"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Nguyen Van A"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
@@ -60,7 +60,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nova Bank------"
+                        android:text="ZY BANK"
                         android:textColor="#6B7280"
                         android:textSize="13sp"/>
 
@@ -83,6 +83,7 @@
                         android:layout_marginTop="6dp"/>
 
                     <TextView
+                        android:id="@+id/tv_account_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="**** **** **** 4589"
@@ -112,13 +113,13 @@
                         <Button
                             android:id="@+id/btn_withdraw"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#0b5394"
                             android:text="Rút tiền"
-                            android:textSize="12sp"
-                            android:backgroundTint="#2563EB"
                             android:textColor="#FFFFFF"
-                            android:layout_marginStart="8dp"/>
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -304,6 +305,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tv_saving_balance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="10,500,000 VND"
@@ -312,6 +314,7 @@
                         android:textColor="#111827"
                         android:layout_marginTop="6dp"/>
                     <TextView
+                        android:id="@+id/tv_saving_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lãi suất: 4.5% / năm"

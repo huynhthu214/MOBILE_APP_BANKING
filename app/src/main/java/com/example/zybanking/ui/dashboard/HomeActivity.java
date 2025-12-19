@@ -1,7 +1,9 @@
 package com.example.zybanking.ui.dashboard;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,6 +11,8 @@ import android.widget.Button;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +40,8 @@ import com.example.zybanking.ui.utilities.UtilitiesActivity;
 
 public class HomeActivity extends NavbarActivity {
     private TextView tvUserName, tvBalance;
+    private TextView tvSavingBalance, tvSavingRate, tvAccountNumber;
+    private TextView tvMortgageAmount, tvNextPayment;
     private Button btnDeposit, btnWithdraw;
     private CardView cardSavings, cardMortgage, cardLocation, cardEKYC;
     private RecyclerView rvTransactions;
@@ -55,6 +61,10 @@ public class HomeActivity extends NavbarActivity {
         // Header
         tvUserName = findViewById(R.id.tv_user_name);
         tvBalance = findViewById(R.id.tv_balance);
+        tvAccountNumber = findViewById(R.id.tv_account_number);
+        tvSavingBalance = findViewById(R.id.tv_saving_balance);
+        tvSavingBalance = findViewById(R.id.tv_saving_balance);
+        tvMortgageAmount = findViewById(R.id.tv_mortgage_amount);
         // Buttons Nạp/Rút (Cần thêm ID vào basic_home.xml nếu chưa có)
         btnDeposit = findViewById(R.id.btn_deposit);
         btnWithdraw = findViewById(R.id.btn_withdraw);
@@ -122,11 +132,15 @@ public class HomeActivity extends NavbarActivity {
     }
 
     private void loadUserData() {
-        String token = getSharedPreferences("auth", MODE_PRIVATE)
-                .getString("access_token", "");
+        SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+        String token = pref.getString("access_token", "");
+        String userId = pref.getString("user_id", "");
+
         if(token.isEmpty()) return;
 
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
+
+        // 1. Lấy thông tin User để biết User có những tài khoản nào (List Accounts)
         api.getCurrentUser("Bearer " + token).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
@@ -134,10 +148,15 @@ public class HomeActivity extends NavbarActivity {
                     UserResponse.User user = response.body().getData().getUser();
                     tvUserName.setText(user.getFullName());
 
-                    // lấy account đầu tiên để hiển thị balance
-                    if(response.body().getData().getAccounts() != null && !response.body().getData().getAccounts().isEmpty()) {
-                        String accountId = response.body().getData().getAccounts().get(0).get("ACCOUNT_ID").toString();
-                        loadAccountSummary(accountId, token);
+                    // Lấy danh sách các tài khoản
+                    List<Map<String, Object>> accounts = response.body().getData().getAccounts();
+
+                    if (accounts != null) {
+                        // 2. Duyệt qua từng tài khoản để lấy chi tiết
+                        for (Map<String, Object> acc : accounts) {
+                            String accId = (String) acc.get("ACCOUNT_ID");
+                            fetchAccountDetail(accId); // Gọi hàm lấy chi tiết
+                        }
                     }
                 }
             }
@@ -146,44 +165,76 @@ public class HomeActivity extends NavbarActivity {
             public void onFailure(Call<UserResponse> call, Throwable t) {}
         });
     }
-
-    private void loadAccountSummary(String accountId, String token) {
+    // Hàm gọi API /api/v1/accounts/{id}/summary
+    private void fetchAccountDetail(String accountId) {
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getAccountSummary(accountId).enqueue(new Callback<AccountSummaryResponse>() {
             @Override
             public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
-                if(response.isSuccessful() && response.body() != null) {
-                    tvBalance.setText(formatCurrency(response.body().getBalance()));
-
-                    // load giao dịch gần đây
-                    List<Transaction> txns = response.body().getLastTransactions();
-                    TransactionAdapter adapter = new TransactionAdapter(txns);
-                    rvTransactions.setAdapter(adapter);
+                if (response.isSuccessful() && response.body() != null) {
+                    AccountSummaryResponse data = response.body();
+                    updateUI(data); // Cập nhật giao diện dựa trên loại tài khoản
                 }
             }
 
             @Override
-            public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {}
+            public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {
+                Log.e("HomeActivity", "Load summary failed: " + t.getMessage());
+            }
         });
     }
+    private void updateUI(AccountSummaryResponse data) {
+        if (data.type == null) return;
 
-    private void loadRecentTransactions(String userId) {
-        ApiService api = RetrofitClient.getClient().create(ApiService.class);
-        api.getRecentTransactions(userId, 5).enqueue(new Callback<List<Transaction>>() {
-            @Override
-            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
-                if(response.isSuccessful() && response.body() != null) {
-                    List<Transaction> txns = response.body();
-                    TransactionAdapter adapter = new TransactionAdapter(txns);
+        switch (data.type.toLowerCase()) {
+            case "checking":
+                if (tvBalance != null) {
+                    tvBalance.setText(formatCurrency(data.balance));
+                }
+
+                // --- CẬP NHẬT SỐ TÀI KHOẢN ---
+                if (tvAccountNumber != null && data.accountNumber != null) {
+                    tvAccountNumber.setText(formatAccountNumber(data.accountNumber));
+                }
+                // -----------------------------
+
+                if (data.lastTransactions != null && rvTransactions != null) {
+                    TransactionAdapter adapter = new TransactionAdapter(data.lastTransactions);
                     rvTransactions.setAdapter(adapter);
                 }
-            }
+                break;
 
-            @Override
-            public void onFailure(Call<List<Transaction>> call, Throwable t) {
-                // Toast báo lỗi nếu muốn
+            case "saving":
+                // 3. Cập nhật Card Tiết kiệm
+                if (tvSavingBalance != null) {
+                    tvSavingBalance.setText(formatCurrency(data.balance));
+                }
+                if (tvSavingRate != null && data.interestRate != null) {
+                    tvSavingRate.setText("Lãi suất: " + (data.interestRate * 100) + "% / năm");
+                }
+                // Nếu muốn hiển thị lãi hàng tháng: data.monthlyInterest
+                break;
+
+            case "mortgage":
+                // 4. Cập nhật Card Vay thế chấp
+                if (tvMortgageAmount != null) {
+                    tvMortgageAmount.setText(formatCurrency(data.remainingBalance));
+                }
+                break;
+        }
+    }
+    private String formatAccountNumber(String accNum) {
+        if (accNum == null) return "";
+        // Nếu muốn che bớt số: return "**** " + accNum.substring(accNum.length() - 4);
+        // Nếu muốn hiện hết và thêm khoảng trắng:
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < accNum.length(); i++) {
+            if (i > 0 && i % 4 == 0) {
+                sb.append(" ");
             }
-        });
+            sb.append(accNum.charAt(i));
+        }
+        return sb.toString();
     }
     private String formatCurrency(double amount) {
         return NumberFormat.getInstance(new Locale("vi", "VN")).format(amount) + " VND";

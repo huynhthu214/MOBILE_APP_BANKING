@@ -70,7 +70,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="SUPER ADMIN"
+                            android:text="ADMIN"
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:textColor="#FFFFFF"
@@ -266,12 +266,16 @@
 
             <!-- ================= LOGOUT ================= -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="#FFFFFF"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="match_parent"

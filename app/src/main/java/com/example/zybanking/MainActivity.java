@@ -19,26 +19,33 @@ public class MainActivity extends AppCompatActivity {
         String token = pref.getString("access_token", null);
         String role  = pref.getString("role", null);
 
+        // --- THÊM LOG ĐỂ KIỂM TRA ---
+        if (role != null) {
+            // Xem Logcat với từ khóa "DEBUG_ROLE" để biết chính xác role là gì
+            android.util.Log.e("DEBUG_ROLE", "Role hiện tại là: '" + role + "'");
+            android.util.Log.e("DEBUG_ROLE", "So sánh với admin: " + "admin".equalsIgnoreCase(role));
+        } else {
+            android.util.Log.e("DEBUG_ROLE", "Role bị NULL");
+        }
+        // -----------------------------
+
         Intent intent;
 
         if (token == null || role == null) {
-            // Chưa đăng nhập hoặc session lỗi
             intent = new Intent(this, LoginActivity.class);
-        } else if ("admin".equalsIgnoreCase(role)) {
-            // Admin
-            intent = new Intent(this, AdminDashboardActivity.class);
         } else {
-            // User thường
-            intent = new Intent(this, HomeActivity.class);
+            // Dùng trim() để cắt bỏ khoảng trắng thừa nếu có
+            String cleanRole = role.trim();
+
+            // Kiểm tra các trường hợp có thể xảy ra của admin
+            if ("admin".equalsIgnoreCase(cleanRole) || "administrator".equalsIgnoreCase(cleanRole)) {
+                intent = new Intent(this, AdminDashboardActivity.class);
+            } else {
+                intent = new Intent(this, HomeActivity.class);
+            }
         }
 
         startActivity(intent);
-        finish(); // chặn quay lại MainActivity
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-        pref.edit().clear().apply(); // xóa tất cả token/role
+        finish();
     }
 }
