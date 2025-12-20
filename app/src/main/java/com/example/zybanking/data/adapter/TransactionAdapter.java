@@ -8,7 +8,7 @@
     import androidx.recyclerview.widget.RecyclerView;
 
     import com.example.zybanking.R;
-    import com.example.zybanking.data.models.Transaction;
+    import com.example.zybanking.data.models.transaction.Transaction;
 
     import java.text.NumberFormat;
     import java.util.List;

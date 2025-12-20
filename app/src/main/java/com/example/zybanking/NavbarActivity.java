@@ -12,7 +12,7 @@ import com.example.zybanking.ui.transaction.TransactionActivity;
 
 public class NavbarActivity extends AppCompatActivity {
 
-    protected LinearLayout navHome, navHistory, navTransaction, navProfile;
+    protected LinearLayout navHome, navHistory, navTransaction, navProfile, navNoti;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +24,13 @@ public class NavbarActivity extends AppCompatActivity {
         navHistory = findViewById(R.id.nav_history);
         navTransaction = findViewById(R.id.nav_transaction);
         navProfile = findViewById(R.id.nav_profile);
+        navNoti = findViewById(R.id.nav_noti);
 
         if (navHome != null) navHome.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
         if (navHistory != null) navHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
         if (navTransaction != null) navTransaction.setOnClickListener(v -> startActivity(new Intent(this, TransactionActivity.class)));
         if (navProfile != null) navProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        if (navNoti != null) navNoti.setOnClickListener(v -> startActivity(new Intent(this, NotificationUserActivity.class)));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.utils;
 
 public class UtilityTopupRequest {
     public String account_id;

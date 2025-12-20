@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.transaction;
 
 import java.util.List;
 

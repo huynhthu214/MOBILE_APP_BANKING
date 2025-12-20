@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
 import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.WithdrawRequest;
+import com.example.zybanking.data.models.transaction.WithdrawRequest;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.ui.auth.OtpVerificationActivity;
 
@@ -17,15 +17,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TransactionActivity extends AppCompatActivity {
+public class TransactionActivity extends NavbarActivity {
     private ApiService apiService;
-
+    private String sourceAccountId = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.basic_transfer);
 
+        initNavbar();
         WithdrawRequest request = new WithdrawRequest("A001", 10.0000);
 
         apiService.withdraw(request).enqueue(new Callback<BasicResponse>() {

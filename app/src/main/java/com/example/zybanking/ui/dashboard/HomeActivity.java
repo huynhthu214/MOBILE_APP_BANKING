@@ -12,18 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Color;
 import java.util.Date;
-import java.util.Calendar;
+
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
 import com.example.zybanking.data.adapter.TransactionAdapter;
-import com.example.zybanking.data.models.AccountSummaryResponse;
+import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.UserResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
-import com.example.zybanking.ui.ekyc.EKYCActivity;
+import com.example.zybanking.ui.ekyc.EkycActivity;
 import com.example.zybanking.ui.map.MapActivity;
 import com.example.zybanking.ui.transaction.DepositActivity;
 import com.example.zybanking.ui.transaction.ElectricWaterPayment;
@@ -157,7 +157,7 @@ public class HomeActivity extends NavbarActivity {
             });
         }
         if(cardLocation != null) cardLocation.setOnClickListener(v -> startActivity(new Intent(this, MapActivity.class)));
-        if(cardEKYC != null) cardEKYC.setOnClickListener(v -> startActivity(new Intent(this, EKYCActivity.class)));
+        if(cardEKYC != null) cardEKYC.setOnClickListener(v -> startActivity(new Intent(this, EkycActivity.class)));
     }
     private void loadUserData() {
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);

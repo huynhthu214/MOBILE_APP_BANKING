@@ -11,8 +11,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import com.example.zybanking.data.models.ForgotPasswordResponse;
-import com.example.zybanking.data.models.ResetPasswordRequest;
+import com.example.zybanking.data.models.auth.ForgotPasswordResponse;
+import com.example.zybanking.data.models.auth.ResetPasswordRequest;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;

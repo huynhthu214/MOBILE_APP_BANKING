@@ -1,5 +1,6 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.account;
 
+import com.example.zybanking.data.models.transaction.Transaction;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 

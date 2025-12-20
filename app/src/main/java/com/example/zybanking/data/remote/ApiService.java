@@ -1,28 +1,36 @@
 package com.example.zybanking.data.remote;
 
-import com.example.zybanking.data.models.AccountSummaryResponse;
+import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.BillListResponse;
-import com.example.zybanking.data.models.BillPayRequest;
-import com.example.zybanking.data.models.BillResponse;
-import com.example.zybanking.data.models.DepositRequest;
-import com.example.zybanking.data.models.ForgotPasswordRequest;
-import com.example.zybanking.data.models.ForgotPasswordResponse;
-import com.example.zybanking.data.models.LoginRequest;
-import com.example.zybanking.data.models.LoginResponse;
-import com.example.zybanking.data.models.MortgagePaymentRequest;
+import com.example.zybanking.data.models.ekyc.EkycListResponse;
+import com.example.zybanking.data.models.ekyc.EkycRequest;
+import com.example.zybanking.data.models.ekyc.EkycResponse;
+import com.example.zybanking.data.models.transaction.BillListResponse;
+import com.example.zybanking.data.models.transaction.BillPayRequest;
+import com.example.zybanking.data.models.transaction.BillResponse;
+import com.example.zybanking.data.models.Branch;
+import com.example.zybanking.data.models.auth.ChangePasswordRequest;
+import com.example.zybanking.data.models.transaction.DepositRequest;
+import com.example.zybanking.data.models.auth.ForgotPasswordRequest;
+import com.example.zybanking.data.models.auth.ForgotPasswordResponse;
+import com.example.zybanking.data.models.auth.LoginRequest;
+import com.example.zybanking.data.models.auth.LoginResponse;
+import com.example.zybanking.data.models.transaction.MortgagePaymentRequest;
+import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.models.OtpConfirmRequest;
-import com.example.zybanking.data.models.ResetPasswordRequest;
-import com.example.zybanking.data.models.Transaction;
-import com.example.zybanking.data.models.TransferRequest;
+import com.example.zybanking.data.models.auth.ResetPasswordRequest;
+import com.example.zybanking.data.models.transaction.Transaction;
+import com.example.zybanking.data.models.transaction.TransferRequest;
 import com.example.zybanking.data.models.UserResponse;
-import com.example.zybanking.data.models.UtilityResponse;
-import com.example.zybanking.data.models.UtilityTopupRequest;
-import com.example.zybanking.data.models.VerifyOtpRequest;
-import com.example.zybanking.data.models.WithdrawRequest;
+import com.example.zybanking.data.models.utils.UtilityResponse;
+import com.example.zybanking.data.models.utils.UtilityTopupRequest;
+import com.example.zybanking.data.models.auth.VerifyOtpRequest;
+import com.example.zybanking.data.models.transaction.WithdrawRequest;
 
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 public interface ApiService {
@@ -57,10 +65,17 @@ public interface ApiService {
 
     @GET("users/me")
     Call<UserResponse> getCurrentUser(@Header("Authorization") String token);
-
+    @PUT("users/{user_id}")
+    Call<BasicResponse> updateUser(
+            @Path("user_id") String userId,
+            @Body Map<String, Object> updateData
+    );
     @GET("accounts/{account_id}/summary")
     Call<AccountSummaryResponse> getAccountSummary(@Path("account_id") String accountId);
-
+    @POST("auth/change-password")
+    Call<BasicResponse> changePassword(
+            @Header("Authorization") String token,
+            @Body ChangePasswordRequest request);
     @GET("transactions/recent")
     Call<List<Transaction>> getRecentTransactions(
             @Query("user_id") String userId,
@@ -105,5 +120,63 @@ public interface ApiService {
     @POST("transactions/mortgage/pay")
     Call<BasicResponse> payMortgage(@Body MortgagePaymentRequest body);
 
+//LOCAITON
+    @GET("branches/nearby")
+    Call<List<Branch>> getNearbyBranches(
+            @Query("lat") double lat,
+            @Query("lng") double lng,
+            @Query("radius_m") int radius
+    );
+
+    @GET("branches/{branch_id}/route")
+    Call<ResponseBody> getBranchRoute(
+            @Path("branch_id") String branchId,
+            @Query("from_lat") double fromLat,
+            @Query("from_lng") double fromLng
+    );
+
+    //NOTI
+    @GET("notifications/{userId}")
+    Call<List<Notification>> getNotifications(@Path("userId") String userId);
+
+    //ekyc
+    @POST("ekyc/create")
+    Call<BasicResponse> submitEKYC(
+            @Header("Authorization") String token,
+            @Body EkycRequest request
+    );
+
+    @POST("users/{user_id}/ekyc")
+    Call<BasicResponse> createEkyc(
+            @Path("user_id") String userId,
+            @Body EkycRequest request
+    );
+
+    // Lấy thông tin eKYC (Khớp với get_ekyc_route)
+    @GET("users/{user_id}/ekyc")
+    Call<EkycResponse> getMyEkyc(@Path("user_id") String userId);
+
+    // --- Dành cho ADMIN ---
+
+    // Lấy danh sách chờ (Khớp với get_pending)
+    @GET("users/pending")
+    Call<EkycListResponse> getPendingEkyc(@Header("Authorization") String token);
+
+    @PUT("users/{user_id}/ekyc/review")
+    Call<BasicResponse> reviewEkyc(
+            @Header("Authorization") String token,
+            @Path("user_id") String userId,
+            @Body Map<String, Object> reviewData
+    );
+
+    @GET("account/interest-rates")
+    Call<Map<String, Double>> getInterestRates(@Header("Authorization") String token);
+
+    // Cập nhật lãi suất (Gửi một Map chứa kỳ hạn và giá trị mới)
+    @PUT("account/interest-rates")
+    Call<BasicResponse> updateInterestRates(
+            @Header("Authorization") String token,
+            @Body Map<String, Double> rates
+    );
 }
 

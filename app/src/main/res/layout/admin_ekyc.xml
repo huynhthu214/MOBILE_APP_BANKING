@@ -298,6 +298,7 @@
                         android:orientation="horizontal">
 
                         <Button
+                            android:id="@+id/btn_reject"
                             android:layout_width="0dp"
                             android:layout_height="44dp"
                             android:layout_weight="1"
@@ -311,6 +312,7 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
                         <Button
+                            android:id="@+id/btn_approve"
                             android:layout_width="0dp"
                             android:layout_height="44dp"
                             android:layout_weight="1"

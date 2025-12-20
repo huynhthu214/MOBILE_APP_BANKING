@@ -7,12 +7,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.R;
-import com.example.zybanking.data.models.AccountSummaryResponse;
+import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 

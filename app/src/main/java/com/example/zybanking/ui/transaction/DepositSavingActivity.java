@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.R;
 import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.DepositRequest;
+import com.example.zybanking.data.models.transaction.DepositRequest;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 

@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.transaction;
 
 public class DepositRequest {
     public String account_id;

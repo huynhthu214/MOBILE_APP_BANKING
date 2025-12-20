@@ -3,7 +3,6 @@ package com.example.zybanking.ui.transaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,16 +13,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.R;
-import com.example.zybanking.data.models.AccountSummaryResponse;
+import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.MortgagePaymentRequest;
+import com.example.zybanking.data.models.transaction.MortgagePaymentRequest;
 import com.example.zybanking.data.models.UserResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.ui.dashboard.HomeActivity;
 
 import java.text.NumberFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -46,7 +44,7 @@ public class MortgagePaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mortgage_payment);
+        setContentView(R.layout.mortgage_payment);
 
         mortgageAccountId = getIntent().getStringExtra("ACCOUNT_ID");
 

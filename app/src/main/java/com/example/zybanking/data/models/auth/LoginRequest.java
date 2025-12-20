@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.auth;
 
 public class LoginRequest {
     private String email;

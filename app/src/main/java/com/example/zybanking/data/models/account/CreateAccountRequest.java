@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.account;
 
 import com.google.gson.annotations.SerializedName;
 

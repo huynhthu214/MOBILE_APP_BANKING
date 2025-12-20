@@ -52,6 +52,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tv_admin_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Nguyễn Văn Admin"
@@ -60,6 +61,7 @@
                             android:textColor="#111111"/>
 
                         <TextView
+                            android:id="@+id/tv_admin_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="admin@banking.com"
@@ -114,6 +116,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/item_manage_users"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -134,26 +137,29 @@
                         android:layout_height="1dp"
                         android:background="#EEEEEE"/>
 
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
+
                     <LinearLayout
+                        android:id="@+id/item_verify_ekyc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tài khoản ngân hàng"
+                            android:text="Phê duyệt eKYC"
                             android:textSize="15sp"
                             android:textColor="#222222"/>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=">"
-                            android:textSize="16sp"
                             android:textColor="#999999"/>
                     </LinearLayout>
 
@@ -223,7 +229,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Cấu hình hệ thống"
+                            android:text="Đổi mật khẩu"
                             android:textSize="15sp"
                             android:textColor="#222222"/>
 
@@ -239,27 +245,6 @@
                         android:layout_height="1dp"
                         android:background="#EEEEEE"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Nhật ký hệ thống"
-                            android:textSize="15sp"
-                            android:textColor="#222222"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=">"
-                            android:textColor="#999999"/>
-                    </LinearLayout>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

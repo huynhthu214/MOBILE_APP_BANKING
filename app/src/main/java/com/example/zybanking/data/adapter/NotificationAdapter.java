@@ -1,7 +1,5 @@
 package com.example.zybanking.data.adapter;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,89 +14,84 @@ import com.example.zybanking.data.models.Notification;
 
 import java.util.List;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotiViewHolder> {
 
-    private Context context;
-    private List<Notification> notificationList;
+    private List<Notification> list;
 
-    // Định nghĩa các loại thông báo để dễ quản lý icon/màu sắc
-    public static final int TYPE_TRANSACTION = 1;
-    public static final int TYPE_SYSTEM = 2;
-    public static final int TYPE_USER = 3;
-
-    public NotificationAdapter(Context context, List<Notification> notificationList) {
-        this.context = context;
-        this.notificationList = notificationList;
+    public NotificationAdapter(List<Notification> list) {
+        this.list = list;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.admin_item_noti, parent, false);
-        return new ViewHolder(view);
+    public NotiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
+        return new NotiViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Notification noti = notificationList.get(position);
+    public void onBindViewHolder(@NonNull NotiViewHolder holder, int position) {
+        // Lấy đối tượng từ danh sách 'list' đã khai báo ở trên
+        Notification item = list.get(position);
 
-        holder.tvTitle.setText(noti.getTitle());
-        holder.tvDesc.setText(noti.getDescription());
-        holder.tvTime.setText(noti.getTime());
+        // Sử dụng các hàm Getter từ Model (đảm bảo Model của bạn đã có các hàm này)
+        holder.tvTitle.setText(item.getTitle());
+        holder.tvBody.setText(item.getBody());
+        holder.tvTime.setText(item.getCreatedAt());
 
-        // 1. Xử lý Trạng thái Đã đọc / Chưa đọc
-        if (noti.isRead()) {
-            holder.viewDot.setVisibility(View.GONE); // Ẩn chấm đỏ
-            holder.tvTitle.setTextColor(Color.parseColor("#4B5563")); // Màu xám nhạt hơn
+        // Xử lý chấm đỏ (Chưa đọc: IS_READ = 0)
+        if (item.getIsRead() == 0) {
+            holder.viewDot.setVisibility(View.VISIBLE);
+            holder.tvTitle.setTypeface(null, android.graphics.Typeface.BOLD);
         } else {
-            holder.viewDot.setVisibility(View.VISIBLE); // Hiện chấm đỏ
-            holder.tvTitle.setTextColor(Color.parseColor("#111827")); // Màu đen đậm
+            holder.viewDot.setVisibility(View.GONE);
+            holder.tvTitle.setTypeface(null, android.graphics.Typeface.NORMAL);
         }
 
-        // 2. Xử lý Icon và Màu nền dựa theo Loại thông báo (Mock logic)
-        switch (noti.getType()) {
-            case TYPE_TRANSACTION:
-                // Giao dịch: Icon Bill, Màu Xanh lá
-                holder.imgIcon.setImageResource(R.drawable.ic_bill); // Đảm bảo bạn có icon này
-                holder.imgIcon.setColorFilter(Color.parseColor("#16A34A"));
-                holder.imgBg.setColorFilter(Color.parseColor("#F0FDF4")); // Nền xanh nhạt
-                break;
+// Xử lý Icon dựa theo cột TYPE trong Database của bạn
+        int iconRes;
+        String type = (item.getType() != null) ? item.getType() : "";
 
-            case TYPE_SYSTEM:
-                // Hệ thống/Cảnh báo: Icon Info/Lock, Màu Đỏ/Cam
-                holder.imgIcon.setImageResource(R.drawable.ic_lock); // Đảm bảo bạn có icon này
-                holder.imgIcon.setColorFilter(Color.parseColor("#DC2626"));
-                holder.imgBg.setColorFilter(Color.parseColor("#FEF2F2")); // Nền đỏ nhạt
+        switch (type) {
+            case "TRANSACTION":
+                iconRes = android.R.drawable.ic_menu_save; // Icon mặc định hệ thống
                 break;
-
-            case TYPE_USER:
+            case "SECURITY":
+                iconRes = android.R.drawable.ic_lock_idle_lock;
+                break;
+            case "BILL":
+                iconRes = android.R.drawable.ic_menu_agenda;
+                break;
+            case "PROMOTION":
+                // Thay ic_promotion bằng icon hệ thống để hết lỗi đỏ
+                iconRes = android.R.drawable.btn_star_big_on;
+                break;
+            case "SYSTEM":
+                iconRes = android.R.drawable.ic_dialog_alert;
+                break;
             default:
-                // Người dùng: Icon User, Màu Xanh dương (Mặc định)
-                holder.imgIcon.setImageResource(R.drawable.ic_user); // Đảm bảo bạn có icon này
-                holder.imgIcon.setColorFilter(Color.parseColor("#2563EB"));
-                holder.imgBg.setColorFilter(Color.parseColor("#EFF6FF")); // Nền xanh dương nhạt
+                iconRes = android.R.drawable.ic_dialog_info;
                 break;
         }
+        holder.imgIcon.setImageResource(iconRes);
     }
 
     @Override
     public int getItemCount() {
-        return notificationList.size();
+        return list != null ? list.size() : 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDesc, tvTime;
-        ImageView imgIcon, imgBg;
+    static class NotiViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitle, tvBody, tvTime;
+        ImageView imgIcon;
         View viewDot;
 
-        public ViewHolder(@NonNull View itemView) {
+        public NotiViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Ánh xạ ID từ file item_notification_admin.xml
             tvTitle = itemView.findViewById(R.id.tv_noti_title);
-            tvDesc = itemView.findViewById(R.id.tv_noti_desc);
+            tvBody = itemView.findViewById(R.id.tv_noti_body);
             tvTime = itemView.findViewById(R.id.tv_noti_time);
             imgIcon = itemView.findViewById(R.id.img_noti_icon);
-            imgBg = itemView.findViewById(R.id.img_noti_bg);
             viewDot = itemView.findViewById(R.id.view_unread_dot);
         }
     }

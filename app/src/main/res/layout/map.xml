@@ -8,12 +8,12 @@
     android:background="#F4F6FA"
     tools:context=".ui.map.MapActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/map_fragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <org.osmdroid.views.MapView
+        android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,6 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="#0b5394">
-
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar_map"
                 android:layout_width="match_parent"
@@ -52,6 +51,7 @@
         app:elevation="6dp"
         app:layout_anchor="@id/bottom_sheet_locations"
         app:layout_anchorGravity="top|end" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet_locations"
         android:layout_width="match_parent"
@@ -94,7 +94,6 @@
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_branch_location"
                 tools:itemCount="4"/>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.transaction;
 
 public class TransferRequest {
     public String from_account_id;
