@@ -26,7 +26,7 @@ public class TransactionActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.basic_transfer);
 
-        WithdrawRequest request = new WithdrawRequest("A001", 100000);
+        WithdrawRequest request = new WithdrawRequest("A001", 10.0000);
 
         apiService.withdraw(request).enqueue(new Callback<BasicResponse>() {
 

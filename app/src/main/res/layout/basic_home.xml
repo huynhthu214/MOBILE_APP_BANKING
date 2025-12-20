@@ -54,15 +54,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ZY BANK"
                         android:textColor="#6B7280"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -70,26 +70,43 @@
                         android:layout_marginTop="30dp"
                         android:text="Số dư khả dụng"
                         android:textColor="#6B7280"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tv_balance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5,000,000 VND"
+                        android:layout_marginTop="6dp"
+                        android:text="0 VND"
                         android:textColor="#111827"
                         android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="6dp"/>
+                        android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_account_number"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="**** **** **** 4589"
-                        android:textColor="#9CA3AF"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_account_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="**** **** **** ****"
+                            android:textColor="#9CA3AF"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:id="@+id/img_toggle_account_no"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_eye_off"
+                            app:tint="#9CA3AF"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -100,15 +117,15 @@
                         <Button
                             android:id="@+id/btn_deposit"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Nạp tiền"
-                            android:textSize="12sp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
                             android:backgroundTint="#EFF6FF"
-                            android:textColor="#2563EB"
                             android:stateListAnimator="@null"
-                            app:elevation="0dp"
-                            android:layout_marginEnd="8dp"/>
+                            android:text="Nạp tiền"
+                            android:textColor="#2563EB"
+                            android:textSize="12sp"
+                            app:elevation="0dp" />
 
                         <Button
                             android:id="@+id/btn_withdraw"
@@ -125,151 +142,157 @@
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="25dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Tiện ích và Dịch vụ"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="160dp">
+                    android:gravity="center_vertical">
+
                     <TextView
                         android:id="@+id/tv_view_more"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Xem thêm"
-                        android:textSize="12sp"
-                        android:textColor="#777"/>
+                        android:textColor="#777"
+                        android:textSize="12sp" />
+
                     <ImageView
-                        android:layout_marginStart="3dp"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:src="@drawable/ic_next"/>
+                        android:layout_marginStart="3dp"
+                        android:src="@drawable/ic_next" />
                 </LinearLayout>
             </LinearLayout>
 
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="4"
                 android:layout_margin="24dp"
-                android:alignmentMode="alignMargins">
+                android:alignmentMode="alignMargins"
+                android:columnCount="4">
 
                 <LinearLayout
                     android:id="@+id/btn_electricity"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?selectableItemBackground"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1">
+                    android:layout_columnWeight="1"
+                    android:background="?selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/tv_electric"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:backgroundTint="#DBEAFE"
                         app:cardCornerRadius="14dp"
-                        app:cardElevation="4dp"
-                        android:backgroundTint="#DBEAFE"/>
+                        app:cardElevation="4dp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:text="Điện"
-                        android:textSize="12sp"
                         android:textColor="#111827"
-                        android:layout_marginTop="6dp"/>
-                    </LinearLayout>
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btn_water"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?selectableItemBackground"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1">
+                    android:layout_columnWeight="1"
+                    android:background="?selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/tv_water"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:backgroundTint="#E0E7FF"
                         app:cardCornerRadius="14dp"
-                        app:cardElevation="4dp"
-                        android:backgroundTint="#E0E7FF"/>
+                        app:cardElevation="4dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:text="Nước"
-                        android:textSize="12sp"
-                        android:layout_marginTop="6dp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btn_phone"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?selectableItemBackground"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1">
+                    android:layout_columnWeight="1"
+                    android:background="?selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/tv_phone"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:backgroundTint="#DCFCE7"
                         app:cardCornerRadius="14dp"
-                        app:cardElevation="4dp"
-                        android:backgroundTint="#DCFCE7"/>
+                        app:cardElevation="4dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:text="Điện thoại"
-                        android:textSize="12sp"
-                        android:layout_marginTop="6dp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btn_tickets"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?selectableItemBackground"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1">
+                    android:layout_columnWeight="1"
+                    android:background="?selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/tv_tickets"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:backgroundTint="#FEF3C7"
                         app:cardCornerRadius="14dp"
-                        app:cardElevation="4dp"
-                        android:backgroundTint="#FEF3C7"/>
+                        app:cardElevation="4dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:text="Mua vé"
-                        android:textSize="12sp"
-                        android:layout_marginTop="6dp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
-
             </GridLayout>
 
             <androidx.cardview.widget.CardView
@@ -280,58 +303,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="6dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="Tài khoản tiết kiệm"
-                            android:textSize="13sp"
-                            android:textColor="#6B7280"/>
-                        <ImageView
-                            android:src="@drawable/ic_next"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            app:tint="#6B7280"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_saving_balance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="10,500,000 VND"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#111827"
-                        android:layout_marginTop="6dp"/>
-                    <TextView
-                        android:id="@+id/tv_saving_rate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lãi suất: 4.5% / năm"
-                        android:textSize="12sp"
-                        android:textColor="#6B7280"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_mortgage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="4dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -342,40 +314,185 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Khoản vay thế chấp"
+                            android:layout_weight="1"
+                            android:text="Tài khoản tiết kiệm"
                             android:textColor="#6B7280"
                             android:textSize="13sp" />
+
                         <ImageView
-                            android:src="@drawable/ic_next"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            app:tint="#6B7280"/>
+                            android:src="@drawable/ic_next"
+                            app:tint="#6B7280" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_saving_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/tv_saving_balance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="0 VND"
+                            android:textColor="#111827"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_saving_rate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Lãi suất: 0% / năm"
+                            android:textColor="#6B7280"
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tv_no_saving"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cần thanh toán:"
-                        android:textColor="#111827"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="6dp"/>
+                        android:layout_marginTop="8dp"
+                        android:text="Bạn chưa có tài khoản tiết kiệm"
+                        android:textColor="#9CA3AF"
+                        android:textSize="13sp"
+                        android:textStyle="italic"
+                        android:visibility="visible" />
 
-                    <TextView
-                        android:id="@+id/tv_mortgage_amount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12,000,000 VND"
-                        android:textColor="#DC2626"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="2dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_mortgage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Khoản vay thế chấp"
+                            android:textColor="#6B7280"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_next"
+                            app:tint="#6B7280" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_mortgage_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Kỳ này cần trả:"
+                            android:textColor="#111827"
+                            android:textSize="12sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="bottom">
+
+                            <TextView
+                                android:id="@+id/tv_mortgage_payment_amount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 VND"
+                                android:textColor="#DC2626"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_mortgage_due_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginBottom="2dp"
+                                android:text="(Hạn: "
+                                android:textColor="#6B7280"
+                                android:textSize="12sp"
+                                android:textStyle="italic"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#F3F4F6"
+                            android:layout_marginVertical="8dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tổng dư nợ: "
+                                android:textColor="#6B7280"
+                                android:textSize="12sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_mortgage_remaining"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="0 VND"
+                                android:textColor="#374151"
+                                android:textSize="12sp"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_no_mortgage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Bạn chưa có khoản vay thế chấp"
+                        android:textColor="#9CA3AF"
+                        android:textSize="13sp"
+                        android:textStyle="italic"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -383,25 +500,27 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="4dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="12dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Giao dịch gần đây"
-                        android:textStyle="bold"
                         android:textSize="16sp"
-                        android:layout_marginBottom="8dp"/>
+                        android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_transactions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/item_transaction_placeholder"
-                        tools:itemCount="3"/>
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_transaction_placeholder" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -415,58 +534,64 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_location"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    android:layout_marginEnd="8dp">
+                    app:cardElevation="2dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
                         <ImageView
-                            android:src="@drawable/location"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="#2563EB"/>
+                            android:src="@drawable/location"
+                            app:tint="#2563EB" />
+
                         <TextView
-                            android:text="Tìm ATM/Chi nhánh"
-                            android:textSize="12sp"
-                            android:textAlignment="center"
-                            android:layout_marginTop="8dp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Tìm ATM/Chi nhánh"
+                            android:textAlignment="center"
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_ekyc"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    android:layout_marginStart="8dp">
+                    app:cardElevation="2dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
                         <ImageView
-                            android:src="@drawable/ic_face"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="#F59E0B"/>
+                            android:src="@drawable/ic_face"
+                            app:tint="#F59E0B" />
+
                         <TextView
-                            android:text="Xác thực eKYC"
-                            android:textSize="12sp"
-                            android:textAlignment="center"
-                            android:layout_marginTop="8dp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Xác thực eKYC"
+                            android:textAlignment="center"
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>

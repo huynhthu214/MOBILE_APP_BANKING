@@ -10,6 +10,7 @@ import com.example.zybanking.data.models.ForgotPasswordRequest;
 import com.example.zybanking.data.models.ForgotPasswordResponse;
 import com.example.zybanking.data.models.LoginRequest;
 import com.example.zybanking.data.models.LoginResponse;
+import com.example.zybanking.data.models.MortgagePaymentRequest;
 import com.example.zybanking.data.models.OtpConfirmRequest;
 import com.example.zybanking.data.models.ResetPasswordRequest;
 import com.example.zybanking.data.models.Transaction;
@@ -101,6 +102,8 @@ public interface ApiService {
     Call<BasicResponse> utilityConfirm(@Body OtpConfirmRequest body);
     @GET("utility/{utility_payment_id}")
     Call<UtilityResponse> getUtilityDetail(@Path("utility_payment_id") String id);
+    @POST("transactions/mortgage/pay")
+    Call<BasicResponse> payMortgage(@Body MortgagePaymentRequest body);
 
 }
 
