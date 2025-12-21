@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 
 import com.example.zybanking.R;
 import com.example.zybanking.ui.dashboard.AdminDashboardActivity;
@@ -21,6 +23,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
+import java.util.concurrent.Executor;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText etEmail, etPassword;
     private Button btnLogin;
     private TextView tvForgot;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,20 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = (TextInputEditText) tilPassword.getEditText();
         btnLogin = findViewById(R.id.btn_login);
         tvForgot = findViewById(R.id.tv_forgot);
+        TextView tvFingerprint = findViewById(R.id.tv_fingerprint_login);
 
+        tvFingerprint.setOnClickListener(v -> {
+            SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+            String token = pref.getString("access_token", null);
+            String role = pref.getString("role", "");
+
+            if (token == null) {
+                Toast.makeText(this, "Bạn cần đăng nhập mật khẩu ít nhất 1 lần", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            showBiometricPrompt(role, token);
+        });
         tvForgot.setOnClickListener(v -> {
             startActivity(new Intent(this, ForgotPasswordActivity.class));
         });
@@ -110,7 +128,38 @@ public class LoginActivity extends AppCompatActivity {
             });
         });
     }
+    private void showBiometricPrompt(String role, String token) {
+        Executor executor = ContextCompat.getMainExecutor(this);
 
+        BiometricPrompt biometricPrompt = new BiometricPrompt(
+                this,
+                executor,
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(
+                            BiometricPrompt.AuthenticationResult result) {
+                        runOnUiThread(() -> {
+                            navigateUser(role, token);
+                        });
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        Toast.makeText(LoginActivity.this,
+                                "Xác thực thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        BiometricPrompt.PromptInfo promptInfo =
+                new BiometricPrompt.PromptInfo.Builder()
+                        .setTitle("Đăng nhập bằng vân tay")
+                        .setSubtitle("Xác thực để tiếp tục")
+                        .setNegativeButtonText("Huỷ")
+                        .build();
+
+        biometricPrompt.authenticate(promptInfo);
+    }
     // Hàm kiểm tra tự động đăng nhập
     private boolean checkAutoLogin() {
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);

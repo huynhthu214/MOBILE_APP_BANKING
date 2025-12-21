@@ -255,8 +255,13 @@ public class ProfileActivity extends NavbarActivity {
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                Log.e("ProfileActivity", "Error: " + t.getMessage());
-                Toast.makeText(ProfileActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Log.e("ProfileActivity", "Error Full: ", t); // In toàn bộ log lỗi
+
+                if (t instanceof java.net.SocketTimeoutException) {
+                    Toast.makeText(ProfileActivity.this, "Mạng quá chậm hoặc dữ liệu quá lớn (Timeout)", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

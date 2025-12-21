@@ -30,7 +30,7 @@
             Transaction txn = transactions.get(position);
             holder.tvName.setText(txn.getType()); // hoặc txn.getDescription()
             holder.tvAmount.setText(formatCurrency(txn.getAmount()));
-            holder.tvDate.setText(txn.getDate()); // nếu Transaction có field date
+            holder.tvDate.setText(txn.getCreatedAt()); // Sửa thành getCreatedAt()
         }
 
         @Override

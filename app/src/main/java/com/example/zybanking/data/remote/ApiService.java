@@ -2,6 +2,7 @@ package com.example.zybanking.data.remote;
 
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
+import com.example.zybanking.data.models.auth.UserListResponse;
 import com.example.zybanking.data.models.ekyc.EkycListResponse;
 import com.example.zybanking.data.models.ekyc.EkycRequest;
 import com.example.zybanking.data.models.ekyc.EkycResponse;
@@ -20,6 +21,7 @@ import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.models.OtpConfirmRequest;
 import com.example.zybanking.data.models.auth.ResetPasswordRequest;
 import com.example.zybanking.data.models.transaction.Transaction;
+import com.example.zybanking.data.models.transaction.TransactionListResponse;
 import com.example.zybanking.data.models.transaction.TransferRequest;
 import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.models.utils.UtilityResponse;
@@ -186,6 +188,23 @@ public interface ApiService {
     @PUT("notifications/mark-read/{notiId}")
     Call<BasicResponse> markSingleNotificationAsRead(@Path("notiId") String notiId);
 
+    @GET("admin/dashboard/stats")
+    Call<Map<String, Object>> getAdminStats(
+            @Header("Authorization") String token
+    );
 
+    @GET("admin/dashboard/weekly-transactions")
+    Call<List<Map<String, Object>>> getWeeklyTransactions(
+            @Header("Authorization") String token
+    );
+    @GET("admin/users")
+    Call<UserListResponse> getAdminUsers(@Header("Authorization") String token, @Query("search") String search);
+
+    @GET("admin/transactions")
+    Call<TransactionListResponse> getAdminTransactions(
+            @Header("Authorization") String token,
+            @Query("search") String search,
+            @Query("status") String status
+    );
 }
 

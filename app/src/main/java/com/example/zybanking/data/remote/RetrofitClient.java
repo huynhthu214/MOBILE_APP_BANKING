@@ -13,14 +13,14 @@ public class RetrofitClient {
         if (retrofit == null) {
             // --- CẤU HÌNH TIMEOUT ---
             OkHttpClient client = new OkHttpClient.Builder()
-                    .connectTimeout(60, TimeUnit.SECONDS) // Tăng lên 60s
-                    .readTimeout(60, TimeUnit.SECONDS)    // Tăng lên 60s (Quan trọng để tải ảnh)
-                    .writeTimeout(60, TimeUnit.SECONDS)   // Tăng lên 60s (Quan trọng để upload ảnh)
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
                     .build();
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(client) // <-- Đừng quên dòng này
+                    .client(client) //
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
