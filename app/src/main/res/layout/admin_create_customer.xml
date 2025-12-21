@@ -82,19 +82,6 @@
                             android:inputType="textPersonName"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_identity"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Số CCCD / CMND"
-                            android:inputType="number"/>
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
                         android:text="Thông tin liên hệ &amp; Bảo mật"
