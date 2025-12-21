@@ -10,8 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.R;
-import com.example.zybanking.data.models.ForgotPasswordRequest;
-import com.example.zybanking.data.models.ForgotPasswordResponse;
+import com.example.zybanking.data.models.auth.ForgotPasswordRequest;
+import com.example.zybanking.data.models.auth.ForgotPasswordResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;

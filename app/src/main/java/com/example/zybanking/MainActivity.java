@@ -16,28 +16,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+        pref.edit().clear().apply();
+
+        // Sau khi xóa xong, các biến này sẽ luôn là null
         String token = pref.getString("access_token", null);
         String role  = pref.getString("role", null);
 
-        // --- THÊM LOG ĐỂ KIỂM TRA ---
-        if (role != null) {
-            // Xem Logcat với từ khóa "DEBUG_ROLE" để biết chính xác role là gì
-            android.util.Log.e("DEBUG_ROLE", "Role hiện tại là: '" + role + "'");
-            android.util.Log.e("DEBUG_ROLE", "So sánh với admin: " + "admin".equalsIgnoreCase(role));
-        } else {
-            android.util.Log.e("DEBUG_ROLE", "Role bị NULL");
-        }
-        // -----------------------------
-
+        // Logic bên dưới sẽ luôn chạy vào phần "token == null" -> Chuyển sang LoginActivity
         Intent intent;
-
         if (token == null || role == null) {
             intent = new Intent(this, LoginActivity.class);
         } else {
-            // Dùng trim() để cắt bỏ khoảng trắng thừa nếu có
             String cleanRole = role.trim();
-
-            // Kiểm tra các trường hợp có thể xảy ra của admin
             if ("admin".equalsIgnoreCase(cleanRole) || "administrator".equalsIgnoreCase(cleanRole)) {
                 intent = new Intent(this, AdminDashboardActivity.class);
             } else {

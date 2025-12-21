@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.zybanking">
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,9 +19,10 @@
         android:theme="@style/Theme.MyApplication"
         android:usesCleartextTraffic="true">
 
-        <activity
-            android:name=".ui.map.MapActivity"
-            android:exported="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE" />
+        <activity android:name=".ui.map.MapActivity" />
         <activity
             android:name=".ui.transaction.TransactionActivity"
             android:exported="false" />
@@ -39,6 +43,15 @@
             android:exported="false" />
         <activity
             android:name=".ui.transaction.ElectricWaterPayment"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.WithdrawSavingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.DepositSavingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.MortgagePaymentActivity"
             android:exported="false" />
         <activity
             android:name=".ui.transaction.PhonePayment"
@@ -92,16 +105,25 @@
             android:name=".ui.auth.ResetPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.auth.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.utilities.UtilitiesActivity"
             android:exported="false" />
         <activity
             android:name=".ui.ekyc.VerifyEkycActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ekyc.EKYCActivity"
+            android:name=".ui.ekyc.AdminEkycDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationActivity"
+            android:name=".ui.ekyc.EkycActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationUserActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -111,10 +133,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAGxCGir6oJYZ7BoqdBmpYmjB0Fn4tQ8nE" />
     </application>
 
 </manifest>

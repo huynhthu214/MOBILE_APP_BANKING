@@ -1,27 +1,32 @@
 package com.example.zybanking.data.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Notification {
-    private int id;
-    private String title;
-    private String description;
-    private String time;
-    private int type; // 1: Giao dịch (Tiền), 2: Hệ thống (Cảnh báo), 3: Người dùng (eKYC/TK)
-    private boolean isRead;
+    @SerializedName("NOTI_ID")
+    private String notiId;
 
-    public Notification(int id, String title, String description, String time, int type, boolean isRead) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.time = time;
-        this.type = type;
-        this.isRead = isRead;
-    }
+    @SerializedName("USER_ID")
+    public String userId;
 
-    // Getters
+    @SerializedName("TITLE")
+    public String title;
+
+    @SerializedName("BODY")
+    public String body;
+
+    @SerializedName("TYPE")
+    public String type; // TRANSACTION, SECURITY, PROMOTION...
+
+    @SerializedName("IS_READ")
+    public int isRead; // 0 hoặc 1
+
+    @SerializedName("CREATED_AT")
+    public String createdAt;
+    public String getNotiId() { return notiId; }
     public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public String getTime() { return time; }
-    public int getType() { return type; }
-    public boolean isRead() { return isRead; }
-    public void setRead(boolean read) { isRead = read; }
+    public String getBody() { return body; }
+    public String getCreatedAt() { return createdAt; }
+    public int getIsRead() { return isRead; }
+    public String getType() { return type; }
 }

@@ -50,6 +50,7 @@
                             app:tint="#1976D2"/>
 
                         <TextView
+                            android:id="@+id/tv_total_users_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tổng người dùng"
@@ -88,6 +89,7 @@
                             app:tint="#2E7D32"/>
 
                         <TextView
+                            android:id="@+id/tv_total_revenue_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Doanh thu"
@@ -126,6 +128,7 @@
                             app:tint="#2E7D32"/>
 
                         <TextView
+                            android:id="@+id/tv_total_transac_count_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tổng giao dịch"
@@ -164,6 +167,7 @@
                             app:tint="#2E7D32"/>
 
                         <TextView
+                            android:id="@+id/tv_total_transac_money_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tổng tiền giao dịch"

@@ -87,7 +87,7 @@
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tên đăng nhập / Email"
+                    android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:textColor="#333333" />
             </com.google.android.material.textfield.TextInputLayout>
