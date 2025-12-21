@@ -160,8 +160,24 @@ public class HomeActivity extends NavbarActivity {
         if(cardEKYC != null) cardEKYC.setOnClickListener(v -> startActivity(new Intent(this, EkycActivity.class)));
     }
     private void loadUserData() {
-        SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-        String token = pref.getString("access_token", "");
+        String token = "";
+
+        // Ưu tiên lấy từ Intent trước (nhanh nhất)
+        if (getIntent().hasExtra("EXTRA_TOKEN")) {
+            token = getIntent().getStringExtra("EXTRA_TOKEN");
+        }
+
+        // Nếu không có trong Intent (ví dụ mở lại app), mới lấy trong SharedPreferences
+        if (token == null || token.isEmpty()) {
+            SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+            token = pref.getString("access_token", "");
+        }
+
+        // Nếu vẫn rỗng thì return luôn (hoặc bắt đăng nhập lại)
+        if(token.isEmpty()) {
+            Log.e("HOME_DEBUG", "Token bị rỗng, không thể gọi API");
+            return;
+        }
         if(token.isEmpty()) return;
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getCurrentUser("Bearer " + token).enqueue(new Callback<UserResponse>() {

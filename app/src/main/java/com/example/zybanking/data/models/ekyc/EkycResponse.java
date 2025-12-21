@@ -4,19 +4,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class EkycResponse {
     @SerializedName("status")
-    private String status;
+    public String status;
 
     @SerializedName("data")
-    private EkycData data;
-
-    public String getStatus() { return status; }
-    public EkycData getData() { return data; }
+    public EkycData data;
 
     public static class EkycData {
+        // Tên biến trong @SerializedName PHẢI KHỚP 100% với tên cột trong Database/Python trả về
         @SerializedName("STATUS")
-        public String status; // "pending", "approved", "rejected"
+        public String status;
 
-        @SerializedName("EKYC_ID")
-        public String ekycId;
+        @SerializedName("IMG_FRONT_URL")
+        public String frontUrl;
+
+        @SerializedName("IMG_BACK_URL")
+        public String backUrl;
+
+        @SerializedName("SELFIE_URL")
+        public String selfieUrl;
+
+        // Thêm các trường khác nếu cần (ví dụ REVIEWED_AT)
     }
 }

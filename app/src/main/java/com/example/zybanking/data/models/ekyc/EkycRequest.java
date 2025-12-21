@@ -3,7 +3,7 @@ package com.example.zybanking.data.models.ekyc;
 import com.google.gson.annotations.SerializedName;
 
 public class EkycRequest {
-    @SerializedName("ID_IMG_FRONT_URL") // Khớp với data.get("ID_IMG_FRONT_URL") trong Python
+    @SerializedName("ID_IMG_FRONT_URL") // Phải khớp 100% với Backend Python
     private String imgFrontUrl;
 
     @SerializedName("ID_IMG_BACK_URL") // Khớp với data.get("ID_IMG_BACK_URL") trong Python

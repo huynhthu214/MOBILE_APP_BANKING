@@ -50,8 +50,9 @@ public class UserResponse {
         @SerializedName("EKYC_ID")
         private String ekycId;
 
+        // QUAN TRỌNG NHẤT: Thêm dòng này để đọc được "STATUS": "pending" từ Server
         @SerializedName("STATUS")
-        private String status; // 'approved', 'pending', 'rejected'
+        private String status;
 
         public String getStatus() { return status; }
     }

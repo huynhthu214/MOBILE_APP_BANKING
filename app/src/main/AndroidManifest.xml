@@ -114,6 +114,9 @@
             android:name=".ui.ekyc.VerifyEkycActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.ekyc.AdminEkycDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ekyc.EkycActivity"
             android:exported="false" />
         <activity

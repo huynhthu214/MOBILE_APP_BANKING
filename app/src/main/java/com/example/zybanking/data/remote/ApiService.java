@@ -140,18 +140,18 @@ public interface ApiService {
     Call<List<Notification>> getNotifications(@Path("userId") String userId);
 
     //ekyc
-    @POST("ekyc/create")
-    Call<BasicResponse> submitEKYC(
-            @Header("Authorization") String token,
-            @Body EkycRequest request
-    );
+        @POST("ekyc/create")
+        Call<BasicResponse> submitEKYC(
+                @Header("Authorization") String token,
+                @Body EkycRequest request
+        );
 
     @POST("users/{user_id}/ekyc")
     Call<BasicResponse> createEkyc(
+            @Header("Authorization") String token,
             @Path("user_id") String userId,
             @Body EkycRequest request
     );
-
     // Lấy thông tin eKYC (Khớp với get_ekyc_route)
     @GET("users/{user_id}/ekyc")
     Call<EkycResponse> getMyEkyc(@Path("user_id") String userId);
@@ -168,7 +168,12 @@ public interface ApiService {
             @Path("user_id") String userId,
             @Body Map<String, Object> reviewData
     );
-
+    @PATCH("users/{user_id}/ekyc")
+    Call<BasicResponse> updateEkyc(
+            @Header("Authorization") String token,
+            @Path("user_id") String userId,
+            @Body EkycRequest request
+    );
     @GET("account/interest-rates")
     Call<Map<String, Double>> getInterestRates(@Header("Authorization") String token);
 

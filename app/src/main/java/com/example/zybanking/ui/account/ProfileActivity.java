@@ -64,37 +64,49 @@ public class ProfileActivity extends NavbarActivity {
     }
     // Hàm riêng để xử lý logic hiển thị trạng thái EKYC
     private void updateEkycStatus(UserResponse.Ekyc ekyc) {
+        // 1. Kiểm tra null object
         if (ekyc == null) {
-            // Chưa có hồ sơ EKYC
             tvEkycText.setText("Chưa xác thực");
-            tvEkycText.setTextColor(Color.parseColor("#9CA3AF")); // Màu xám
-
-            // Nếu chưa xác thực thì bấm vào cho đi làm EKYC (nếu có Activity đó)
-            btnEkycStatus.setOnClickListener(v -> Toast.makeText(this, "Vui lòng thực hiện EKYC", Toast.LENGTH_SHORT).show());
+            tvEkycText.setTextColor(Color.parseColor("#9CA3AF")); // Xám
+            btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
             return;
         }
 
-        String status = ekyc.getStatus(); // 'approved', 'pending', 'rejected'
+        // 2. Kiểm tra null status và chuẩn hóa chuỗi
+        String status = ekyc.getStatus();
+        if (status == null) status = ""; // Tránh lỗi NullPointerException
+        status = status.trim().toLowerCase(); // Xóa khoảng trắng và về chữ thường
 
-        if ("approved".equalsIgnoreCase(status)) {
-            tvEkycText.setText("Đã xác thực");
-            tvEkycText.setTextColor(Color.parseColor("#4CAF50")); // Màu xanh lá
-            btnEkycStatus.setOnClickListener(null); // Đã xong thì không cần bấm nữa hoặc bấm để xem chi tiết
+        Log.d("PROFILE_EKYC", "Status nhận được: " + status);
 
-        } else if ("pending".equalsIgnoreCase(status)) {
-            tvEkycText.setText("Đang chờ duyệt");
-            tvEkycText.setTextColor(Color.parseColor("#FF9800")); // Màu cam
-            btnEkycStatus.setOnClickListener(v -> Toast.makeText(this, "Hồ sơ đang được xem xét", Toast.LENGTH_SHORT).show());
+        // 3. Xét trạng thái
+        switch (status) {
+            case "approved":
+                tvEkycText.setText("Đã xác thực");
+                tvEkycText.setTextColor(Color.parseColor("#4CAF50")); // Xanh lá
+                // Bấm vào để xem lại thông tin EKYC
+                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
+                break;
 
-        } else if ("rejected".equalsIgnoreCase(status)) {
-            tvEkycText.setText("Bị từ chối");
-            tvEkycText.setTextColor(Color.parseColor("#F44336")); // Màu đỏ
-            btnEkycStatus.setOnClickListener(v -> Toast.makeText(this, "Vui lòng thực hiện lại EKYC", Toast.LENGTH_SHORT).show());
+            case "pending":
+                tvEkycText.setText("Đang chờ duyệt");
+                tvEkycText.setTextColor(Color.parseColor("#FF9800")); // Cam
+                // Bấm vào để xem tình trạng
+                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
+                break;
 
-        } else {
-            // Trạng thái lạ
-            tvEkycText.setText("Chưa xác thực");
-            tvEkycText.setTextColor(Color.parseColor("#9CA3AF"));
+            case "rejected":
+                tvEkycText.setText("Bị từ chối");
+                tvEkycText.setTextColor(Color.parseColor("#F44336")); // Đỏ
+                // Bấm vào để làm lại
+                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
+                break;
+
+            default:
+                tvEkycText.setText("Chưa xác thực");
+                tvEkycText.setTextColor(Color.parseColor("#9CA3AF")); // Xám
+                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
+                break;
         }
     }
     private void setupActions() {
@@ -223,7 +235,11 @@ public class ProfileActivity extends NavbarActivity {
                     UserResponse.Data data = response.body().getData();
                     UserResponse.User user = data.getUser();
                     UserResponse.Ekyc ekyc = data.getEkyc();
-
+                    if (ekyc != null) {
+                        Log.d("PROFILE_DEBUG", "EKYC Status from API: " + ekyc.getStatus());
+                    } else {
+                        Log.d("PROFILE_DEBUG", "EKYC Object is NULL");
+                    }
                     if (user != null) {
                         currentUserId = user.getUserId();
 
