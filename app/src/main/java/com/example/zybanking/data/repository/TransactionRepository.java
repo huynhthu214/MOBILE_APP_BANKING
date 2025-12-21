@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.DepositRequest;
+import com.example.zybanking.data.models.transaction.DepositRequest;
 import com.example.zybanking.data.models.TransactionHistoryResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;

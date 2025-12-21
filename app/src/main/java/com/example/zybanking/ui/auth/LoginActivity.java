@@ -106,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     String userId = res.data.user.USER_ID;
                     String accessToken = res.data.access_token;
                     String role = res.data.user.ROLE;
+                    String accountId = res.data.user.ACCOUNT_ID;
 
                     // ===== 2. SỬA LỖI LƯU SESSION =====
                     SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
@@ -113,6 +114,13 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("access_token", accessToken);
                     editor.putString("user_id", userId);
                     editor.putString("role", role);
+                    if (accountId != null) {
+                        editor.putString("account_id", accountId);
+                        Log.d("LOGIN", "Saved Account ID: " + accountId);
+                    } else {
+                        Log.e("LOGIN", "Account ID is NULL!");
+                    }
+
                     editor.apply(); // Lưu 1 lần duy nhất ở cuối
 
                     Log.d("LOGIN_ROLE", "ROLE = " + role);

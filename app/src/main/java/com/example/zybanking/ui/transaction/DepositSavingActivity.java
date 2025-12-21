@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -72,29 +73,36 @@ public class DepositSavingActivity extends AppCompatActivity {
 
         double amount = Double.parseDouble(amountStr);
 
-        // Gọi API
+        // --- BẮT ĐẦU ĐOẠN CODE LẤY TOKEN ---
+        SharedPreferences sharedPreferences = getSharedPreferences("auth", MODE_PRIVATE);
+        String token = sharedPreferences.getString("access_token", "");
+
+        if (token.isEmpty()) {
+            Toast.makeText(this, "Lỗi xác thực: Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // --- KẾT THÚC ĐOẠN CODE LẤY TOKEN ---
+
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
-        DepositRequest request = new DepositRequest();
-        request.setAccountId(accountId);
-        request.setAmount(amount);
 
-        // Nếu backend cần phân biệt loại giao dịch, bạn có thể cần set thêm type trong request
-        // Ví dụ: request.setType(accountType);
+        // Tạo request body
+        DepositRequest request = new DepositRequest(accountId, amount);
 
-        api.deposit(request).enqueue(new Callback<BasicResponse>() {
+        // GỌI API: Truyền "Bearer " + token vào tham số đầu tiên
+        api.deposit("Bearer " + token, request).enqueue(new Callback<BasicResponse>() {
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(DepositSavingActivity.this, "Giao dịch thành công!", Toast.LENGTH_SHORT).show();
-                    finish(); // Đóng màn hình
+                    finish();
                 } else {
-                    Toast.makeText(DepositSavingActivity.this, "Giao dịch thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DepositSavingActivity.this, "Thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<BasicResponse> call, Throwable t) {
-                Toast.makeText(DepositSavingActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DepositSavingActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

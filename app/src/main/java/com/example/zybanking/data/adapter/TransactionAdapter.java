@@ -1,6 +1,7 @@
 package com.example.zybanking.data.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,20 +9,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat; // Dùng cái này để lấy màu an toàn hơn
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zybanking.R;
-import com.example.zybanking.data.models.TransactionHistoryItem;
+// Import đúng đường dẫn model bạn vừa gửi
+import com.example.zybanking.data.models.transaction.Transaction;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class TransactionAdapter
-        extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
+public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
-    Context context;
-    List<TransactionHistoryItem> list;
+    private Context context;
+    private List<Transaction> list; // Đã đổi sang List<Transaction>
 
-    public TransactionAdapter(Context context, List<TransactionHistoryItem> list) {
+    // Constructor nhận Context và List<Transaction>
+    public TransactionAdapter(Context context, List<Transaction> list) {
         this.context = context;
         this.list = list;
     }
@@ -35,30 +40,59 @@ public class TransactionAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
-        TransactionHistoryItem item = list.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Transaction item = list.get(position);
 
-        h.tvTitle.setText(item.title);
-        h.tvTime.setText(item.time);
-
-        if (item.isIncome) {
-            h.tvAmount.setText("+ " + formatMoney(item.amount));
-            h.tvAmount.setTextColor(context.getColor(R.color.green));
-            h.icon.setImageResource(android.R.drawable.ic_input_add);
+        // 1. Set Tên giao dịch (Hiển thị người nhận hoặc Loại giao dịch)
+        if (item.getDestName() != null && !item.getDestName().isEmpty()) {
+            holder.tvTitle.setText(item.getDestName());
         } else {
-            h.tvAmount.setText("- " + formatMoney(item.amount));
-            h.tvAmount.setTextColor(context.getColor(R.color.red));
-            h.icon.setImageResource(android.R.drawable.ic_delete);
+            // Nếu không có tên người nhận, hiển thị loại giao dịch
+            holder.tvTitle.setText(item.getType() != null ? item.getType() : "Giao dịch");
+        }
+
+        // 2. Set Thời gian
+        holder.tvTime.setText(item.getCreatedAt());
+
+        // 3. Xử lý logic Tiền và Màu sắc (Thu/Chi)
+        boolean isIncome = checkIsIncome(item);
+        String formattedMoney = formatCurrency(item.getAmount());
+
+        if (isIncome) {
+            // Tiền vào (Màu xanh)
+            holder.tvAmount.setText("+ " + formattedMoney);
+            holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.green)); // Đảm bảo bạn có màu này trong colors.xml
+            holder.icon.setImageResource(android.R.drawable.ic_input_add); // Hoặc R.drawable.ic_arrow_down
+        } else {
+            // Tiền ra (Màu đỏ)
+            holder.tvAmount.setText("- " + formattedMoney);
+            holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.red));   // Đảm bảo bạn có màu này trong colors.xml
+            holder.icon.setImageResource(android.R.drawable.ic_delete); // Hoặc R.drawable.ic_arrow_up
         }
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return (list != null) ? list.size() : 0;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    // --- LOGIC KIỂM TRA THU HAY CHI ---
+    // Bạn cần kiểm tra xem backend trả về "TYPE" là từ khóa gì để sửa ở đây
+    private boolean checkIsIncome(Transaction item) {
+        if (item.getType() == null) return false;
 
+        String type = item.getType().toUpperCase();
+        // Ví dụ: Nếu type là DEPOSIT (nạp tiền) hoặc RECEIVE (nhận tiền) -> Là thu nhập
+        return type.contains("DEPOSIT") || type.contains("RECEIVE") || type.contains("INCOMING");
+    }
+
+    private String formatCurrency(double amount) {
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return format.format(amount);
+    }
+
+    // ViewHolder Class
+    static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
         TextView tvTitle, tvTime, tvAmount;
 
@@ -69,9 +103,5 @@ public class TransactionAdapter
             tvTime = v.findViewById(R.id.tv_time);
             tvAmount = v.findViewById(R.id.tv_amount);
         }
-    }
-
-    private String formatMoney(double amount) {
-        return String.format("%,.0fđ", amount);
     }
 }

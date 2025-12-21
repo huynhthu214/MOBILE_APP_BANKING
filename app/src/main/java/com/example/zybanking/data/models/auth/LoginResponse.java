@@ -6,14 +6,19 @@ public class LoginResponse {
     public String status;
     public Data data;
     public String message;
+
+    public String getStatus() { return status; }
+    public Data getData() { return data; }
+
     public static class Data {
         public String access_token;
         public String refresh_token;
         public User user;
+
+        public String getToken() { return access_token; }
     }
 
     public static class User {
-        // Ánh xạ cả trường hợp server trả về "USER_ID" hoặc "user_id"
         @SerializedName(value = "USER_ID", alternate = {"user_id", "userId"})
         public String USER_ID;
 
@@ -23,8 +28,11 @@ public class LoginResponse {
         @SerializedName(value = "FULL_NAME", alternate = {"full_name", "fullName"})
         public String FULL_NAME;
 
-        // QUAN TRỌNG NHẤT LÀ DÒNG NÀY
         @SerializedName(value = "ROLE", alternate = {"role"})
         public String ROLE;
+
+        // --- THÊM DÒNG NÀY ---
+        @SerializedName(value = "ACCOUNT_ID", alternate = {"account_id", "accountId"})
+        public String ACCOUNT_ID;
     }
 }

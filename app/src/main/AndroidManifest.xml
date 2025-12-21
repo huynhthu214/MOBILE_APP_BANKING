@@ -42,6 +42,9 @@
             android:name=".ui.transaction.DepositActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.transaction.DepositOtpActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.transaction.ElectricWaterPayment"
             android:exported="false" />
         <activity

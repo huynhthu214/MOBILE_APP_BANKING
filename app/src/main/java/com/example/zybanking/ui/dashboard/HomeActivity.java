@@ -228,7 +228,8 @@ public class HomeActivity extends NavbarActivity {
                 if (tvBalance != null) tvBalance.setText(formatCurrency(data.balance));
                 if (tvAccountNumber != null && data.accountNumber != null) tvAccountNumber.setText(data.accountNumber);
                 if (data.lastTransactions != null && rvTransactions != null) {
-                    TransactionAdapter adapter = new TransactionAdapter(data.lastTransactions);
+                    // Thêm HomeActivity.this vào tham số đầu tiên
+                    TransactionAdapter adapter = new TransactionAdapter(HomeActivity.this, data.lastTransactions);
                     rvTransactions.setAdapter(adapter);
                 }
                 break;
