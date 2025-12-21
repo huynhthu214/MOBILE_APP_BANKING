@@ -1,14 +1,32 @@
 package com.example.zybanking.data.models.transaction;
 
-public class Transaction {
-    private String transaction_id;
-    private String type;
-    private double amount;
-    private String status;
-    private String date;
+import com.google.gson.annotations.SerializedName;
 
-    public String getType() { return type; }
+public class Transaction {
+    // Ánh xạ chính xác tên cột trong Database (SQL)
+    @SerializedName("TRANSACTION_ID")
+    private String transactionId;
+
+    @SerializedName("AMOUNT")
+    private double amount;
+
+    @SerializedName("STATUS")
+    private String status;
+
+    @SerializedName("CREATED_AT")
+    private String createdAt;
+
+    @SerializedName("DEST_ACC_NAME")
+    private String destName;
+
+    @SerializedName("TYPE")
+    private String type;
+
+    // Getters
+    public String getTransactionId() { return transactionId; }
     public double getAmount() { return amount; }
     public String getStatus() { return status; }
-    public String getDate() { return date; }
+    public String getCreatedAt() { return createdAt; }
+    public String getDestName() { return destName; }
+    public String getType() { return type; }
 }

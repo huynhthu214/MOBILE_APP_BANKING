@@ -2,23 +2,32 @@ package com.example.zybanking.data.remote;
 
 import com.example.zybanking.data.models.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.BillListResponse;
-import com.example.zybanking.data.models.BillPayRequest;
-import com.example.zybanking.data.models.BillResponse;
-import com.example.zybanking.data.models.DepositRequest;
-import com.example.zybanking.data.models.ForgotPasswordRequest;
-import com.example.zybanking.data.models.ForgotPasswordResponse;
-import com.example.zybanking.data.models.LoginRequest;
-import com.example.zybanking.data.models.LoginResponse;
+import com.example.zybanking.data.models.auth.UserListResponse;
+import com.example.zybanking.data.models.ekyc.EkycListResponse;
+import com.example.zybanking.data.models.ekyc.EkycRequest;
+import com.example.zybanking.data.models.ekyc.EkycResponse;
+import com.example.zybanking.data.models.transaction.BillListResponse;
+import com.example.zybanking.data.models.transaction.BillPayRequest;
+import com.example.zybanking.data.models.transaction.BillResponse;
+import com.example.zybanking.data.models.Branch;
+import com.example.zybanking.data.models.auth.ChangePasswordRequest;
+import com.example.zybanking.data.models.transaction.DepositRequest;
+import com.example.zybanking.data.models.auth.ForgotPasswordRequest;
+import com.example.zybanking.data.models.auth.ForgotPasswordResponse;
+import com.example.zybanking.data.models.auth.LoginRequest;
+import com.example.zybanking.data.models.auth.LoginResponse;
+import com.example.zybanking.data.models.transaction.MortgagePaymentRequest;
+import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.models.OtpConfirmRequest;
-import com.example.zybanking.data.models.ResetPasswordRequest;
-import com.example.zybanking.data.models.Transaction;
-import com.example.zybanking.data.models.TransferRequest;
-import com.example.zybanking.data.models.UserResponse;
-import com.example.zybanking.data.models.UtilityResponse;
-import com.example.zybanking.data.models.UtilityTopupRequest;
-import com.example.zybanking.data.models.VerifyOtpRequest;
-import com.example.zybanking.data.models.WithdrawRequest;
+import com.example.zybanking.data.models.auth.ResetPasswordRequest;
+import com.example.zybanking.data.models.transaction.Transaction;
+import com.example.zybanking.data.models.transaction.TransactionListResponse;
+import com.example.zybanking.data.models.transaction.TransferRequest;
+import com.example.zybanking.data.models.auth.UserResponse;
+import com.example.zybanking.data.models.utils.UtilityResponse;
+import com.example.zybanking.data.models.utils.UtilityTopupRequest;
+import com.example.zybanking.data.models.auth.VerifyOtpRequest;
+import com.example.zybanking.data.models.transaction.WithdrawRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -173,20 +182,35 @@ public interface ApiService {
             @Path("user_id") String userId,
             @Body EkycRequest request
     );
-    @GET("account/interest-rates")
-    Call<Map<String, Double>> getInterestRates(@Header("Authorization") String token);
+    @GET("accounts/rates")
+    Call<Map<String, Object>> getInterestRates(@Header("Authorization") String token);
 
-    // Cập nhật lãi suất (Gửi một Map chứa kỳ hạn và giá trị mới)
-    @PUT("account/interest-rates")
-    Call<BasicResponse> updateInterestRates(
-            @Header("Authorization") String token,
-            @Body Map<String, Double> rates
-    );
+    @PUT("accounts/rates")
+    Call<BasicResponse> updateInterestRates(@Header("Authorization") String token, @Body Map<String, Double> rates);
     @PUT("notifications/{userId}/read")
     Call<BasicResponse> markNotificationsAsRead(@Path("userId") String userId);
     // data/remote/ApiService.java
 
     @PUT("notifications/mark-read/{notiId}")
     Call<BasicResponse> markSingleNotificationAsRead(@Path("notiId") String notiId);
+
+    @GET("admin/dashboard/stats")
+    Call<Map<String, Object>> getAdminStats(
+            @Header("Authorization") String token
+    );
+
+    @GET("admin/dashboard/weekly-transactions")
+    Call<List<Map<String, Object>>> getWeeklyTransactions(
+            @Header("Authorization") String token
+    );
+    @GET("admin/users")
+    Call<UserListResponse> getAdminUsers(@Header("Authorization") String token, @Query("search") String search);
+
+    @GET("admin/transactions")
+    Call<TransactionListResponse> getAdminTransactions(
+            @Header("Authorization") String token,
+            @Query("search") String search,
+            @Query("status") String status
+    );
 }
 
