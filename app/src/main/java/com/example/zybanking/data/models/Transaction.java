@@ -1,5 +1,4 @@
 package com.example.zybanking.data.models;
-
 public class Transaction {
     private String transaction_id;
     private String type;

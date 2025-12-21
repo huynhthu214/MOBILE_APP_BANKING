@@ -13,6 +13,7 @@ import com.example.zybanking.data.models.LoginResponse;
 import com.example.zybanking.data.models.OtpConfirmRequest;
 import com.example.zybanking.data.models.ResetPasswordRequest;
 import com.example.zybanking.data.models.Transaction;
+import com.example.zybanking.data.models.TransactionHistoryResponse;
 import com.example.zybanking.data.models.TransferRequest;
 import com.example.zybanking.data.models.UserResponse;
 import com.example.zybanking.data.models.UtilityResponse;
@@ -73,10 +74,18 @@ public interface ApiService {
     Call<BasicResponse> transferConfirm(@Body OtpConfirmRequest body);
 
     @POST("transactions/deposit/create")
-    Call<BasicResponse> deposit(@Body DepositRequest body);
+    Call<BasicResponse> deposit(
+            @Header("Authorization") String token,
+            @Body DepositRequest request
+    );
 
     @POST("transactions/deposit/confirm")
     Call<BasicResponse> depositConfirm(@Body OtpConfirmRequest body);
+
+    @GET("transactions/history")
+    Call<TransactionHistoryResponse> getTransactionHistory(
+            @Header("Authorization") String token
+    );
 
     @POST("transactions/withdraw/create")
     Call<BasicResponse> withdraw(@Body WithdrawRequest body);

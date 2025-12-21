@@ -3,7 +3,10 @@ package com.example.zybanking.data.models;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+import com.example.zybanking.data.models.Transaction;
+
 public class AccountSummaryResponse {
+
     @SerializedName("status")
     public String status;
 

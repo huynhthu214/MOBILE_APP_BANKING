@@ -1,11 +1,16 @@
 package com.example.zybanking.data.models;
 
-public class DepositRequest {
-    public String account_id;
-    public float amount;
+import com.google.gson.annotations.SerializedName;
 
-    public DepositRequest(String account_id, float amount) {
-        this.account_id = account_id;
+public class DepositRequest {
+    @SerializedName("account_id")
+    private String accountId;
+
+    @SerializedName("amount")
+    private double amount;
+
+    public DepositRequest(String accountId, double amount) {
+        this.accountId = accountId;
         this.amount = amount;
     }
 }
