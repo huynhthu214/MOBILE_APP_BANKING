@@ -120,7 +120,7 @@ public interface ApiService {
     @POST("transactions/mortgage/pay")
     Call<BasicResponse> payMortgage(@Body MortgagePaymentRequest body);
 
-//LOCAITON
+//LOCATON
     @GET("branches/nearby")
     Call<List<Branch>> getNearbyBranches(
             @Query("lat") double lat,

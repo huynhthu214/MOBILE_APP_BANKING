@@ -200,7 +200,6 @@ public class HomeActivity extends NavbarActivity {
             }
         });
     }
-    // Sửa hàm updateUI để nhận thêm accountId
     private void updateUI(AccountSummaryResponse data, String currentAccId) {
         if (data.type == null) return;
 
@@ -232,7 +231,7 @@ public class HomeActivity extends NavbarActivity {
                 break;
 
             case "mortgage":
-                // LƯU ID TÀI KHOẢN VAY
+
                 mortgageAccountId = currentAccId;
 
                 if (tvNoMortgage != null) tvNoMortgage.setVisibility(View.GONE);

@@ -44,7 +44,6 @@ import retrofit2.Response;
 class BranchAdapter extends RecyclerView.Adapter<BranchAdapter.BranchViewHolder> {
     private List<Branch> list;
     private final OnItemClickListener listener;
-
     public interface OnItemClickListener {
         void onItemClick(Branch branch);
         void onDirectionClick(Branch branch);
@@ -115,6 +114,8 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
     private RecyclerView rvLocations;
     private BranchAdapter adapter;
     private List<Branch> branchList = new ArrayList<>();
+    private Marker myLocationMarker;
+    private com.google.android.material.bottomsheet.BottomSheetBehavior<android.view.View> bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,13 +148,16 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
         fab.setOnClickListener(v -> {
             if (currentLocation != null) {
                 GeoPoint pt = new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude());
-                map.getController().animateTo(pt);
-                map.getController().setZoom(16.0);
+                updateUserLocationMarker(pt); // Cập nhật marker
+                map.getController().animateTo(pt); // Di chuyển camera đến đó
+                map.getController().setZoom(17.0);
             } else {
-                Toast.makeText(this, "Đang lấy vị trí...", Toast.LENGTH_SHORT).show();
-                getUserLocation(); // Thử lấy lại
+                getUserLocation();
             }
         });
+        android.view.View bottomSheet = findViewById(R.id.bottom_sheet_locations);
+        bottomSheetBehavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setHideable(false);
     }
 
     private void setupMap() {
@@ -169,34 +173,45 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
             getUserLocation();
         }
     }
+    private void updateUserLocationMarker(GeoPoint point) {
+        if (myLocationMarker != null) {
+            map.getOverlays().remove(myLocationMarker);
+        }
+        myLocationMarker = new Marker(map);
+        myLocationMarker.setPosition(point);
+        myLocationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        myLocationMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_location)); // Đảm bảo icon này tồn tại
+        myLocationMarker.setTitle("Vị trí của tôi");
+
+        map.getOverlays().add(myLocationMarker);
+        map.invalidate(); // Vẽ lại bản đồ
+    }
+
 
     private void getUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    currentLocation = location;
+            fusedLocationClient.getCurrentLocation(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY, null)
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            currentLocation = location;
+                            GeoPoint myPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-                    // 1. Zoom đến vị trí user
-                    GeoPoint myPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    map.getController().setCenter(myPoint);
-                    map.getController().setZoom(15.0);
+                            // Xóa marker cũ nếu cần để tránh trùng lặp
+                            map.getOverlays().clear();
 
-                    // 2. Vẽ Marker User (Màu cam giống file Support.txt line 70)
-                    Marker userMarker = new Marker(map);
-                    userMarker.setPosition(myPoint);
-                    userMarker.setTitle("Vị trí của bạn");
-                    userMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_location)); // Icon Location màu cam/đỏ
-                    userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                    map.getOverlays().add(userMarker);
+                            // Vẽ lại Marker User
+                            Marker userMarker = new Marker(map);
+                            userMarker.setPosition(myPoint);
+                            userMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_location));
+                            userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                            map.getOverlays().add(userMarker);
 
-                    // 3. Gọi API lấy danh sách
-                    fetchNearbyBranches(location.getLatitude(), location.getLongitude());
-                } else {
-                    Toast.makeText(this, "Không tìm thấy GPS. Hãy bật định vị.", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(e -> {
-                Toast.makeText(this, "Lỗi GPS: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            });
+                            map.getController().animateTo(myPoint);
+                            fetchNearbyBranches(location.getLatitude(), location.getLongitude());
+                        } else {
+                            Toast.makeText(this, "Hãy mở GPS và Google Maps để cập nhật vị trí", Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
     }
 
@@ -208,20 +223,17 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
             public void onResponse(Call<List<Branch>> call, Response<List<Branch>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Branch> data = response.body();
-
-                    // Cập nhật list
                     branchList.clear();
                     branchList.addAll(data);
                     adapter.updateList(branchList);
 
-                    // Vẽ các marker ngân hàng
                     drawBranchMarkers();
 
                     // Tự động gợi ý đường đến điểm gần nhất (logic như đồ án yêu cầu)
                     if (!branchList.isEmpty()) {
                         Branch nearest = branchList.get(0);
                         drawRouteToBranch(nearest);
-                        Toast.makeText(MapActivity.this, "Gần nhất: " + nearest.name, Toast.LENGTH_SHORT).show();
+                        zoomToIncludePoints(nearest);
                     }
                 } else {
                     Log.e("API", "Code: " + response.code());
@@ -236,10 +248,22 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
             }
         });
     }
+    private void zoomToIncludePoints(Branch b) {
+        if (currentLocation == null) return;
+        GeoPoint userPt = new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude());
+        GeoPoint branchPt = new GeoPoint(b.lat, b.lng);
+
+        // Đưa bản đồ về trung tâm của 2 điểm
+        double midLat = (userPt.getLatitude() + branchPt.getLatitude()) / 2;
+        double midLng = (userPt.getLongitude() + branchPt.getLongitude()) / 2;
+        map.getController().animateTo(new GeoPoint(midLat, midLng));
+        map.getController().setZoom(15.0);
+    }
 
     private void drawBranchMarkers() {
         // Xóa marker cũ (trừ marker user)
         // Trong thực tế nên quản lý list marker riêng, ở đây vẽ đè cho đơn giản
+        Log.d("MAP_DEBUG", "Số lượng chi nhánh: " + branchList.size());
         for (Branch b : branchList) {
             if (b.lat != null && b.lng != null) {
                 GeoPoint gp = new GeoPoint(b.lat, b.lng);
@@ -264,20 +288,22 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
     private void drawRouteToBranch(Branch b) {
         if (currentLocation == null || b.lat == null || b.lng == null) return;
 
-        // Xóa đường cũ
-        if (routeLine != null) map.getOverlays().remove(routeLine);
+        // Xóa đường cũ nếu đã tồn tại
+        if (routeLine != null) {
+            map.getOverlays().remove(routeLine);
+        }
 
-        // Nối điểm
+        routeLine = new Polyline(map);
         List<GeoPoint> points = new ArrayList<>();
         points.add(new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude()));
         points.add(new GeoPoint(b.lat, b.lng));
 
-        routeLine = new Polyline();
         routeLine.setPoints(points);
-        routeLine.setColor(Color.BLUE);
-        routeLine.setWidth(8f);
+        routeLine.getOutlinePaint().setColor(Color.RED);
+        routeLine.getOutlinePaint().setStrokeWidth(12f); // Độ dày đường kẻ
 
-        map.getOverlays().add(routeLine);
+        // Thêm vào index 0 để nó nằm dưới các Marker, không che mất icon
+        map.getOverlays().add(0, routeLine);
         map.invalidate();
     }
 
@@ -294,7 +320,15 @@ public class MapActivity extends AppCompatActivity implements BranchAdapter.OnIt
 
     @Override
     public void onDirectionClick(Branch branch) {
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED);
+        }
         drawRouteToBranch(branch);
+        if (branch.lat != null && branch.lng != null) {
+            GeoPoint gp = new GeoPoint(branch.lat, branch.lng);
+            map.getController().animateTo(gp);
+            map.getController().setZoom(17.0);
+        }
         Toast.makeText(this, "Đang dẫn đường tới " + branch.name, Toast.LENGTH_SHORT).show();
     }
 
