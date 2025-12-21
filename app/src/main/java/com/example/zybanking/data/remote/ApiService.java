@@ -107,10 +107,10 @@ public interface ApiService {
     );
 
     @POST("transactions/withdraw/create")
-    Call<BasicResponse> withdraw(@Body WithdrawRequest body);
+    Call<BasicResponse> withdrawCreate(@Body WithdrawRequest request);
 
     @POST("transactions/withdraw/confirm")
-    Call<BasicResponse> withdrawConfirm(@Body OtpConfirmRequest body);
+    Call<BasicResponse> withdrawConfirm(@Body OtpConfirmRequest request);
 
     // BILL
     @GET("bills")

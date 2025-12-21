@@ -29,7 +29,7 @@ public class TransactionActivity extends NavbarActivity {
         initNavbar();
         WithdrawRequest request = new WithdrawRequest("A001", 10.0000);
 
-        apiService.withdraw(request).enqueue(new Callback<BasicResponse>() {
+        apiService.withdrawCreate(request).enqueue(new Callback<BasicResponse>() {
 
             @Override
             public void onResponse(Call<BasicResponse> call,

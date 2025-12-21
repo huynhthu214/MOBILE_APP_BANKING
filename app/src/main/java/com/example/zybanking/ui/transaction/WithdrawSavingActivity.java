@@ -98,7 +98,7 @@ public class WithdrawSavingActivity extends AppCompatActivity {
         request.setAccountId(accountId);
         request.setAmount(amount);
 
-        api.withdraw(request).enqueue(new Callback<BasicResponse>() {
+        api.withdrawCreate(request).enqueue(new Callback<BasicResponse>() {
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

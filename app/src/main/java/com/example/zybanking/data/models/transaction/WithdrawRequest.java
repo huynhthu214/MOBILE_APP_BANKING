@@ -1,15 +1,16 @@
 package com.example.zybanking.data.models.transaction;
 
 public class WithdrawRequest {
-    public String account_id;
-    public Double amount;
+    private String account_id;
+    private double amount;
+    private String currency;
 
-    public WithdrawRequest(String account_id, Double amount) {
+    public WithdrawRequest(String account_id, double amount) {
         this.account_id = account_id;
         this.amount = amount;
+        this.currency = "VND";
     }
-    public WithdrawRequest() {
-    }
+    public WithdrawRequest() {}
     public String getAccountId() {
         return account_id;
     }

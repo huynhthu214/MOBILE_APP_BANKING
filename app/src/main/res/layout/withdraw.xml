@@ -63,9 +63,10 @@
                         android:textSize="13sp"/>
 
                     <TextView
+                        android:id="@+id/tv_current_balance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5,000,000 VND"
+                        android:text="0 VND"
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold"
@@ -135,6 +136,7 @@
                 android:layout_marginBottom="8dp"/>
 
             <EditText
+                android:id="@+id/et_note"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:background="@drawable/bg_edittext_rounded"

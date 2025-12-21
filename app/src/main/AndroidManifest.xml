@@ -36,6 +36,9 @@
             android:name=".ui.transaction.WithdrawActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.transaction.WithdrawOtpActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.transaction.AdminTransaction"
             android:exported="false" />
         <activity
