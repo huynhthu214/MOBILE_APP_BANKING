@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
@@ -59,9 +60,42 @@ public class NotificationUserActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        adapter = new NotificationAdapter(notificationList);
+        // Truyền logic hiển thị Dialog khi bấm vào
+        adapter = new NotificationAdapter(notificationList, notification -> {
+            showDetailDialog(notification);
+        });
         rvNotifications.setLayoutManager(new LinearLayoutManager(this));
         rvNotifications.setAdapter(adapter);
+    }
+// NotificationUserActivity.java
+
+    private void showDetailDialog(Notification noti) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(noti.getTitle())
+                .setMessage(noti.getBody() + "\n\nThời gian: " + noti.getCreatedAt())
+                .setPositiveButton("Đóng", (dialog, which) -> {
+
+                    // 1. Cập nhật giao diện ngay lập tức
+                    noti.isRead = 1;
+                    adapter.notifyDataSetChanged();
+
+                    // 2. GỌI API ĐỂ CẬP NHẬT DATABASE
+                    ApiService api = RetrofitClient.getClient().create(ApiService.class);
+                    api.markSingleNotificationAsRead(noti.getNotiId()).enqueue(new Callback<BasicResponse>() {
+                        @Override
+                        public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
+                            if (response.isSuccessful()) {
+                                android.util.Log.d("API_NOTI", "Database đã cập nhật IS_READ=1 cho " + noti.getNotiId());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BasicResponse> call, Throwable t) {
+                            android.util.Log.e("API_NOTI", "Lỗi cập nhật Database");
+                        }
+                    });
+                })
+                .show();
     }
 
     private void loadNotifications(String userId) {
@@ -100,7 +134,16 @@ public class NotificationUserActivity extends AppCompatActivity {
 
     // Hàm lấy UserID từ SharedPreferences (Bạn cần điều chỉnh key cho đúng với lúc Login)
     private String getCurrentUserId() {
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        return prefs.getString("user_id", "U001"); // Đổi từ USER01 thành U001
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+
+        String id = prefs.getString("user_id", "");
+
+        if (id.isEmpty()) {
+            String token = prefs.getString("access_token", "");
+            android.util.Log.e("DEBUG_ID", "Token: " + token + " | ID: " + id);
+        }
+
+        android.util.Log.d("DEBUG_ID", "ID đang đăng nhập là: " + id);
+        return id;
     }
 }

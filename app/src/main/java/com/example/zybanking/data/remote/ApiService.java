@@ -21,7 +21,7 @@ import com.example.zybanking.data.models.OtpConfirmRequest;
 import com.example.zybanking.data.models.auth.ResetPasswordRequest;
 import com.example.zybanking.data.models.transaction.Transaction;
 import com.example.zybanking.data.models.transaction.TransferRequest;
-import com.example.zybanking.data.models.UserResponse;
+import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.models.utils.UtilityResponse;
 import com.example.zybanking.data.models.utils.UtilityTopupRequest;
 import com.example.zybanking.data.models.auth.VerifyOtpRequest;
@@ -178,5 +178,11 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body Map<String, Double> rates
     );
+    @PUT("notifications/{userId}/read")
+    Call<BasicResponse> markNotificationsAsRead(@Path("userId") String userId);
+    // data/remote/ApiService.java
+
+    @PUT("notifications/mark-read/{notiId}")
+    Call<BasicResponse> markSingleNotificationAsRead(@Path("notiId") String notiId);
 }
 

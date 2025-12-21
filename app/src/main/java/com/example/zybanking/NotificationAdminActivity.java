@@ -1,12 +1,16 @@
 package com.example.zybanking;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.zybanking.data.adapter.NotificationAdapter;
+import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
@@ -34,7 +38,8 @@ public class NotificationAdminActivity extends HeaderAdmin {
         initViews();
         setupRecyclerView();
         setupTabListeners();
-        loadNotifications(); // Mặc định load U002 là Admin
+        setupMarkAllRead();
+        loadNotifications();
     }
 
     private void initViews() {
@@ -46,8 +51,32 @@ public class NotificationAdminActivity extends HeaderAdmin {
     }
 
     private void setupRecyclerView() {
-        // Luôn truyền displayList vào adapter
-        adapter = new NotificationAdapter(displayList);
+        adapter = new NotificationAdapter(displayList, notification -> {
+            notification.isRead = 1;
+            adapter.notifyDataSetChanged();
+
+            ApiService api = RetrofitClient.getClient().create(ApiService.class);
+            api.markSingleNotificationAsRead(notification.getNotiId()).enqueue(new Callback<BasicResponse>() {
+                @Override
+                public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
+                    if (response.isSuccessful()) {
+                        android.util.Log.d("API_DEBUG", "Đã cập nhật IS_READ=1 cho thông báo: " + notification.getNotiId());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BasicResponse> call, Throwable t) {
+                    android.util.Log.e("API_DEBUG", "Lỗi cập nhật database: " + t.getMessage());
+                }
+            });
+
+            // 3. Hiển thị Dialog chi tiết
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(notification.getTitle())
+                    .setMessage(notification.getBody())
+                    .setPositiveButton("Đóng", null)
+                    .show();
+        });
         rvNotifications.setLayoutManager(new LinearLayoutManager(this));
         rvNotifications.setAdapter(adapter);
     }
@@ -93,21 +122,61 @@ public class NotificationAdminActivity extends HeaderAdmin {
         selected.setBackgroundResource(R.drawable.bg_chip_filled);
         selected.setTextColor(Color.WHITE);
     }
+    private void setupMarkAllRead() {
+        TextView btnMarkRead = findViewById(R.id.btn_mark_all_read);
+        btnMarkRead.setOnClickListener(v -> {
+            // --- XỬ LÝ ĐỌC TẤT CẢ (READ ALL) ---
 
+            SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+            String currentUserId = prefs.getString("user_id", "");
+
+            if (currentUserId.isEmpty()) return;
+
+            ApiService api = RetrofitClient.getClient().create(ApiService.class);
+            // Gọi API PUT /api/v1/notifications/{userId}/read
+            api.markNotificationsAsRead(currentUserId).enqueue(new Callback<BasicResponse>() {
+                @Override
+                public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
+                    if (response.isSuccessful()) {
+                        // Cập nhật toàn bộ danh sách trong bộ nhớ
+                        for (Notification n : fullList) {
+                            n.isRead = 1;
+                        }
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(NotificationAdminActivity.this, "Đã đọc tất cả thông báo", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BasicResponse> call, Throwable t) {
+                    Toast.makeText(NotificationAdminActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
     private void loadNotifications() {
+        // 1. Lấy ID từ bộ nhớ (phải khớp với key "user_id" lúc bạn lưu khi Login)
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        String adminId = prefs.getString("user_id", "");
+
+        if (adminId.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy ID Admin", Toast.LENGTH_SHORT).show();
+            return;
+        }
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
-        // Theo database của bạn, U002 là người nhận các tin nhắn SYSTEM/SECURITY
-        api.getNotifications("U002").enqueue(new Callback<List<Notification>>() {
+        api.getNotifications(adminId).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     fullList.clear();
                     fullList.addAll(response.body());
-                    filterNotifications("ALL"); // Hiển thị tất cả lần đầu
+                    filterNotifications("ALL");
                 }
             }
             @Override
-            public void onFailure(Call<List<Notification>> call, Throwable t) {}
+            public void onFailure(Call<List<Notification>> call, Throwable t) {
+                Toast.makeText(NotificationAdminActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

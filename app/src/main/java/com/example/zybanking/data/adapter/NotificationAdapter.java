@@ -17,7 +17,14 @@ import java.util.List;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotiViewHolder> {
 
     private List<Notification> list;
-
+    private OnNotiClickListener listener;
+    public interface OnNotiClickListener {
+        void onNotiClick(Notification notification);
+    }
+    public NotificationAdapter(List<Notification> list, OnNotiClickListener listener) {
+        this.list = list;
+        this.listener = listener;
+    }
     public NotificationAdapter(List<Notification> list) {
         this.list = list;
     }
@@ -47,8 +54,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.viewDot.setVisibility(View.GONE);
             holder.tvTitle.setTypeface(null, android.graphics.Typeface.NORMAL);
         }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onNotiClick(item);
+        });
 
-// Xử lý Icon dựa theo cột TYPE trong Database của bạn
         int iconRes;
         String type = (item.getType() != null) ? item.getType() : "";
 

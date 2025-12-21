@@ -16,7 +16,7 @@ import com.example.zybanking.R;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.transaction.MortgagePaymentRequest;
-import com.example.zybanking.data.models.UserResponse;
+import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.ui.dashboard.HomeActivity;

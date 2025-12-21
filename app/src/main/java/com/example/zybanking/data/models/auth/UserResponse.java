@@ -1,4 +1,4 @@
-package com.example.zybanking.data.models;
+package com.example.zybanking.data.models.auth;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -22,11 +22,20 @@ public class UserResponse {
         public List<Map<String, Object>> getAccounts() { return accounts; }
     }
 
-    public class User {
+    public static class User {
+        @SerializedName("USER_ID")
         private String USER_ID;
+
+        @SerializedName("FULL_NAME") // Bắt buộc phải có để khớp với DB
         private String FULL_NAME;
+
+        @SerializedName("EMAIL")      // Bắt buộc phải có
         private String EMAIL;
+
+        @SerializedName("PHONE")
         private String PHONE;
+
+        @SerializedName("ROLE")
         private String ROLE;
 
         public String getFullName() { return FULL_NAME; }

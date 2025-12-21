@@ -20,7 +20,7 @@ import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
 import com.example.zybanking.data.adapter.TransactionAdapter;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
-import com.example.zybanking.data.models.UserResponse;
+import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.ui.ekyc.EkycActivity;

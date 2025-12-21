@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Notification {
     @SerializedName("NOTI_ID")
-    public String notiId;
+    private String notiId;
 
     @SerializedName("USER_ID")
     public String userId;
@@ -23,6 +23,7 @@ public class Notification {
 
     @SerializedName("CREATED_AT")
     public String createdAt;
+    public String getNotiId() { return notiId; }
     public String getTitle() { return title; }
     public String getBody() { return body; }
     public String getCreatedAt() { return createdAt; }
