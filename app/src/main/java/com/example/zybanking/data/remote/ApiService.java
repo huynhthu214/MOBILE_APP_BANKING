@@ -174,20 +174,18 @@ public interface ApiService {
             @Path("user_id") String userId,
             @Body EkycRequest request
     );
-    @GET("account/interest-rates")
-    Call<Map<String, Double>> getInterestRates(@Header("Authorization") String token);
+    @GET("accounts/rates")
+    Call<Map<String, Object>> getInterestRates(@Header("Authorization") String token);
 
-    // Cập nhật lãi suất (Gửi một Map chứa kỳ hạn và giá trị mới)
-    @PUT("account/interest-rates")
-    Call<BasicResponse> updateInterestRates(
-            @Header("Authorization") String token,
-            @Body Map<String, Double> rates
-    );
+    @PUT("accounts/rates")
+    Call<BasicResponse> updateInterestRates(@Header("Authorization") String token, @Body Map<String, Double> rates);
     @PUT("notifications/{userId}/read")
     Call<BasicResponse> markNotificationsAsRead(@Path("userId") String userId);
     // data/remote/ApiService.java
 
     @PUT("notifications/mark-read/{notiId}")
     Call<BasicResponse> markSingleNotificationAsRead(@Path("notiId") String notiId);
+
+
 }
 

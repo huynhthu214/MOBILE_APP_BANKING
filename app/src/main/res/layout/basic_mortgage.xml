@@ -83,6 +83,7 @@
                             android:src="@drawable/ic_eye_off"
                             app:tint="#6B7280"/>
                     </LinearLayout>
+
                     <TextView
                         android:id="@+id/tv_payment_amount"
                         android:layout_width="wrap_content"
@@ -92,6 +93,34 @@
                         android:textColor="#DC2626"
                         android:textSize="32sp"
                         android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_chip_outline"
+                        android:backgroundTint="#EFF6FF"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lãi suất hiện tại:"
+                            android:textColor="#1E40AF"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_mortgage_rate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="8.5%/năm"
+                            android:textColor="#1E40AF"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

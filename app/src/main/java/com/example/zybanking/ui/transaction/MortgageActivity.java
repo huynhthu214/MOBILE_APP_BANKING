@@ -25,7 +25,7 @@ import retrofit2.Response;
 
 public class MortgageActivity extends AppCompatActivity {
     private ImageView btnBack, imgToggleAcc;
-    private TextView tvPaymentAmount, tvDueDate, tvRemainingBalance, tvAccNo;
+    private TextView tvPaymentAmount, tvDueDate, tvRemainingBalance, tvAccNo, tvInterestRate;
     private TextView tvFrequency, tvPaidAmount, tvTotalLoan;
     private ProgressBar pbLoanProgress;
     private boolean isHidden = true;
@@ -62,6 +62,7 @@ public class MortgageActivity extends AppCompatActivity {
         tvPaidAmount = findViewById(R.id.tv_paid_amount);
         tvTotalLoan = findViewById(R.id.tv_total_loan);
         pbLoanProgress = findViewById(R.id.pb_loan_progress);
+        tvInterestRate = findViewById(R.id.tv_mortgage_rate);
 
         if (imgToggleAcc != null) {
             imgToggleAcc.setOnClickListener(v -> {
@@ -102,6 +103,13 @@ public class MortgageActivity extends AppCompatActivity {
 
         if (tvDueDate != null && data.nextPaymentDate != null) {
             tvDueDate.setText(formatDate(data.nextPaymentDate)); // Dùng hàm format
+        }
+        if (tvInterestRate != null) {
+            if (data.interestRate != null) {
+                tvInterestRate.setText(data.interestRate + "%/năm");
+            } else {
+                tvInterestRate.setText("---");
+            }
         }
         // Cập nhật Tần suất
         if (tvFrequency != null) {
