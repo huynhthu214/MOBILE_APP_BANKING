@@ -258,7 +258,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lịch sử giao dịch gần đây"
+                android:text="Danh sách tài khoản sở hữu"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:textColor="#111827"
@@ -267,14 +267,13 @@
                 android:layout_marginBottom="8dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_user_history"
+                android:id="@+id/rv_user_accounts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="24dp"
-                tools:listitem="@layout/item_transaction_placeholder"
-                tools:itemCount="3"/>
+                tools:listitem="@layout/item_admin_account_card"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

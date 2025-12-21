@@ -106,7 +106,7 @@ public class AdminDashboardActivity extends HeaderAdmin {
                     }
 
                     // Format số: ví dụ 1000000 -> 1,000,000
-                    String formattedMoney = String.format("%,.0f đ", amount);
+                    String formattedMoney = String.format("%,.0f VND", amount);
                     tvTotalTransacMoneyVal.setText(formattedMoney);
 
                     if (data.containsKey("recent_transactions")) {

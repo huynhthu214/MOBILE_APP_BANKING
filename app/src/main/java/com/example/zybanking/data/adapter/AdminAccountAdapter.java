@@ -17,12 +17,20 @@ import com.example.zybanking.data.models.auth.User;
 
 import java.util.List;
 
-public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.UserViewHolder> {
+public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapter.UserViewHolder> {
 
     private Context context;
     private List<User> userList;
-
-    public AdminUserAdapter(Context context, List<User> userList) {
+    private OnUserClickListener listener;
+    public interface OnUserClickListener {
+        void onUserClick(User user);
+    }
+    public AdminAccountAdapter(Context context, List<User> list, OnUserClickListener listener) {
+        this.context = context;
+        this.userList = userList;
+        this.listener = listener;
+    }
+    public AdminAccountAdapter(Context context, List<User> userList) {
         this.context = context;
         this.userList = userList;
     }
@@ -41,6 +49,11 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
 
         // 1. Name & ID
         holder.tvName.setText(user.getFullName() != null ? user.getFullName() : "No Name");
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onUserClick(user);
+            }
+        });
         holder.tvId.setText("ID: " + user.getUserId());
 
         // 2. Status Badge Logic

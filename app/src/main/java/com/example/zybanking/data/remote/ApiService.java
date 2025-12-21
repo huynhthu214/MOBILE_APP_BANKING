@@ -2,6 +2,7 @@ package com.example.zybanking.data.remote;
 
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
+import com.example.zybanking.data.models.auth.CreateUserRequest;
 import com.example.zybanking.data.models.auth.UserListResponse;
 import com.example.zybanking.data.models.ekyc.EkycListResponse;
 import com.example.zybanking.data.models.ekyc.EkycRequest;
@@ -205,6 +206,11 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Query("search") String search,
             @Query("status") String status
+    );
+    @POST("admin/users/create")
+    Call<BasicResponse> createCustomer(
+            @Header("Authorization") String token,
+            @Body CreateUserRequest request
     );
 }
 
