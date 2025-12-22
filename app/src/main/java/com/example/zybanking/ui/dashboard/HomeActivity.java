@@ -20,6 +20,7 @@ import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
 import com.example.zybanking.data.adapter.TransactionAdapter;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
+import com.example.zybanking.data.models.auth.User;
 import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.models.transaction.Transaction;
 import com.example.zybanking.data.remote.ApiService;
@@ -168,51 +169,65 @@ public class HomeActivity extends NavbarActivity {
     }
 
     private void loadUserData() {
+        // KIỂM TRA LẠI: Đảm bảo tên file và key khớp với lúc bạn Lưu ở LoginActivity
+        // Ví dụ: Nếu Login lưu vào "UserPrefs" và key "auth_token", hãy sửa dòng dưới lại cho khớp.
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
         String token = pref.getString("access_token", "");
+
+        // Debug: In token ra xem có lấy được không
+        Log.d("HomeActivity", "Token loaded: " + token);
+
         if (token.isEmpty()) {
-            Log.e("HomeActivity", "Token trống!");
+            Log.e("HomeActivity", "Token trống! Chuyển về đăng nhập.");
+            redirectToLogin();
             return;
         }
 
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getCurrentUser("Bearer " + token).enqueue(new Callback<UserResponse>() {
-            @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    UserResponse.User user = response.body().getData().getUser();
-                    if (tvUserName != null) tvUserName.setText(user.getFullName());
+
+                    // 2. SỬA DÒNG NÀY: Dùng "User" thay vì "UserResponse.User"
+                    User user = response.body().getData().getUser(); // <--- ĐÃ SỬA
+
+                    if (tvUserName != null && user != null) {
+                        tvUserName.setText(user.getFullName());
+                    }
 
                     List<Map<String, Object>> accounts = response.body().getData().getAccounts();
-
-                    if (accounts == null || accounts.isEmpty()) {
-                        Log.e("HomeActivity", "User không có tài khoản nào!");
-                        return;
-                    }
-
-                    // Log để kiểm tra dữ liệu về
-                    Log.d("HomeActivity", "Số tài khoản tìm thấy: " + accounts.size());
-
-                    for (Map<String, Object> acc : accounts) {
-                        // Kiểm tra từng key có thể có
-                        String accId = getSafeStringId(acc, "ACCOUNT_ID");
-                        if (accId == null) accId = getSafeStringId(acc, "account_id");
-                        if (accId == null) accId = getSafeStringId(acc, "SAVING_ACC_ID");
-                        if (accId == null) accId = getSafeStringId(acc, "MORTAGE_ACC_ID");
-
-                        if (accId != null) {
-                            fetchAccountDetail(accId);
+                    if (accounts != null) {
+                        for (Map<String, Object> acc : accounts) {
+                            String accId = getSafeStringId(acc, "ACCOUNT_ID");
+                            if (accId == null) accId = getSafeStringId(acc, "account_id");
+                            if (accId != null) fetchAccountDetail(accId);
                         }
                     }
-                } else {
-                    Log.e("HomeActivity", "Lỗi lấy User: " + response.code());
+
+                } else if (response.code() == 401) {
+                    redirectToLogin();
                 }
             }
+
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 Log.e("HomeActivity", "Lỗi mạng User: " + t.getMessage());
             }
         });
+    }
+
+    // Hàm phụ để chuyển về màn hình đăng nhập
+    private void redirectToLogin() {
+        // Xóa token cũ đi để tránh lỗi lặp lại
+        SharedPreferences.Editor editor = getSharedPreferences("auth", MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
+
+        // Chuyển Activity
+        Intent intent = new Intent(HomeActivity.this, com.example.zybanking.ui.auth.LoginActivity.class); // Đổi LoginActivity cho đúng đường dẫn gói của bạn
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     // Hàm an toàn để lấy ID và tránh lỗi "1.0"

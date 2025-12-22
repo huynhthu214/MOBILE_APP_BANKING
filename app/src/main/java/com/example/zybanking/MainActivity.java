@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+        pref.edit().clear().apply();
 
         // Sau khi xóa xong, các biến này sẽ luôn là null
         String token = pref.getString("access_token", null);
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, LoginActivity.class);
         } else {
             String cleanRole = role.trim();
-            if ("admin".equalsIgnoreCase(cleanRole) || "administrator".equalsIgnoreCase(cleanRole)) {
+            if ("admin".equalsIgnoreCase(cleanRole) || "admin".equalsIgnoreCase(cleanRole)) {
                 intent = new Intent(this, AdminDashboardActivity.class);
             } else {
                 intent = new Intent(this, HomeActivity.class);

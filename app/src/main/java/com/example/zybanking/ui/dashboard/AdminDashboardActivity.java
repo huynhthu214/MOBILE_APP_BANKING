@@ -19,11 +19,9 @@ import com.example.zybanking.R;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.ui.account.AdminAccountListActivity;
-import com.example.zybanking.ui.account.AdminEditInforActivity;
 import com.example.zybanking.ui.account.AdminRatesActivity;
 import com.example.zybanking.ui.account.AdminSettingActivity;
 import com.example.zybanking.ui.account.AdminUserActivity;
-import com.example.zybanking.ui.account.CreateAccountActivity;
 import com.example.zybanking.ui.ekyc.VerifyEkycActivity;
 import com.example.zybanking.ui.transaction.AdminTransaction;
 
@@ -61,8 +59,8 @@ public class AdminDashboardActivity extends HeaderAdmin {
     }
 
     private void loadToken() {
-        SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String savedToken = pref.getString("auth_token", "");
+        SharedPreferences pref = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        String savedToken = pref.getString("access_token", "");
         token = savedToken.startsWith("Bearer ") ? savedToken : "Bearer " + savedToken;
     }
 
@@ -205,7 +203,7 @@ public class AdminDashboardActivity extends HeaderAdmin {
 
         // 2. Ánh xạ các CardView chính
         cardRate = findViewById(R.id.card_rate);
-        cardAccount = findViewById(R.id.card_create_customer);
+        cardAccount = findViewById(R.id.card_account);
         cardEKYC = findViewById(R.id.card_ekyc);
 
         // 3. Gán sự kiện click (Tập trung)

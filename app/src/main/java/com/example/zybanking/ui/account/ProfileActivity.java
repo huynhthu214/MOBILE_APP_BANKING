@@ -17,6 +17,8 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
+import com.example.zybanking.data.models.auth.User;
+import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.remote.ApiService;
@@ -34,7 +36,7 @@ import retrofit2.Response;
 
 public class ProfileActivity extends NavbarActivity {
     private TextView tvName, tvEmail, tvPhone,tvEkycText;
-    private LinearLayout btnChangePassword, btnEkycStatus, btnBiometric;
+    private LinearLayout btnChangePassword;
     private MaterialButton btnLogout;
     private ImageView btnEditEmail;
     private String currentUserId = "";
@@ -57,55 +59,46 @@ public class ProfileActivity extends NavbarActivity {
         tvEkycText = findViewById(R.id.tv_ekyc_text);
 
         btnChangePassword = findViewById(R.id.btn_change_password);
-        btnEkycStatus = findViewById(R.id.btn_ekyc_status);
-        btnBiometric = findViewById(R.id.btn_biometric_setting);
         btnLogout = findViewById(R.id.btn_logout);
         btnEditEmail = findViewById(R.id.btn_edit_email);
     }
     // Hàm riêng để xử lý logic hiển thị trạng thái EKYC
     private void updateEkycStatus(UserResponse.Ekyc ekyc) {
+
         // 1. Kiểm tra null object
         if (ekyc == null) {
             tvEkycText.setText("Chưa xác thực");
             tvEkycText.setTextColor(Color.parseColor("#9CA3AF")); // Xám
-            btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
             return;
         }
 
         // 2. Kiểm tra null status và chuẩn hóa chuỗi
         String status = ekyc.getStatus();
-        if (status == null) status = ""; // Tránh lỗi NullPointerException
-        status = status.trim().toLowerCase(); // Xóa khoảng trắng và về chữ thường
+        if (status == null) status = "";
+        status = status.trim().toLowerCase();
 
         Log.d("PROFILE_EKYC", "Status nhận được: " + status);
 
-        // 3. Xét trạng thái
+        // 3. Xét trạng thái (Chỉ đổi màu và chữ, KHÔNG set sự kiện Click)
         switch (status) {
             case "approved":
                 tvEkycText.setText("Đã xác thực");
                 tvEkycText.setTextColor(Color.parseColor("#4CAF50")); // Xanh lá
-                // Bấm vào để xem lại thông tin EKYC
-                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
                 break;
 
             case "pending":
                 tvEkycText.setText("Đang chờ duyệt");
                 tvEkycText.setTextColor(Color.parseColor("#FF9800")); // Cam
-                // Bấm vào để xem tình trạng
-                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
                 break;
 
             case "rejected":
                 tvEkycText.setText("Bị từ chối");
                 tvEkycText.setTextColor(Color.parseColor("#F44336")); // Đỏ
-                // Bấm vào để làm lại
-                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
                 break;
 
             default:
                 tvEkycText.setText("Chưa xác thực");
                 tvEkycText.setTextColor(Color.parseColor("#9CA3AF")); // Xám
-                btnEkycStatus.setOnClickListener(v -> startActivity(new Intent(this, com.example.zybanking.ui.ekyc.EkycActivity.class)));
                 break;
         }
     }
@@ -131,7 +124,6 @@ public class ProfileActivity extends NavbarActivity {
         // 3. Xử lý chỉnh sửa Email
         btnEditEmail.setOnClickListener(v -> showEditEmailDialog());
 
-        btnEkycStatus.setOnClickListener(v -> Toast.makeText(this, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show());
     }
 
     // --- HÀM TẠO GIAO DIỆN DIALOG ĐẸP BẰNG JAVA THUẦN ---
@@ -234,19 +226,18 @@ public class ProfileActivity extends NavbarActivity {
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     UserResponse.Data data = response.body().getData();
-                    UserResponse.User user = data.getUser();
-                    UserResponse.Ekyc ekyc = data.getEkyc();
-                    if (ekyc != null) {
-                        Log.d("PROFILE_DEBUG", "EKYC Status from API: " + ekyc.getStatus());
-                    } else {
-                        Log.d("PROFILE_DEBUG", "EKYC Object is NULL");
-                    }
-                    if (user != null) {
-                        currentUserId = user.getUserId();
 
-                        tvName.setText(user.getFullName());
-                        tvEmail.setText(user.getEmail());
-                        tvPhone.setText(user.getPhone() != null ? user.getPhone() : "Chưa cập nhật");
+                    // 3. SỬA KHAI BÁO BIẾN: Dùng "User" độc lập
+                    User user = data.getUser();
+
+                    UserResponse.Ekyc ekyc = data.getEkyc();
+
+                    if (user != null) {
+                        currentUserId = user.getUserId(); // Hết lỗi
+                        tvName.setText(user.getFullName()); // Hết lỗi
+                        tvEmail.setText(user.getEmail()); // Hết lỗi
+                        tvPhone.setText(user.getPhone()); // Hết lỗi
+
                         updateEkycStatus(ekyc);
                     }
                 } else {

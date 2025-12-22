@@ -8,7 +8,6 @@
     android:background="#F4F6FA">
 
     <include
-        android:id="@+id/layoutHeader"
         layout="@layout/header_admin" />
 
     <LinearLayout
@@ -17,43 +16,99 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Header Title & Search Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="12dp">
 
-            <EditText
-                android:id="@+id/edtSearchAccount"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_search_outline"
-                android:drawableStart="@drawable/ic_card"
-                android:drawablePadding="10dp"
-                android:hint="Nhập số tài khoản cần tìm..."
-                android:paddingHorizontal="16dp"
-                android:textSize="14sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quản lý tài khoản"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#0b5394"
+                android:layout_marginBottom="16dp"/>
 
-            <ImageView
-                android:id="@+id/btnFilter"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/bg_circle_light"
-                android:padding="12dp"
-                android:src="@drawable/ic_edit"
-                app:tint="#0b5394" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Search Input Wrapped in CardView -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <EditText
+                        android:id="@+id/edtSearchAccount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:drawableStart="@android:drawable/ic_menu_search"
+                        android:drawableTint="#9CA3AF"
+                        android:drawablePadding="12dp"
+                        android:hint="Nhập số tài khoản..."
+                        android:imeOptions="actionSearch"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="#1F2937"
+                        android:textColorHint="#9CA3AF"
+                        android:textSize="15sp" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Filter Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFilter"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_marginStart="12dp"
+                    android:padding="0dp"
+                    app:icon="@android:drawable/ic_menu_sort_by_size"
+                    app:iconTint="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:backgroundTint="#0b5394"
+                    app:cornerRadius="14dp"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- List Header Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Danh sách hiện có"
+            android:textColor="#6B7280"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Account List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAccountsList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="24dp"
             tools:listitem="@layout/item_admin_account_card" />
 
     </LinearLayout>

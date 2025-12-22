@@ -14,6 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -22,365 +24,398 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <GridLayout
+            <!-- Title Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tổng quan hệ thống"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#0b5394"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="4dp"/>
+
+            <!-- Row 1: Users & Transactions -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:useDefaultMargins="true">
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="12dp">
 
+                <!-- Card Users -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_user"
                     android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="#E3F2FD">
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FFFFFF">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_check_user"
-                            app:tint="#1976D2"/>
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EFF6FF">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_check_user"
+                                app:tint="#2563EB"/>
+                        </androidx.cardview.widget.CardView>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng người dùng"
-                            android:textSize="12sp"
-                            android:textColor="#555"
-                            android:layout_marginTop="6dp"/>
+                            android:text="Người dùng"
+                            android:textSize="13sp"
+                            android:textColor="#6B7280"
+                            android:layout_marginTop="12dp"/>
 
                         <TextView
                             android:id="@+id/tv_total_users_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12.400"
-                            android:textSize="20sp"
-                            android:textStyle="bold"/>
+                            android:text="12.4K"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="#1F2937"
+                            android:layout_marginTop="4dp"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- Card Transactions -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_transac"
                     android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="#E8F5E9">
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FFFFFF">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_bill"
-                            app:tint="#2E7D32"/>
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#ECFDF5">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_bill"
+                                app:tint="#10B981"/>
+                        </androidx.cardview.widget.CardView>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng giao dịch"
-                            android:textSize="12sp"
-                            android:textColor="#555"
-                            android:layout_marginTop="6dp"/>
+                            android:text="Giao dịch"
+                            android:textSize="13sp"
+                            android:textColor="#6B7280"
+                            android:layout_marginTop="12dp"/>
 
                         <TextView
                             android:id="@+id/tv_total_transac_count_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="8.120"
-                            android:textSize="20sp"
-                            android:textStyle="bold"/>
+                            android:text="8.1K"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="#1F2937"
+                            android:layout_marginTop="4dp"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_transac_money"
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_columnWeight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="#E8F5E9">
+            <!-- Row 2: Money (Highlight) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_transac_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#0b5394">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_money"
-                            app:tint="#2E7D32"/>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng tiền giao dịch"
-                            android:textSize="12sp"
-                            android:textColor="#555"
-                            android:layout_marginTop="6dp"/>
+                            android:text="Tổng dòng tiền"
+                            android:textSize="13sp"
+                            android:textColor="#BBDEFB"/>
 
                         <TextView
                             android:id="@+id/tv_total_transac_money_val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="8.120"
-                            android:textSize="20sp"
-                            android:textStyle="bold"/>
+                            android:text="24.5 tỷ VND"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF"
+                            android:layout_marginTop="4dp"/>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </GridLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#20FFFFFF">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_money"
+                            app:tint="#FFFFFF"/>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Quick Actions -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quản lý nhanh"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#0b5394"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="4dp"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:orientation="horizontal"
+                    android:paddingVertical="20dp"
+                    android:baselineAligned="false">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:text="Tác vụ quản lý"
-                        android:textColor="#111827"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
+                    <!-- Action 1 -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/btn_quick_create_account"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true">
 
-                        <LinearLayout
-                            android:id="@+id/btn_quick_create_account"
-                            android:layout_width="0dp"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card_account"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F3F4F6">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_add_user"
+                                app:tint="#0b5394"/>
+                        </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_create_customer"
-                                android:layout_width="59dp"
-                                android:layout_height="56dp"
-                                app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="16dp"
-                                app:cardElevation="2dp">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_add_user"
-                                    app:tint="#2563EB" />
-                            </androidx.cardview.widget.CardView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Tài khoản"
-                                android:textColor="#333"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/btn_quick_ekyc"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_ekyc"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="16dp"
-                                app:cardElevation="2dp">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_check_circle"
-                                    app:tint="#16A34A" />
-                            </androidx.cardview.widget.CardView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Duyệt eKYC"
-                                android:textColor="#333"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/btn_quick_rates"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_rate"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="16dp"
-                                app:cardElevation="2dp">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_chart"
-                                    app:tint="#F59E0B" />
-                            </androidx.cardview.widget.CardView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Lãi suất"
-                                android:textColor="#333"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/btn_quick_support"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_edit"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="16dp"
-                                app:cardElevation="2dp">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_edit"
-                                    app:tint="#DC2626" />
-                            </androidx.cardview.widget.CardView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Người dùng"
-                                android:textColor="#333"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
+                            android:text="Tài khoản"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#4B5563"
+                            android:layout_marginTop="8dp"/>
                     </LinearLayout>
+
+                    <!-- Action 2 -->
+                    <LinearLayout
+                        android:id="@+id/btn_quick_ekyc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F3F4F6">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_check_circle"
+                                app:tint="#16A34A"/>
+                        </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Duyệt eKYC"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#4B5563"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Action 3 -->
+                    <LinearLayout
+                        android:id="@+id/btn_quick_rates"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card_rate"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F3F4F6">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_chart"
+                                app:tint="#F59E0B"/>
+                        </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lãi suất"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#4B5563"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Action 4 -->
+                    <LinearLayout
+                        android:id="@+id/btn_quick_support"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card_edit"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F3F4F6">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_edit"
+                                app:tint="#DC2626"/>
+                        </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Người dùng"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#4B5563"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Recent Transactions Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Giao dịch mới nhất"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#0b5394"
+                    android:layout_marginStart="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xem tất cả"
+                    android:textSize="13sp"
+                    android:textColor="#6B7280"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:padding="8dp"/>
+            </LinearLayout>
+
+            <!-- Transaction List Container -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="30dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
+                    android:id="@+id/layout_recent_transactions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Giao dịch gần đây"
-                            android:textColor="#111827"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:id="@+id/tvMore"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Xem thêm"
-                                android:textColor="#777"
-                                android:textSize="12sp"
-                                android:padding="8dp"
-                                android:background="?attr/selectableItemBackground"
-                                android:clickable="true"
-                                android:focusable="true"/>
-
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:src="@drawable/ic_next" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/layout_recent_transactions"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                    android:paddingVertical="8dp"
+                    android:minHeight="100dp"/>
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>

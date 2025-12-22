@@ -5,8 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6FA">
+    android:background="#F4F6FA"
+    tools:context=".ui.account.AdminDetailUserActivity">
 
+    <!-- Header Include -->
     <include
         android:id="@+id/layoutHeader"
         layout="@layout/header_admin"/>
@@ -22,11 +24,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Top Blue Background -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:background="#0b5394"/>
 
+            <!-- Main Profile Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:padding="20dp">
 
+                    <!-- Avatar -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/avatar_container"
                         android:layout_width="100dp"
@@ -50,15 +55,18 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent">
+
                         <ImageView
                             android:id="@+id/img_user_avatar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_user"
                             android:scaleType="centerCrop"
-                            android:background="#E0E0E0"/>
+                            android:background="#E0E0E0"
+                            tools:ignore="ContentDescription" />
                     </androidx.cardview.widget.CardView>
 
+                    <!-- Edit Button -->
                     <ImageView
                         android:id="@+id/btn_action_edit"
                         android:layout_width="32dp"
@@ -72,14 +80,16 @@
                         app:layout_constraintBottom_toBottomOf="@id/avatar_container"
                         app:layout_constraintEnd_toEndOf="@id/avatar_container"
                         android:clickable="true"
-                        android:focusable="true"/>
+                        android:focusable="true"
+                        tools:ignore="ContentDescription" />
 
+                    <!-- User Name -->
                     <TextView
                         android:id="@+id/tv_detail_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Nguyễn Văn A"
+                        tools:text="Nguyễn Văn A"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#111827"
@@ -87,6 +97,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
+                    <!-- Status Chips -->
                     <LinearLayout
                         android:id="@+id/status_container"
                         android:layout_width="wrap_content"
@@ -108,6 +119,7 @@
                             android:backgroundTint="#EFF6FF"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp"/>
+
                         <TextView
                             android:id="@+id/tv_status_active"
                             android:layout_width="wrap_content"
@@ -122,6 +134,7 @@
                             android:paddingVertical="4dp"/>
                     </LinearLayout>
 
+                    <!-- Balance Section -->
                     <LinearLayout
                         android:id="@+id/balance_container"
                         android:layout_width="match_parent"
@@ -141,16 +154,17 @@
                             android:textColor="#6B7280"/>
 
                         <TextView
-                            android:id="@+id/tv_detail_balance"
+                            android:id="@+id/tv_total_balance_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12,500,000 VND"
+                            tools:text="12,500,000 VND"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:textColor="#111827"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
+                    <!-- Info Rows -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -158,40 +172,74 @@
                         android:orientation="vertical"
                         app:layout_constraintTop_toBottomOf="@id/balance_container">
 
+                        <!-- Phone -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
-                            <TextView android:text="Điện thoại:" android:textColor="#6B7280" android:layout_width="100dp" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/tv_detail_phone" android:text="0912 345 678" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Điện thoại:"
+                                android:textColor="#6B7280"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/tv_detail_phone"
+                                tools:text="0912 345 678"
+                                android:textColor="#111827"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6"/>
 
+                        <!-- Email -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
-                            <TextView android:text="Email:" android:textColor="#6B7280" android:layout_width="100dp" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/tv_detail_email" android:text="nguyenvana@gmail.com" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Email:"
+                                android:textColor="#6B7280"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/tv_detail_email"
+                                tools:text="nguyenvana@gmail.com"
+                                android:textColor="#111827"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6"/>
 
+                        <!-- Date -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
-                            <TextView android:text="Ngày tạo:" android:textColor="#6B7280" android:layout_width="100dp" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/tv_detail_date" android:text="01/01/2024" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Ngày tạo:"
+                                android:textColor="#6B7280"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/tv_detail_date"
+                                tools:text="01/01/2024"
+                                android:textColor="#111827"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- List Section Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -203,6 +251,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- List of Accounts -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_user_accounts"
                 android:layout_width="match_parent"
@@ -210,7 +259,8 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="24dp"
-                tools:listitem="@layout/item_admin_account_card"/>
+                tools:listitem="@layout/item_admin_account_card"
+                tools:itemCount="3"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

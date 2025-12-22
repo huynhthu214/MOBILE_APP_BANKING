@@ -43,12 +43,12 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         Account account = accountList.get(position);
 
         // 1. Hiển thị Loại tài khoản và Số tài khoản
-        holder.tvAccType.setText(account.getAccountType());
-        holder.tvAccNumber.setText(account.getAccountNumber());
+        holder.tvAccountTypeName.setText(account.getAccountType());
+        holder.tvAccountNumber.setText(account.getAccountNumber());
         holder.tvOwnerName.setText("Chủ thẻ: " + (account.getOwnerName() != null ? account.getOwnerName() : "N/A"));
         // 2. Định dạng số dư (VND)
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        holder.tvAccBalance.setText(formatter.format(account.getBalance()));
+        holder.tvAccountBalance.setText(formatter.format(account.getBalance()));
         // 3. Logic thay đổi Icon theo loại tài khoản (Nếu cần)
         if (account.getAccountType().equalsIgnoreCase("SAVING")) {
             holder.imgAccIcon.setImageResource(R.drawable.ic_card); // Bạn cần icon này
@@ -62,7 +62,6 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
         }
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, AdminAccountDetailActivity.class);
-            // Truyền ACCOUNT_ID để màn hình chi tiết gọi API
             intent.putExtra("ACCOUNT_ID", account.getAccountId());
             context.startActivity(intent);
         });
@@ -75,14 +74,14 @@ public class AdminAccountAdapter extends RecyclerView.Adapter<AdminAccountAdapte
 
     public static class AccountViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAccIcon;
-        TextView tvAccType, tvAccNumber, tvAccBalance, tvOwnerName;
+        TextView tvAccountTypeName, tvAccountNumber, tvAccountBalance, tvOwnerName;
 
         public AccountViewHolder(@NonNull View itemView) {
             super(itemView);
             imgAccIcon = itemView.findViewById(R.id.img_acc_icon);
-            tvAccType = itemView.findViewById(R.id.tv_acc_type);
-            tvAccNumber = itemView.findViewById(R.id.tv_acc_number);
-            tvAccBalance = itemView.findViewById(R.id.tv_acc_balance);
+            tvAccountTypeName = itemView.findViewById(R.id.tv_acc_type);
+            tvAccountNumber = itemView.findViewById(R.id.tv_acc_number);
+            tvAccountBalance = itemView.findViewById(R.id.tv_acc_balance);
             tvOwnerName = itemView.findViewById(R.id.tvOwnerName);
         }
     }

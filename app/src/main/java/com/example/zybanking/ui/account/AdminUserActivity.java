@@ -84,9 +84,8 @@ public class AdminUserActivity extends HeaderAdmin {
     }
 
     private void loadToken() {
-        SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String savedToken = pref.getString("auth_token", "");
-        token = savedToken.startsWith("Bearer ") ? savedToken : "Bearer " + savedToken;
+        SharedPreferences pref = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        token = "Bearer " + pref.getString("access_token", "");
     }
 
     private void loadUsers(String query) {

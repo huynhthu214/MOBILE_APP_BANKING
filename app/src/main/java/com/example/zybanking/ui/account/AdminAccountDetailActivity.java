@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zybanking.HeaderAdmin;
 import com.example.zybanking.R;
@@ -30,21 +34,20 @@ public class AdminAccountDetailActivity extends HeaderAdmin {
     private Button btnLock;
     private String accountId, token;
     private ApiService apiService;
+    private LinearLayout layoutRateRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_account_detail);
+        SharedPreferences pref = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        token = "Bearer " + pref.getString("auth_token", "");
 
         initHeader();
         initViews();
 
         accountId = getIntent().getStringExtra("ACCOUNT_ID");
         apiService = RetrofitClient.getClient().create(ApiService.class);
-
-        SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        token = "Bearer " + pref.getString("auth_token", "");
-
         if (accountId != null) {
             loadAccountDetail();
         }
@@ -58,6 +61,7 @@ public class AdminAccountDetailActivity extends HeaderAdmin {
         tvStatus = findViewById(R.id.tv_detail_status);
         tvRate = findViewById(R.id.tv_detail_rate);
         btnLock = findViewById(R.id.btn_lock_account);
+        layoutRateRow = findViewById(R.id.layout_rate_row);
         // Giả sử bạn thêm ID này vào XML để đổi chữ "Số dư hiện tại"
         tvBalanceLabel = findViewById(R.id.tv_balance_label);
 
@@ -83,51 +87,44 @@ public class AdminAccountDetailActivity extends HeaderAdmin {
     }
 
     private void displayData(AccountSummaryResponse response) {
-        // 1. Kiểm tra null an toàn
-        if (response == null || response.data == null) {
-            Toast.makeText(this, "Dữ liệu trống", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 2. Lấy object data bên trong ra
+        if (response == null || response.data == null) return;
         AccountSummaryResponse.AccountData info = response.data;
 
-        String type = (info.type != null) ? info.type.toLowerCase() : "checking";
+        // 1. Set thông tin chung
+        tvOwner.setText(info.ownerName != null ? info.ownerName : "Chưa cập nhật");
+        tvNumber.setText(info.accountNumber);
+
         NumberFormat fmt = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-        // 3. Cập nhật UI dựa trên biến 'info' (thay vì 'data.getType()')
-        switch (type) {
-            case "saving":
-                tvType.setText("TÀI KHOẢN TIẾT KIỆM");
-                tvBalanceLabel.setText("Số tiền tiết kiệm");
-                // Dùng info.principalAmount, kiểm tra null nếu cần
-                double principal = info.principalAmount != null ? info.principalAmount : 0.0;
-                tvBalance.setText(fmt.format(principal));
-                tvRate.setText(info.interestRate + "% / năm");
-                break;
+        // 2. Xử lý hiển thị theo loại
+        String type = info.type != null ? info.type.toLowerCase() : "checking";
 
-            case "mortgage":
-                tvType.setText("TÀI KHOẢN THẾ CHẤP");
-                tvBalanceLabel.setText("Thanh toán kỳ tới");
-                double payment = info.paymentAmount != null ? info.paymentAmount : 0.0;
-                tvBalance.setText(fmt.format(payment));
-                tvRate.setText(info.interestRate + "% / năm");
-                break;
-
-            default: // checking
-                tvType.setText("TÀI KHOẢN THANH TOÁN");
-                tvBalanceLabel.setText("Số dư hiện tại");
-                double balance = info.balance != null ? info.balance : 0.0;
-                tvBalance.setText(fmt.format(balance));
-                tvRate.setText("Không áp dụng");
-                break;
+        if (type.equals("checking")) {
+            if(layoutRateRow != null) layoutRateRow.setVisibility(View.GONE);
+            tvType.setText("TÀI KHOẢN THANH TOÁN");
+            tvBalanceLabel.setText("Số dư khả dụng");
+            tvBalance.setText(fmt.format(info.balance));
+            tvRate.setText("");
+        }
+        else if (type.equals("saving")) {
+            if(layoutRateRow != null) layoutRateRow.setVisibility(View.VISIBLE);
+            tvType.setText("TIẾT KIỆM");
+            tvBalanceLabel.setText("Số tiền gửi gốc");
+            // Lấy từ principalAmount
+            double amount = info.principalAmount != null ? info.principalAmount : info.balance;
+            tvBalance.setText(fmt.format(amount));
+            tvRate.setText(info.interestRate + "% / năm");
+        }
+        else if (type.equals("mortgage")) {
+            if(layoutRateRow != null) layoutRateRow.setVisibility(View.VISIBLE);
+            tvType.setText("KHOẢN VAY");
+            tvBalanceLabel.setText("Dư nợ còn lại");
+            // Lấy từ remainingBalance
+            double amount = info.remainingBalance != null ? info.remainingBalance : 0;
+            tvBalance.setText(fmt.format(amount));
+            tvRate.setText(info.interestRate + "% / năm");
         }
 
-        // 4. Các thông tin chung
-        tvNumber.setText(info.accountNumber);
-        tvOwner.setText(info.ownerName);
-
-        // Sửa status
         updateStatusUI(info.accountStatus);
     }
     private void updateStatusUI(String status) {

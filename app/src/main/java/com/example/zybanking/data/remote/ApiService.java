@@ -249,5 +249,7 @@ public interface ApiService {
     );
     @GET("auth/last-token")
     Call<LoginResponse> getLastToken(@Query("email") String email);
+    @PUT("api/v1/users/{id}") // Đường dẫn phải khớp với backend Python route update_user
+    Call<Map<String, Object>> updateUser(@Header("Authorization") String token, @Path("id") String userId, @Body Map<String, Object> body);
 }
 

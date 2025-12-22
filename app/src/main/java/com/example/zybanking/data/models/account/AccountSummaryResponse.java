@@ -13,38 +13,38 @@ public class AccountSummaryResponse {
 
     // --- Inner Class chứa dữ liệu thực tế ---
     public static class AccountData {
-        @SerializedName("account_id")
+        @SerializedName("ACCOUNT_ID")
         public String accountId;
 
-        @SerializedName("account_number")
+        @SerializedName("ACCOUNT_NUMBER")
         public String accountNumber;
 
-        @SerializedName("balance")
+        @SerializedName("BALANCE")
         public Double balance;
 
-        @SerializedName("type")
+        @SerializedName("ACCOUNT_TYPE")
         public String type; // CHECKING, SAVING, MORTGAGE
 
-        @SerializedName("interest_rate")
+        @SerializedName("INTEREST_RATE")
         public Double interestRate;
 
-        @SerializedName("full_name")
+        @SerializedName("FULL_NAME")
         public String ownerName;
 
-        @SerializedName("status_acc")
+        @SerializedName("STATUS")
         public String accountStatus;
 
         @SerializedName("last_transactions")
         public List<Transaction> lastTransactions;
 
         // --- CÁC TRƯỜNG CHO MORTGAGE (KHOẢN VAY) ---
-        @SerializedName("payment_amount")
+        @SerializedName("PAYMENT_AMOUNT")
         public Double paymentAmount;
 
-        @SerializedName("next_payment_date")
+        @SerializedName("NEXT_PAYMENT_DATE")
         public String nextPaymentDate;
 
-        @SerializedName("remaining_balance")
+        @SerializedName("REMAINING_BALANCE")
         public Double remainingBalance;
 
         @SerializedName("total_loan_amount") // <-- Đã thêm trường bị thiếu
@@ -54,7 +54,7 @@ public class AccountSummaryResponse {
         public String paymentFrequency;
 
         // --- CÁC TRƯỜNG CHO SAVING ---
-        @SerializedName("principal_amount")
+        @SerializedName("PRINCIPAL_AMOUNT")
         public Double principalAmount;
 
         @SerializedName("maturity_date")

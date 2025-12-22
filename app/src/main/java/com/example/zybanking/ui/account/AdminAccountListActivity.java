@@ -45,8 +45,17 @@ public class AdminAccountListActivity extends HeaderAdmin {
     private void initViews() {
         edtSearch = findViewById(R.id.edtSearchAccount);
         rvAccounts = findViewById(R.id.rvAccountsList);
-
+        if (edtSearch != null) {
+            edtSearch.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    loadAccounts(s.toString().trim());
+                }
+                @Override public void afterTextChanged(Editable s) {}
+            });
+        }
         rvAccounts.setLayoutManager(new LinearLayoutManager(this));
+        if (accountList == null) accountList = new ArrayList<>();
         adapter = new AdminAccountAdapter(this, accountList);
         rvAccounts.setAdapter(adapter);
 
@@ -67,21 +76,23 @@ public class AdminAccountListActivity extends HeaderAdmin {
 
     private void setupApiService() {
         apiService = RetrofitClient.getClient().create(ApiService.class);
-        SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        token = "Bearer " + pref.getString("auth_token", "");
+        SharedPreferences pref = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        token = "Bearer " + pref.getString("access_token", "");
     }
 
     private void loadAccounts(String query) {
-        apiService.getAdminAccounts(token, query).enqueue(new Callback<AccountListResponse>() { // Giờ đã khớp
+        if (apiService == null || token == null) return; // Tránh crash nếu chưa init xong
+
+        apiService.getAdminAccounts(token, query).enqueue(new Callback<AccountListResponse>() {
             @Override
             public void onResponse(Call<AccountListResponse> call, Response<AccountListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     accountList.clear();
-                    // Lấy mảng bên trong trường data
                     if (response.body().getData() != null) {
                         accountList.addAll(response.body().getData());
                     }
-                    adapter.notifyDataSetChanged();
+                    // Chỉ notify khi adapter đã được gán
+                    if (adapter != null) adapter.notifyDataSetChanged();
                 }
             }
 
