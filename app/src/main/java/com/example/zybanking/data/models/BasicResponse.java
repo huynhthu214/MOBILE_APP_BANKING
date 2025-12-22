@@ -7,4 +7,5 @@ public class BasicResponse {
     // optional
     public String transaction_id;
     public String utility_payment_id;
+    public String full_name;
 }
