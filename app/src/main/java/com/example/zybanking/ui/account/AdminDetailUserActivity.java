@@ -55,14 +55,18 @@ public class AdminDetailUserActivity extends HeaderAdmin {
         apiService = RetrofitClient.getClient().create(ApiService.class);
 
         userId = getIntent().getStringExtra("USER_ID");
-        if (userId == null || userId.isEmpty()) {
-            Toast.makeText(this, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        // Tạm thời bỏ qua check userId để test giao diện
+        // if (userId == null || userId.isEmpty()) { ... }
 
         initViews();
-        loadUserDetail(userId);
+
+        // --- CHỌN 1 TRONG 2 CÁCH DƯỚI ĐÂY ---
+
+        // Cách 1: Gọi API thật (Code cũ)
+        // loadUserDetail(userId);
+
+        // Cách 2: Gọi Mock Data (Code mới để test giao diện)
+        loadMockData();
     }
 
     private void initViews() {
@@ -82,9 +86,65 @@ public class AdminDetailUserActivity extends HeaderAdmin {
 
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminEditInforActivity.class);
-            intent.putExtra("USER_ID", userId);
+            intent.putExtra("USER_ID", userId != null ? userId : "U_008");
             startActivity(intent);
         });
+    }
+
+    // --- HÀM MOCK DATA ---
+    private void loadMockData() {
+        // 1. Giả lập thông tin User
+        tvName.setText("Trần Văn Mock");
+        tvPhone.setText("0909 123 456");
+        tvEmail.setText("tranvanmock@gmail.com");
+        tvDate.setText("20/12/2024");
+
+        // 2. Giả lập trạng thái
+        tvStatusActive.setText("Hoạt động");
+        tvStatusActive.setTextColor(Color.parseColor("#16A34A"));
+        tvStatusActive.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#F0FDF4")));
+
+        tvStatusVerify.setText("approved"); // Hoặc "pending", "rejected"
+
+        // 3. Giả lập danh sách tài khoản
+        accountList.clear();
+
+        // Tài khoản 1: Thanh toán
+        Account acc1 = new Account();
+        acc1.setAccountNumber("1900123456789");
+        acc1.setAccountType("checking"); // checking, saving, mortgage
+        acc1.setBalance(5500000.0);
+        acc1.setOwnerName("Trần Văn Mock");
+        accountList.add(acc1);
+
+        // Tài khoản 2: Tiết kiệm
+        Account acc2 = new Account();
+        acc2.setAccountNumber("888899990000");
+        acc2.setAccountType("saving");
+        acc2.setBalance(120000000.0);
+        acc2.setOwnerName("Nguyễn Văn A");
+        accountList.add(acc2);
+
+        // Tài khoản 3: Khoản vay
+        Account acc3 = new Account();
+        acc3.setAccountNumber("VN-LOAN-001");
+        acc3.setAccountType("mortgage");
+        acc3.setBalance(500000000.0); // Dư nợ
+        acc3.setOwnerName("Nguyễn Văn A");
+        accountList.add(acc3);
+
+        // 4. Tính tổng tiền (trừ khoản vay)
+        double totalBalance = 0;
+        for (Account acc : accountList) {
+            if (!"mortgage".equalsIgnoreCase(acc.getAccountType())) {
+                totalBalance += acc.getBalance();
+            }
+        }
+
+        // 5. Cập nhật UI
+        accountAdapter.notifyDataSetChanged();
+        tvTotalBalance.setText(formatCurrency(totalBalance));
+
     }
 
     private void loadToken() {
@@ -92,52 +152,36 @@ public class AdminDetailUserActivity extends HeaderAdmin {
         token = "Bearer " + pref.getString("access_token", "");
     }
 
+    // Giữ lại hàm API thật để sau này dùng
     private void loadUserDetail(String id) {
+        if (id == null) return;
         apiService.getUserDetail(token, id).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (!response.isSuccessful() || response.body() == null) {
+                if (response.isSuccessful() && response.body() != null) {
+                    UserResponse.Data data = response.body().getData();
+                    bindUserInfo(data);
+                } else {
                     Toast.makeText(AdminDetailUserActivity.this, "Không lấy được dữ liệu", Toast.LENGTH_SHORT).show();
-                    finish(); // Đóng activity nếu lỗi server
-                    return;
                 }
-
-                UserResponse.Data data = response.body().getData();
-                if (data == null || data.getUser() == null) {
-                    Toast.makeText(AdminDetailUserActivity.this, "Dữ liệu người dùng trống", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // --- XÓA ĐOẠN CHECK ROLE SAI LOGIC NÀY ĐI ---
-            /* if (!"admin".equalsIgnoreCase(data.getUser().getRole())) {
-                 ...
-            }
-            */
-
-                // Hiển thị thông tin
-                bindUserInfo(data);
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 Toast.makeText(AdminDetailUserActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
-                // Không nhất thiết phải finish() ở đây, có thể cho user thử lại
             }
         });
     }
 
     private void bindUserInfo(UserResponse.Data data) {
         if (data == null) return;
-
-        // 1. Map User Info
-        User user = data.getUser(); // Sử dụng class User đã tách ra ở bước 1
+        User user = data.getUser();
         if (user != null) {
             tvName.setText(user.getFullName());
             tvEmail.setText(user.getEmail());
             tvPhone.setText(user.getPhone() != null ? user.getPhone() : "Chưa cập nhật");
             tvDate.setText(user.getCreatedAt());
 
-            // Status
             if (user.isActive()) {
                 tvStatusActive.setText("Hoạt động");
                 tvStatusActive.setTextColor(Color.parseColor("#16A34A"));
@@ -149,7 +193,6 @@ public class AdminDetailUserActivity extends HeaderAdmin {
             }
         }
 
-        // 2. Map EKYC
         UserResponse.Ekyc ekyc = data.getEkyc();
         if (ekyc != null) {
             tvStatusVerify.setText(ekyc.getStatus());
@@ -157,20 +200,16 @@ public class AdminDetailUserActivity extends HeaderAdmin {
             tvStatusVerify.setText("Chưa xác thực");
         }
 
-        // 3. Map Accounts (Sử dụng getMapValue để an toàn)
         accountList.clear();
         double totalBalance = 0;
 
         if (data.getAccounts() != null) {
             for (Map<String, Object> accMap : data.getAccounts()) {
                 Account acc = new Account();
-
-                // Lấy dữ liệu an toàn
                 acc.setAccountNumber(getMapValue(accMap, "ACCOUNT_NUMBER"));
                 acc.setAccountType(getMapValue(accMap, "ACCOUNT_TYPE"));
                 if (user != null) acc.setOwnerName(user.getFullName());
 
-                // Xử lý Balance
                 String balStr = getMapValue(accMap, "BALANCE");
                 double balance = 0;
                 try {
@@ -178,15 +217,9 @@ public class AdminDetailUserActivity extends HeaderAdmin {
                 } catch (Exception e) {}
                 acc.setBalance(balance);
 
-                // Tính tổng tiền (Trừ khoản vay)
                 if (!"mortgage".equalsIgnoreCase(acc.getAccountType())) {
                     totalBalance += balance;
                 }
-
-                // Lấy ID để click
-                // String accId = getMapValue(accMap, "ACCOUNT_ID");
-                // acc.setAccountId(accId); // Cần setter này trong Account.java
-
                 accountList.add(acc);
             }
         }
@@ -194,17 +227,14 @@ public class AdminDetailUserActivity extends HeaderAdmin {
         accountAdapter.notifyDataSetChanged();
         tvTotalBalance.setText(formatCurrency(totalBalance));
     }
+
     private String getMapValue(Map<String, Object> map, String key) {
         if (map == null) return "";
-        if (map.containsKey(key) && map.get(key) != null) {
-            return String.valueOf(map.get(key));
-        }
-        // Fallback: thử tìm key chữ thường (phòng hờ)
-        if (map.containsKey(key.toLowerCase()) && map.get(key.toLowerCase()) != null) {
-            return String.valueOf(map.get(key.toLowerCase()));
-        }
+        if (map.containsKey(key) && map.get(key) != null) return String.valueOf(map.get(key));
+        if (map.containsKey(key.toLowerCase()) && map.get(key.toLowerCase()) != null) return String.valueOf(map.get(key.toLowerCase()));
         return "";
     }
+
     private String formatCurrency(double amount) {
         return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(amount);
     }

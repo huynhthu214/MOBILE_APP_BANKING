@@ -1,7 +1,6 @@
 package com.example.zybanking.data.remote;
 
 import com.example.zybanking.data.models.TransactionHistoryResponse;
-import com.example.zybanking.data.models.account.Account;
 import com.example.zybanking.data.models.account.AccountListResponse;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
@@ -40,25 +39,24 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
+
 public interface ApiService {
     // Login
     @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
+
     // Forgot password - gửi OTP
     @POST("auth/forgot-password")
-    Call<ForgotPasswordResponse> forgotPassword(
-            @Body ForgotPasswordRequest request
-    );
+    Call<ForgotPasswordResponse> forgotPassword(@Body ForgotPasswordRequest request);
+
     // Verify OTP
     @POST("otp/verify")
-    Call<ForgotPasswordResponse> verifyOtp(
-            @Body VerifyOtpRequest request
-    );
+    Call<ForgotPasswordResponse> verifyOtp(@Body VerifyOtpRequest request);
+
     // Reset password
     @POST("auth/reset-password")
-    Call<ForgotPasswordResponse> resetPassword(
-            @Body ResetPasswordRequest request
-    );
+    Call<ForgotPasswordResponse> resetPassword(@Body ResetPasswordRequest request);
+
     // Resend OTP
     @POST("otp/resend")
     Call<ForgotPasswordResponse> resendOtp(@Body Map<String, String> body);
@@ -72,17 +70,22 @@ public interface ApiService {
 
     @GET("users/me")
     Call<UserResponse> getCurrentUser(@Header("Authorization") String token);
+
+    // Hàm update cho User tự sửa (nếu có dùng)
     @PUT("users/{user_id}")
     Call<BasicResponse> updateUser(
             @Path("user_id") String userId,
             @Body Map<String, Object> updateData
     );
+
     @GET("accounts/{account_id}/summary")
     Call<AccountSummaryResponse> getAccountSummary(@Path("account_id") String accountId);
+
     @POST("auth/change-password")
     Call<BasicResponse> changePassword(
             @Header("Authorization") String token,
             @Body ChangePasswordRequest request);
+
     @GET("transactions/recent")
     Call<List<Transaction>> getRecentTransactions(
             @Query("user_id") String userId,
@@ -109,8 +112,10 @@ public interface ApiService {
             @Query("account_id") String accountId,
             @Query("page") int page
     );
+
     @GET("transactions/lookup/{account_number}")
     Call<BasicResponse> lookupAccount(@Path("account_number") String accountNumber);
+
     @POST("transactions/withdraw/create")
     Call<BasicResponse> withdrawCreate(@Body WithdrawRequest request);
 
@@ -130,14 +135,17 @@ public interface ApiService {
     // UTILITY
     @POST("utility/topup")
     Call<BasicResponse> utilityTopup(@Body UtilityTopupRequest body);
+
     @POST("utility/confirm")
     Call<BasicResponse> utilityConfirm(@Body OtpConfirmRequest body);
+
     @GET("utility/{utility_payment_id}")
     Call<UtilityResponse> getUtilityDetail(@Path("utility_payment_id") String id);
+
     @POST("transactions/mortgage/pay")
     Call<BasicResponse> payMortgage(@Body MortgagePaymentRequest body);
 
-//LOCATON
+    // LOCATION
     @GET("branches/nearby")
     Call<List<Branch>> getNearbyBranches(
             @Query("lat") double lat,
@@ -152,12 +160,12 @@ public interface ApiService {
             @Query("from_lng") double fromLng
     );
 
-    //ekyc
-        @POST("ekyc/create")
-        Call<BasicResponse> submitEKYC(
-                @Header("Authorization") String token,
-                @Body EkycRequest request
-        );
+    // EKYC
+    @POST("ekyc/create")
+    Call<BasicResponse> submitEKYC(
+            @Header("Authorization") String token,
+            @Body EkycRequest request
+    );
 
     @POST("users/{user_id}/ekyc")
     Call<BasicResponse> createEkyc(
@@ -165,13 +173,12 @@ public interface ApiService {
             @Path("user_id") String userId,
             @Body EkycRequest request
     );
-    // Lấy thông tin eKYC (Khớp với get_ekyc_route)
+
     @GET("users/{user_id}/ekyc")
     Call<EkycResponse> getMyEkyc(@Path("user_id") String userId);
 
     // --- Dành cho ADMIN ---
 
-    // Lấy danh sách chờ (Khớp với get_pending)
     @GET("users/pending")
     Call<EkycListResponse> getPendingEkyc(@Header("Authorization") String token);
 
@@ -181,35 +188,36 @@ public interface ApiService {
             @Path("user_id") String userId,
             @Body Map<String, Object> reviewData
     );
+
     @PATCH("users/{user_id}/ekyc")
     Call<BasicResponse> updateEkyc(
             @Header("Authorization") String token,
             @Path("user_id") String userId,
             @Body EkycRequest request
     );
+
     @GET("accounts/rates")
     Call<Map<String, Object>> getInterestRates(@Header("Authorization") String token);
 
     @PUT("accounts/rates")
     Call<BasicResponse> updateInterestRates(@Header("Authorization") String token, @Body Map<String, Double> rates);
-    //NOTI
+
+    // NOTI
     @GET("notifications/{userId}")
     Call<List<Notification>> getNotifications(@Path("userId") String userId);
+
     @PUT("notifications/{userId}/read")
     Call<BasicResponse> markNotificationsAsRead(@Path("userId") String userId);
-    // data/remote/ApiService.java
+
     @PUT("notifications/mark-read/{notiId}")
     Call<BasicResponse> markSingleNotificationAsRead(@Path("notiId") String notiId);
 
     @GET("admin/dashboard/stats")
-    Call<Map<String, Object>> getAdminStats(
-            @Header("Authorization") String token
-    );
+    Call<Map<String, Object>> getAdminStats(@Header("Authorization") String token);
 
     @GET("admin/dashboard/weekly-transactions")
-    Call<List<Map<String, Object>>> getWeeklyTransactions(
-            @Header("Authorization") String token
-    );
+    Call<List<Map<String, Object>>> getWeeklyTransactions(@Header("Authorization") String token);
+
     @GET("admin/users")
     Call<UserListResponse> getAdminUsers(@Header("Authorization") String token, @Query("search") String search);
 
@@ -219,21 +227,25 @@ public interface ApiService {
             @Query("search") String search,
             @Query("status") String status
     );
+
     @POST("admin/users/create")
     Call<BasicResponse> createCustomer(
             @Header("Authorization") String token,
             @Body CreateUserRequest request
     );
+
     @GET("users/{id}")
     Call<UserResponse> getUserDetail(
             @Header("Authorization") String token,
             @Path("id") String userId
     );
+
     @GET("accounts")
-    Call<AccountListResponse> getAdminAccounts( // Sửa List<Account> thành AccountListResponse
-                                                @Header("Authorization") String token,
-                                                @Query("search") String search
+    Call<AccountListResponse> getAdminAccounts(
+            @Header("Authorization") String token,
+            @Query("search") String search
     );
+
     @Multipart
     @POST("biometric/face/register")
     Call<BasicResponse> registerFace(
@@ -247,9 +259,16 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Part MultipartBody.Part faceImage
     );
+
     @GET("auth/last-token")
     Call<LoginResponse> getLastToken(@Query("email") String email);
-    @PUT("api/v1/users/{id}") // Đường dẫn phải khớp với backend Python route update_user
-    Call<Map<String, Object>> updateUser(@Header("Authorization") String token, @Path("id") String userId, @Body Map<String, Object> body);
-}
 
+    // --- ĐÃ SỬA LẠI PHẦN UPDATE USER CHO ADMIN ---
+    // Loại bỏ "api/v1/" dư thừa, chỉ dùng "users/{id}"
+    @PUT("users/{id}")
+    Call<Map<String, Object>> updateUser(
+            @Header("Authorization") String token,
+            @Path("id") String userId,
+            @Body Map<String, Object> body
+    );
+}

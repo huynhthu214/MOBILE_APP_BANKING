@@ -3,6 +3,7 @@ package com.example.zybanking.ui.account;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.zybanking.HeaderAdmin;
 import com.example.zybanking.R;
+// Import đúng class User
 import com.example.zybanking.data.models.auth.User;
 import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.remote.ApiService;
@@ -30,7 +32,6 @@ public class AdminEditInforActivity extends HeaderAdmin {
     private TextView btnDelete;
     private Button btnSave;
 
-    // Các trường nhập liệu
     private TextInputEditText etFullName, etIdentity, etDob, etPhone, etEmail, etAddress;
     private SwitchMaterial switchStatus;
 
@@ -41,9 +42,9 @@ public class AdminEditInforActivity extends HeaderAdmin {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.admin_edit_infor_user); // Đảm bảo đúng tên file XML của bạn
+        setContentView(R.layout.admin_edit_infor_user); // Đảm bảo tên layout đúng
 
-        // 1. Lấy Token và User ID từ Intent
+        // 1. Lấy Token & ID
         SharedPreferences pref = getSharedPreferences("auth", Context.MODE_PRIVATE);
         token = "Bearer " + pref.getString("access_token", "");
         userId = getIntent().getStringExtra("USER_ID");
@@ -65,7 +66,6 @@ public class AdminEditInforActivity extends HeaderAdmin {
         btnDelete = findViewById(R.id.btn_delete_customer);
         btnSave = findViewById(R.id.btn_save_changes);
 
-        // Ánh xạ View từ XML
         etFullName = findViewById(R.id.et_edit_fullname);
         etIdentity = findViewById(R.id.et_edit_identity);
         etDob = findViewById(R.id.et_edit_dob);
@@ -74,47 +74,54 @@ public class AdminEditInforActivity extends HeaderAdmin {
         etAddress = findViewById(R.id.et_edit_address);
         switchStatus = findViewById(R.id.switch_account_status);
 
-        // Sự kiện
         btnBack.setOnClickListener(v -> finish());
-
         btnSave.setOnClickListener(v -> saveChanges());
-
-        btnDelete.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng xóa đang phát triển", Toast.LENGTH_SHORT).show();
-        });
+        btnDelete.setOnClickListener(v -> Toast.makeText(this, "Chức năng xóa đang phát triển", Toast.LENGTH_SHORT).show());
     }
 
     private void loadUserData() {
+        // Log để kiểm tra ID gửi đi
+        Log.d("AdminEdit", "Loading user ID: " + userId);
+
         apiService.getUserDetail(token, userId).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    User user = response.body().getData().getUser();
+                // Log response code
+                Log.d("AdminEdit", "Response Code: " + response.code());
 
-                    // Bind dữ liệu lên UI
-                    etFullName.setText(user.getFullName());
-                    etEmail.setText(user.getEmail());
-                    etPhone.setText(user.getPhone());
-                    switchStatus.setChecked(user.isActive());
+                if (response.isSuccessful() && response.body() != null) {
+                    UserResponse.Data data = response.body().getData();
 
-                    // === XỬ LÝ CÁC TRƯỜNG CHƯA CÓ TRONG DB ===
-                    // Bảng USER hiện tại chỉ có: USER_ID, FULL_NAME, EMAIL, PHONE, ROLE, IS_ACTIVE
-                    // Các trường CMND, Ngày sinh, Địa chỉ chưa có cột trong DB -> Disable
+                    if (data != null && data.getUser() != null) {
+                        User user = data.getUser(); // Dùng class User độc lập
 
-                    etIdentity.setText("N/A (Chưa có trong DB)");
-                    etIdentity.setEnabled(false);
+                        // Bind dữ liệu
+                        etFullName.setText(user.getFullName());
+                        etEmail.setText(user.getEmail());
+                        etPhone.setText(user.getPhone());
+                        switchStatus.setChecked(user.isActive());
 
-                    etDob.setText("N/A (Chưa có trong DB)");
-                    etDob.setEnabled(false);
-
-                    etAddress.setText("N/A (Chưa có trong DB)");
-                    etAddress.setEnabled(false);
+                        // Các trường chưa có trong DB -> Set mặc định
+                        etIdentity.setText("N/A");
+                        etIdentity.setEnabled(false);
+                        etDob.setText("N/A");
+                        etDob.setEnabled(false);
+                        etAddress.setText("N/A");
+                        etAddress.setEnabled(false);
+                    } else {
+                        Log.e("AdminEdit", "Data or User object is NULL");
+                        Toast.makeText(AdminEditInforActivity.this, "Dữ liệu người dùng trống", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("AdminEdit", "Error Body: " + response.message());
+                    Toast.makeText(AdminEditInforActivity.this, "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                Toast.makeText(AdminEditInforActivity.this, "Lỗi tải dữ liệu", Toast.LENGTH_SHORT).show();
+                Log.e("AdminEdit", "Failure: " + t.getMessage());
+                Toast.makeText(AdminEditInforActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -130,20 +137,17 @@ public class AdminEditInforActivity extends HeaderAdmin {
             return;
         }
 
-        // Tạo Map body để gửi lên API Update
-        // Key phải khớp với các cột mà backend cho phép update (xem user_model.py: update_user)
         Map<String, Object> body = new HashMap<>();
         body.put("FULL_NAME", fullName);
         body.put("EMAIL", email);
         body.put("PHONE", phone);
         body.put("IS_ACTIVE", isActive ? 1 : 0);
 
-        apiService.updateUser(token, userId, body).enqueue(new Callback<Map<String, Object>>() { // Chú ý kiểu trả về của updateUser
+        apiService.updateUser(token, userId, body).enqueue(new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(AdminEditInforActivity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                    // Đóng activity để quay lại trang chi tiết (nó sẽ reload lại dữ liệu mới)
                     finish();
                 } else {
                     Toast.makeText(AdminEditInforActivity.this, "Lỗi cập nhật: " + response.code(), Toast.LENGTH_SHORT).show();
