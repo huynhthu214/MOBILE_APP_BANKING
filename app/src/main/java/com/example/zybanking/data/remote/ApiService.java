@@ -103,7 +103,8 @@ public interface ApiService {
 
     @GET("transactions/history")
     Call<TransactionHistoryResponse> getTransactionHistory(
-            @Header("Authorization") String token
+            @Query("account_id") String accountId,
+            @Query("page") int page
     );
 
     @POST("transactions/withdraw/create")

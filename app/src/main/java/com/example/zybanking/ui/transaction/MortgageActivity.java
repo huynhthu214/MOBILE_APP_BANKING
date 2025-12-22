@@ -94,51 +94,61 @@ public class MortgageActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUI(AccountSummaryResponse data) {
-        if (data.accountNumber != null) {
-            realAccNo = data.accountNumber;
+    private void updateUI(AccountSummaryResponse response) {
+        // 1. Kiểm tra an toàn: vì dữ liệu nằm trong response.data
+        if (response == null || response.data == null) {
+            Log.e("MortgageActivity", "Dữ liệu trả về bị NULL");
+            return;
+        }
+
+        // 2. Lấy object chứa dữ liệu thực tế
+        AccountSummaryResponse.AccountData actualData = response.data;
+
+        // 3. Sử dụng actualData thay vì data cũ
+        if (actualData.accountNumber != null) {
+            realAccNo = actualData.accountNumber;
             updateAccNoDisplay();
         }
-        if (tvPaymentAmount != null) tvPaymentAmount.setText(formatCurrency(data.paymentAmount));
 
-        if (tvDueDate != null && data.nextPaymentDate != null) {
-            tvDueDate.setText(formatDate(data.nextPaymentDate)); // Dùng hàm format
+        if (tvPaymentAmount != null) {
+            tvPaymentAmount.setText(formatCurrency(actualData.paymentAmount));
         }
+
+        if (tvDueDate != null && actualData.nextPaymentDate != null) {
+            tvDueDate.setText(formatDate(actualData.nextPaymentDate));
+        }
+
         if (tvInterestRate != null) {
-            if (data.interestRate != null) {
-                tvInterestRate.setText(data.interestRate + "%/năm");
+            if (actualData.interestRate != null) {
+                tvInterestRate.setText(actualData.interestRate + "%/năm");
             } else {
                 tvInterestRate.setText("---");
             }
         }
+
         // Cập nhật Tần suất
         if (tvFrequency != null) {
             String freq = "N/A";
-            if (data.paymentFrequency != null) {
-                // Map từ tiếng Anh sang tiếng Việt cho thân thiện
-                if (data.paymentFrequency.equalsIgnoreCase("monthly")) freq = "Hàng tháng";
-                else if (data.paymentFrequency.equalsIgnoreCase("weekly")) freq = "Hàng tuần";
-                else if (data.paymentFrequency.equalsIgnoreCase("biweekly")) freq = "2 tuần/lần";
-                else freq = data.paymentFrequency;
+            if (actualData.paymentFrequency != null) {
+                if (actualData.paymentFrequency.equalsIgnoreCase("monthly")) freq = "Hàng tháng";
+                else if (actualData.paymentFrequency.equalsIgnoreCase("weekly")) freq = "Hàng tuần";
+                else if (actualData.paymentFrequency.equalsIgnoreCase("biweekly")) freq = "2 tuần/lần";
+                else freq = actualData.paymentFrequency;
             }
             tvFrequency.setText(freq);
         }
 
         // Tính toán Dư nợ & Progress Bar
-        if (data.totalLoanAmount != null && data.remainingBalance != null) {
-            double total = data.totalLoanAmount;
-            double remaining = data.remainingBalance;
+        if (actualData.totalLoanAmount != null && actualData.remainingBalance != null) {
+            double total = actualData.totalLoanAmount;
+            double remaining = actualData.remainingBalance;
 
-            // Số tiền đã trả = Tổng vay - Còn lại
             double paid = total - remaining;
-            if (paid < 0) paid = 0; // Đề phòng dữ liệu sai
+            if (paid < 0) paid = 0;
 
-            // Tính % tiến độ (Tránh chia cho 0)
             int progress = (total > 0) ? (int) ((paid / total) * 100) : 0;
 
-            // Hiển thị lên UI
             if (tvRemainingBalance != null) {
-                // Có thể hiển thị text hoặc chỉ số tiền
                 tvRemainingBalance.setText("Dư nợ còn lại: " + formatCurrency(remaining));
             }
 

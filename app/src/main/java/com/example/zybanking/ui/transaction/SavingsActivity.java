@@ -3,6 +3,7 @@ package com.example.zybanking.ui.transaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,9 +36,10 @@ public class SavingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_savings);
-        // Nhận Account ID từ Intent
+
         accountId = getIntent().getStringExtra("ACCOUNT_ID");
         initViews();
+
         if (accountId != null) {
             loadData();
         } else {
@@ -47,32 +49,34 @@ public class SavingsActivity extends AppCompatActivity {
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
-        // Ánh xạ các TextView trong basic_savings.xml
-        tvBalance = findViewById(R.id.tv_detail_balance);     // Tổng tiền
-        tvPrincipal = findViewById(R.id.tv_detail_principal); // Tiền gốc
-        tvRate = findViewById(R.id.tv_detail_rate);           // Lãi suất
-        tvProfit = findViewById(R.id.tv_detail_profit);       // Lợi nhuận
-        tvMaturity = findViewById(R.id.tv_detail_maturity);   // Ngày đáo hạn
+        tvBalance = findViewById(R.id.tv_detail_balance);
+        tvPrincipal = findViewById(R.id.tv_detail_principal);
+        tvRate = findViewById(R.id.tv_detail_rate);
+        tvProfit = findViewById(R.id.tv_detail_profit);
+        tvMaturity = findViewById(R.id.tv_detail_maturity);
+        tvAccNo = findViewById(R.id.tv_saving_acc_no);
+        imgToggleAcc = findViewById(R.id.img_toggle_saving_acc);
+
         btnDeposit = findViewById(R.id.btn_save_deposit);
         btnWithdraw = findViewById(R.id.btn_save_withdraw);
-        // Xử lý sự kiện Gửi thêm -> Chuyển sang DepositActivity
-        btnDeposit.setOnClickListener(v -> {
-            Intent intent = new Intent(SavingsActivity.this, DepositSavingActivity.class);
-            intent.putExtra("ACCOUNT_ID", accountId); // Truyền ID để nạp đúng tk
-            startActivity(intent);
-        });
 
-        // Xử lý sự kiện Rút/Tất toán -> Chuyển sang WithdrawActivity
-        btnWithdraw.setOnClickListener(v -> {
-                    Intent intent = new Intent(SavingsActivity.this, WithdrawSavingActivity.class);
-                    intent.putExtra("ACCOUNT_ID", accountId);
-                    startActivity(intent);
-                });
-        // Phần số tài khoản
-        tvAccNo = findViewById(R.id.tv_saving_acc_no);        // TextView số TK (thêm id này vào xml nếu chưa có)
-        imgToggleAcc = findViewById(R.id.img_toggle_saving_acc); // Icon mắt
+        if (btnDeposit != null) {
+            btnDeposit.setOnClickListener(v -> {
+                Intent intent = new Intent(SavingsActivity.this, DepositSavingActivity.class);
+                intent.putExtra("ACCOUNT_ID", accountId);
+                startActivity(intent);
+            });
+        }
+
+        if (btnWithdraw != null) {
+            btnWithdraw.setOnClickListener(v -> {
+                Intent intent = new Intent(SavingsActivity.this, WithdrawSavingActivity.class);
+                intent.putExtra("ACCOUNT_ID", accountId);
+                startActivity(intent);
+            });
+        }
 
         if (imgToggleAcc != null) {
             imgToggleAcc.setOnClickListener(v -> {
@@ -81,18 +85,20 @@ public class SavingsActivity extends AppCompatActivity {
             });
         }
     }
+
     private void loadData() {
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getAccountSummary(accountId).enqueue(new Callback<AccountSummaryResponse>() {
             @Override
             public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    AccountSummaryResponse data = response.body();
-                    updateUI(data);
+                    // TRUYỀN TOÀN BỘ RESPONSE VÀO UPDATEUI
+                    updateUI(response.body());
                 } else {
-                    Toast.makeText(SavingsActivity.this, "Lỗi tải dữ liệu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SavingsActivity.this, "Lỗi tải dữ liệu tiết kiệm", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {
                 Log.e("SavingsActivity", "Error: " + t.getMessage());
@@ -100,30 +106,51 @@ public class SavingsActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUI(AccountSummaryResponse data) {
-        // 1. Cập nhật số tài khoản thực để dùng cho chức năng ẩn/hiện
-        if (data.accountNumber != null) {
-            realAccNo = data.accountNumber;
+    private void updateUI(AccountSummaryResponse response) {
+        // 1. Kiểm tra an toàn vì dữ liệu nằm trong response.data
+        if (response == null || response.data == null) {
+            Log.e("SavingsActivity", "updateUI: Data is null");
+            return;
+        }
+
+        // 2. Lấy object chứa dữ liệu thực tế (Lấy từ AccountData đã sửa ở file Model)
+        AccountSummaryResponse.AccountData actualData = response.data;
+
+        // 3. Cập nhật số tài khoản
+        if (actualData.accountNumber != null) {
+            realAccNo = actualData.accountNumber;
             updateAccNoDisplay();
         }
-        // 2. Cập nhật các thông số tiền tệ
-        if (tvBalance != null) tvBalance.setText(formatCurrency(data.balance));
-        // Lưu ý: data.principalAmount cần backend trả về. Nếu chưa có, tạm dùng balance hoặc yêu cầu backend thêm.
+
+        // 4. Cập nhật các thông số tiền tệ
+        if (tvBalance != null) {
+            tvBalance.setText(formatCurrency(actualData.balance));
+        }
+
         if (tvPrincipal != null) {
-            Double principal = (data.principalAmount != null) ? data.principalAmount : data.balance;
+            // Nếu có tiền gốc riêng thì hiện, không thì hiện số dư
+            Double principal = (actualData.principalAmount != null) ? actualData.principalAmount : actualData.balance;
             tvPrincipal.setText(formatCurrency(principal));
         }
-        if (tvRate != null && data.interestRate != null) {
-            tvRate.setText((data.interestRate * 100) + "% / Năm");
+
+        if (tvRate != null && actualData.interestRate != null) {
+            // Giả sử server trả về 0.05 nghĩa là 5%
+            tvRate.setText((actualData.interestRate * 100) + "% / Năm");
         }
-        if (tvProfit != null && data.monthlyInterest != null) {
-            tvProfit.setText("+" + formatCurrency(data.monthlyInterest));
+
+        if (tvProfit != null && actualData.monthlyInterest != null) {
+            tvProfit.setText("+" + formatCurrency(actualData.monthlyInterest));
+        } else if (tvProfit != null) {
+            tvProfit.setText("+0 VND");
         }
-        if (tvMaturity != null && data.maturityDate != null) {
-            // Dùng hàm formatDate chuẩn Timezone
-            tvMaturity.setText(formatDate(data.maturityDate));
+
+        if (tvMaturity != null && actualData.maturityDate != null) {
+            tvMaturity.setText(formatDate(actualData.maturityDate));
         }
     }
+
+    // --- CÁC HÀM HELPER GIỮ NGUYÊN ---
+
     private String formatDate(String dateString) {
         Date date = parseDateString(dateString);
         if (date != null) {
@@ -132,29 +159,22 @@ public class SavingsActivity extends AppCompatActivity {
         }
         return dateString;
     }
+
     private Date parseDateString(String dateString) {
         if (dateString == null || dateString.isEmpty()) return null;
-        String[] formats = {
-                "EEE, dd MMM yyyy HH:mm:ss 'GMT'",
-                "yyyy-MM-dd HH:mm:ss",
-                "yyyy-MM-dd"
-        };
+        String[] formats = {"EEE, dd MMM yyyy HH:mm:ss 'GMT'", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
         for (String format : formats) {
             try {
                 java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat(format, Locale.ENGLISH);
-                if (format.contains("GMT")) {
-                    inputFormat.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
-                }
+                if (format.contains("GMT")) inputFormat.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
                 return inputFormat.parse(dateString);
-            } catch (Exception e) {
-                continue;
-            }
+            } catch (Exception ignored) {}
         }
         return null;
     }
+
     private void updateAccNoDisplay() {
         if (tvAccNo == null) return;
-
         if (isHidden) {
             String masked = "**** **** **** " + (realAccNo.length() > 4 ? realAccNo.substring(realAccNo.length() - 4) : "****");
             tvAccNo.setText(masked);
@@ -164,13 +184,14 @@ public class SavingsActivity extends AppCompatActivity {
             imgToggleAcc.setImageResource(R.drawable.ic_eye_on);
         }
     }
-    // Helper format tiền
+
     private String formatCurrency(Double amount) {
         if (amount == null) return "0 VND";
         return NumberFormat.getInstance(new Locale("vi", "VN")).format(amount) + " VND";
     }
-    // Helper format số tài khoản có khoảng trắng
+
     private String formatAccountNumber(String accNum) {
+        if (accNum == null) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < accNum.length(); i++) {
             if (i > 0 && i % 4 == 0) sb.append(" ");

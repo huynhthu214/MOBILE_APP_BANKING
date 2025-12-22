@@ -161,24 +161,15 @@ public class HomeActivity extends NavbarActivity {
     }
     private void loadUserData() {
         String token = "";
-
-        // Ưu tiên lấy từ Intent trước (nhanh nhất)
         if (getIntent().hasExtra("EXTRA_TOKEN")) {
             token = getIntent().getStringExtra("EXTRA_TOKEN");
         }
-
-        // Nếu không có trong Intent (ví dụ mở lại app), mới lấy trong SharedPreferences
         if (token == null || token.isEmpty()) {
             SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
             token = pref.getString("access_token", "");
         }
-
-        // Nếu vẫn rỗng thì return luôn (hoặc bắt đăng nhập lại)
-        if(token.isEmpty()) {
-            Log.e("HOME_DEBUG", "Token bị rỗng, không thể gọi API");
-            return;
-        }
         if(token.isEmpty()) return;
+
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getCurrentUser("Bearer " + token).enqueue(new Callback<UserResponse>() {
             @Override
@@ -190,14 +181,41 @@ public class HomeActivity extends NavbarActivity {
                     List<Map<String, Object>> accounts = response.body().getData().getAccounts();
                     if (accounts != null) {
                         for (Map<String, Object> acc : accounts) {
-                            String accId = (String) acc.get("ACCOUNT_ID");
-                            fetchAccountDetail(accId);
+                            Log.d("DEBUG_HOME", "Raw Account Data: " + acc.toString());
+
+                            // 1. Lấy Tài khoản chính (Checking)
+                            String mainAccId = null;
+                            if (acc.containsKey("ACCOUNT_ID")) mainAccId = String.valueOf(acc.get("ACCOUNT_ID"));
+                            else if (acc.containsKey("account_id")) mainAccId = String.valueOf(acc.get("account_id"));
+
+                            if (mainAccId != null) {
+                                Log.d("DEBUG_HOME", ">>> Fetching Main ID: " + mainAccId);
+                                fetchAccountDetail(mainAccId);
+                            }
+
+                            // 2. Lấy Tài khoản Tiết kiệm (Saving)
+                            if (acc.containsKey("SAVING_ACC_ID") && acc.get("SAVING_ACC_ID") != null) {
+                                String savingId = String.valueOf(acc.get("SAVING_ACC_ID"));
+                                Log.d("DEBUG_HOME", ">>> Fetching Saving ID: " + savingId);
+                                fetchAccountDetail(savingId);
+                            }
+
+                            // 3. Lấy Tài khoản Vay (Mortgage)
+                            if (acc.containsKey("MORTAGE_ACC_ID") && acc.get("MORTAGE_ACC_ID") != null) {
+                                String mortgageId = String.valueOf(acc.get("MORTAGE_ACC_ID"));
+                                Log.d("DEBUG_HOME", ">>> Fetching Mortgage ID: " + mortgageId);
+                                fetchAccountDetail(mortgageId);
+                            }
                         }
                     }
+                } else {
+                    Log.e("DEBUG_HOME", "Get User Failed: " + response.code());
                 }
             }
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {}
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Log.e("DEBUG_HOME", "User API Error: " + t.getMessage());
+            }
         });
     }
     private void fetchAccountDetail(String accountId) {
@@ -205,68 +223,116 @@ public class HomeActivity extends NavbarActivity {
         api.getAccountSummary(accountId).enqueue(new Callback<AccountSummaryResponse>() {
             @Override
             public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
+                // Log xem server trả về mã bao nhiêu (200 là ok, 404/500 là lỗi)
+                Log.d("DEBUG_HOME", "API Summary for " + accountId + " Code: " + response.code());
+
                 if (response.isSuccessful() && response.body() != null) {
-                    // Truyền thêm accountId vào updateUI để lưu lại
+                    // Log xem Type server trả về là gì
                     updateUI(response.body(), accountId);
+                } else {
+                    // Nếu lỗi, in ra lỗi
+                    try {
+                        Log.e("DEBUG_HOME", "Error Body: " + response.errorBody().string());
+                    } catch (Exception e) {}
                 }
             }
+
             @Override
             public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {
-                Log.e("HomeActivity", "Load summary failed: " + t.getMessage());
+                Log.e("DEBUG_HOME", "Fetch Detail Failed: " + t.getMessage());
             }
         });
     }
-    private void updateUI(AccountSummaryResponse data, String currentAccId) {
-        if (data.type == null) return;
+    private void updateUI(AccountSummaryResponse response, String currentAccId) {
+        // 1. Kiểm tra an toàn dữ liệu đầu vào
+        if (response == null || response.data == null) {
+            Log.e("DEBUG_HOME", "updateUI: Response hoặc Data bị NULL");
+            return;
+        }
 
-        switch (data.type.toLowerCase()) {
-            case "checking":
-                if (data.accountNumber != null) {
-                    realAccountNumber = data.accountNumber;
+        // 2. Trích xuất object data bên trong (theo đúng cấu trúc JSON bạn cung cấp)
+        AccountSummaryResponse.AccountData actualData = response.data;
+
+        if (actualData.type == null) {
+            Log.e("DEBUG_HOME", "updateUI: Type của tài khoản bị NULL");
+            return;
+        }
+
+        String accountType = actualData.type.toUpperCase().trim();
+        Log.d("DEBUG_HOME", "Đang cập nhật UI cho Type: " + accountType + " | ID: " + currentAccId);
+
+        // 3. Xử lý hiển thị dựa trên loại tài khoản
+        switch (accountType) {
+            case "CHECKING":
+                // Hiển thị số tài khoản chính
+                if (actualData.accountNumber != null) {
+                    realAccountNumber = actualData.accountNumber;
                     updateAccountNumberDisplay();
                 }
-                if (tvBalance != null) tvBalance.setText(formatCurrency(data.balance));
-                if (tvAccountNumber != null && data.accountNumber != null) tvAccountNumber.setText(data.accountNumber);
-                if (data.lastTransactions != null && rvTransactions != null) {
-                    // Thêm HomeActivity.this vào tham số đầu tiên
-                    TransactionAdapter adapter = new TransactionAdapter(HomeActivity.this, data.lastTransactions);
+
+                // Hiển thị số dư chính
+                if (tvBalance != null) {
+                    tvBalance.setText(formatCurrency(actualData.balance));
+                }
+
+                // Cập nhật danh sách giao dịch gần đây
+                if (actualData.lastTransactions != null && rvTransactions != null) {
+                    TransactionAdapter adapter = new TransactionAdapter(HomeActivity.this, actualData.lastTransactions);
                     rvTransactions.setAdapter(adapter);
+                    Log.d("DEBUG_HOME", "Đã cập nhật " + actualData.lastTransactions.size() + " giao dịch.");
                 }
                 break;
 
-            case "saving":
-                // LƯU ID TÀI KHOẢN TIẾT KIỆM
+            case "SAVING":
+                // Lưu lại ID để nhấn vào Card có thể chuyển sang trang chi tiết
                 savingAccountId = currentAccId;
 
+                // Ẩn dòng thông báo "Chưa có" và hiện Layout thông tin
                 if (tvNoSaving != null) tvNoSaving.setVisibility(View.GONE);
                 if (layoutSavingInfo != null) layoutSavingInfo.setVisibility(View.VISIBLE);
 
-                if (tvSavingBalance != null) tvSavingBalance.setText(formatCurrency(data.balance));
-                if (tvSavingRate != null && data.interestRate != null) {
-                    tvSavingRate.setText("Lãi suất: " + (data.interestRate * 100) + "% / năm");
+                // Đổ dữ liệu tiết kiệm
+                if (tvSavingBalance != null) {
+                    tvSavingBalance.setText(formatCurrency(actualData.balance));
+                }
+                if (tvSavingRate != null && actualData.interestRate != null) {
+                    tvSavingRate.setText("Lãi suất: " + (actualData.interestRate * 100) + "% / năm");
                 }
                 break;
 
-            case "mortgage":
-
+            case "MORTGAGE":
+                // Lưu lại ID để chuyển sang trang chi tiết khoản vay
                 mortgageAccountId = currentAccId;
 
+                // Ẩn dòng thông báo "Chưa có" và hiện Layout thông tin
                 if (tvNoMortgage != null) tvNoMortgage.setVisibility(View.GONE);
                 if (layoutMortgageInfo != null) layoutMortgageInfo.setVisibility(View.VISIBLE);
 
-                if (tvMortgagePaymentAmount != null) tvMortgagePaymentAmount.setText(formatCurrency(data.paymentAmount));
+                // Số tiền cần thanh toán kỳ tới
+                if (tvMortgagePaymentAmount != null) {
+                    tvMortgagePaymentAmount.setText(formatCurrency(actualData.paymentAmount));
+                }
 
-                if (tvMortgageDueDate != null && data.nextPaymentDate != null) {
-                    String formattedDate = formatDate(data.nextPaymentDate);
-                    if (isOverdue(data.nextPaymentDate)) {
+                // Ngày đến hạn và trạng thái quá hạn
+                if (tvMortgageDueDate != null && actualData.nextPaymentDate != null) {
+                    String formattedDate = formatDate(actualData.nextPaymentDate);
+                    if (isOverdue(actualData.nextPaymentDate)) {
                         tvMortgageDueDate.setText("(Hạn: " + formattedDate + " - Quá hạn)");
                         tvMortgageDueDate.setTextColor(Color.RED);
                     } else {
                         tvMortgageDueDate.setText("(Hạn: " + formattedDate + ")");
-                        tvMortgageDueDate.setTextColor(Color.parseColor("#6B7280"));
+                        tvMortgageDueDate.setTextColor(Color.parseColor("#6B7280")); // Màu xám mặc định
                     }
                 }
-                if (tvMortgageRemaining != null) tvMortgageRemaining.setText(formatCurrency(data.remainingBalance));
+
+                // Số dư nợ còn lại
+                if (tvMortgageRemaining != null) {
+                    tvMortgageRemaining.setText(formatCurrency(actualData.remainingBalance));
+                }
+                break;
+
+            default:
+                Log.w("DEBUG_HOME", "Loại tài khoản không xác định: " + accountType);
                 break;
         }
     }

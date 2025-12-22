@@ -3,7 +3,6 @@ package com.example.zybanking.data.models.transaction;
 import com.google.gson.annotations.SerializedName;
 
 public class Transaction {
-    // Ánh xạ chính xác tên cột trong Database (SQL)
     @SerializedName("TRANSACTION_ID")
     private String transactionId;
 

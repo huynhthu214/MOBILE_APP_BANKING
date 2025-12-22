@@ -1,12 +1,13 @@
 package com.example.zybanking.data.models.transaction;
 
-import com.example.zybanking.data.models.transaction.Transaction;
-
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class TransactionListResponse {
+    @SerializedName("status")
     private String status;
-    private List<Transaction> data; // Biến này phải trùng tên key "data" trong JSON trả về
+    @SerializedName("data")
+    private List<Transaction> data;
 
     public String getStatus() {
         return status;
