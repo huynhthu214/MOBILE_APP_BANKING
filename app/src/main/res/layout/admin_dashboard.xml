@@ -186,7 +186,7 @@
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/card_create_customer"
-                                android:layout_width="56dp"
+                                android:layout_width="59dp"
                                 android:layout_height="56dp"
                                 app:cardBackgroundColor="#FFFFFF"
                                 app:cardCornerRadius="16dp"
@@ -204,7 +204,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="Tạo TK"
+                                android:text="Tài khoản"
                                 android:textColor="#333"
                                 android:textSize="12sp" />
                         </LinearLayout>

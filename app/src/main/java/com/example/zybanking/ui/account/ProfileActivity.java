@@ -118,8 +118,9 @@ public class ProfileActivity extends NavbarActivity {
 
         // 2. Xử lý Đăng xuất
         btnLogout.setOnClickListener(v -> {
-            SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-            pref.edit().clear().apply();
+            // Xóa cả hai file để đảm bảo sạch dữ liệu
+            getSharedPreferences("auth", MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("UserPrefs", MODE_PRIVATE).edit().clear().apply();
 
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

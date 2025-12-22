@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zybanking.HeaderAdmin;
 import com.example.zybanking.R;
+import com.example.zybanking.data.adapter.AdminUserAdapter;
 import com.example.zybanking.data.models.auth.UserListResponse;
-import com.example.zybanking.data.models.auth.User; // Assuming you have a User model
+import com.example.zybanking.data.models.auth.User;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
-import com.example.zybanking.data.adapter.AdminAccountAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class AdminUserActivity extends HeaderAdmin {
     private ImageView addUser;
     private RecyclerView rvUsers;
     private EditText edtSearch;
-    private AdminAccountAdapter adapter;
+    private AdminUserAdapter adapter;
     private List<User> userList = new ArrayList<>();
     private ApiService apiService;
     private String token;
@@ -54,18 +54,19 @@ public class AdminUserActivity extends HeaderAdmin {
 
         // Setup RecyclerView
         rvUsers.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new AdminAccountAdapter(this, userList, new AdminAccountAdapter.OnUserClickListener() {
+        adapter = new AdminUserAdapter(this, userList, new AdminUserAdapter.OnUserClickListener() {
             @Override
             public void onUserClick(User user) {
-                // CHUYỂN MÀN HÌNH TẠI ĐÂY
-                Intent intent = new Intent(AdminUserActivity.this, AdminDetailUserActivity.class);
-                // Truyền ID của user sang để màn hình chi tiết Load API
-                intent.putExtra("USER_ID", user.getUserId());
-                startActivity(intent);
+                if (user != null && user.getUserId() != null) {
+                    Intent intent = new Intent(AdminUserActivity.this, AdminDetailUserActivity.class);
+                    intent.putExtra("USER_ID", user.getUserId());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(AdminUserActivity.this, "Dữ liệu User không hợp lệ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         rvUsers.setAdapter(adapter);
-
         // Load Data
         loadUsers("");
 

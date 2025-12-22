@@ -297,17 +297,6 @@
                         android:background="#F3F4F6"
                         android:layout_marginBottom="12dp"/>
 
-                    <Button
-                        android:id="@+id/btn_reset_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Cấp lại mật khẩu mặc định"
-                        android:textColor="#DC2626"
-                        android:backgroundTint="#FEE2E2"
-                        app:icon="@drawable/ic_refresh"
-                        app:iconTint="#DC2626"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"/>
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

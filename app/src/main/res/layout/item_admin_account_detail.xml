@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/imgAccountType"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_circle_light"
+            android:padding="10dp"
+            android:src="@drawable/ic_card"
+            app:tint="#0b5394" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvAccountNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9901 2234 5678"
+                android:textColor="#111827"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAccountTypeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tài khoản thanh toán"
+                android:textColor="#6B7280"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvOwnerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chủ thẻ: NGUYEN VAN A"
+                android:textColor="#0b5394"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvAccountBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5.000.000đ"
+                android:textColor="#16A34A"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAccountStatusLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="ACTIVE"
+                android:textColor="#9CA3AF"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

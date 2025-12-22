@@ -143,23 +143,33 @@
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
+        android:id="@+id/layout_faceid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="40dp">
 
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_face"
+            app:tint="#1976D2"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:id="@+id/tv_fingerprint_login"
+            android:id="@+id/tv_faceid_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đăng nhập bằng vân tay"
+            android:text="Đăng nhập bằng FaceID"
             android:textColor="#1976D2"
             android:textStyle="bold"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

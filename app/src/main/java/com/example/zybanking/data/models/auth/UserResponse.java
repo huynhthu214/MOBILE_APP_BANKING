@@ -1,5 +1,6 @@
 package com.example.zybanking.data.models.auth;
 
+import com.example.zybanking.data.models.account.Account;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class UserResponse {
         @SerializedName("ekyc")
         private Ekyc ekyc;
         private List<Map<String, Object>> accounts;
+        private List<Account> account;
 
         public User getUser() { return user; }
         public Ekyc getEkyc() { return ekyc; }
@@ -37,7 +39,14 @@ public class UserResponse {
 
         @SerializedName("ROLE")
         private String ROLE;
+        @SerializedName("CREATED_AT")
+        private String CREATED_AT;
 
+        @SerializedName("IS_ACTIVE")
+        private int IS_ACTIVE; // DB lưu bool nhưng API thường trả về 1 hoặc 0
+
+        public String getCreatedAt() { return CREATED_AT; }
+        public boolean isActive() { return IS_ACTIVE == 1; }
         public String getFullName() { return FULL_NAME; }
         public String getEmail() { return EMAIL; }
         public String getUserId() { return USER_ID; }

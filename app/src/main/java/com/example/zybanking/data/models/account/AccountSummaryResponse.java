@@ -37,5 +37,40 @@ public class AccountSummaryResponse {
     public String paymentFrequency;
     @SerializedName("total_loan_amount")
     public Double totalLoanAmount;
+    @SerializedName("status_acc") public String statusAcc;
+    @SerializedName("full_name")
+    private String ownerName;
+    public String getStatusAcc() { return statusAcc; }
 
+    public String getType() {
+        return type;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
+    public double getPrincipal() {
+        return principalAmount;
+    }
+
+    public double getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+    public String getStatus() { return status; }
+    public double getRemainingBalance() {
+        return remainingBalance;
+    }
 }

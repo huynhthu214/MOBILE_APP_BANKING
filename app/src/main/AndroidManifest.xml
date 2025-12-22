@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -78,6 +78,9 @@
             android:name=".ui.account.AdminDetailUserActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.account.AdminAccountListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.account.AdminEditInforActivity"
             android:exported="false" />
         <activity
@@ -94,9 +97,6 @@
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.AdminDashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.dashboard.AdminReportActivity"
             android:exported="false" />
         <activity
             android:name=".ui.auth.LoginActivity"

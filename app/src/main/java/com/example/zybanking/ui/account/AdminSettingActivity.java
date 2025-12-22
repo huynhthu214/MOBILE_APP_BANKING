@@ -143,8 +143,9 @@ public class AdminSettingActivity extends HeaderAdmin {
         // Đăng xuất
         if (cardLogout != null) {
             cardLogout.setOnClickListener(v -> {
-                SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                pref.edit().clear().apply();
+                // Phải xóa file "auth" vì loadAdminProfile sử dụng file này để kiểm tra đăng nhập
+                getSharedPreferences("auth", Context.MODE_PRIVATE).edit().clear().apply();
+                getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).edit().clear().apply();
 
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
