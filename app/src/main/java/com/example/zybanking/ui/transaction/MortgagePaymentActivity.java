@@ -3,6 +3,7 @@ package com.example.zybanking.ui.transaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -54,7 +55,7 @@ public class MortgagePaymentActivity extends AppCompatActivity {
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
         tvCheckingBalance = findViewById(R.id.tv_checking_balance);
         tvContractId = findViewById(R.id.tv_contract_id);
@@ -62,28 +63,28 @@ public class MortgagePaymentActivity extends AppCompatActivity {
         edtAmount = findViewById(R.id.edt_amount);
         btnConfirm = findViewById(R.id.btn_confirm_payment);
 
-        btnConfirm.setOnClickListener(v -> handlePayment());
+        if (btnConfirm != null) btnConfirm.setOnClickListener(v -> handlePayment());
     }
 
     private void loadData() {
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
 
-        // 1. Lấy thông tin khoản vay (Mortgage) để điền số tiền và ngày hạn
+        // 1. Lấy thông tin khoản vay (Mortgage)
         if (mortgageAccountId != null) {
             tvContractId.setText(mortgageAccountId);
             api.getAccountSummary(mortgageAccountId).enqueue(new Callback<AccountSummaryResponse>() {
                 @Override
                 public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        AccountSummaryResponse data = response.body();
-                        if (data.paymentAmount != null) {
-                            currentPaymentAmount = data.paymentAmount;
-                            // Hiển thị số tiền cần trả (bỏ format currency để hiển thị số thuần trong EditText nếu muốn, hoặc format)
-                            // Ở đây EditText đang disable nên ta setText kiểu gì cũng được
+                    if (response.isSuccessful() && response.body() != null && response.body().data != null) {
+                        // SỬA TẠI ĐÂY: Lấy từ response.body().data
+                        AccountSummaryResponse.AccountData actualData = response.body().data;
+
+                        if (actualData.paymentAmount != null) {
+                            currentPaymentAmount = actualData.paymentAmount;
                             edtAmount.setText(formatCurrency(currentPaymentAmount).replace(" VND", ""));
                         }
-                        if (data.nextPaymentDate != null) {
-                            tvDueDate.setText(formatDate(data.nextPaymentDate));
+                        if (actualData.nextPaymentDate != null) {
+                            tvDueDate.setText(formatDate(actualData.nextPaymentDate));
                         }
                     }
                 }
@@ -101,13 +102,12 @@ public class MortgagePaymentActivity extends AppCompatActivity {
         api.getCurrentUser("Bearer " + token).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     List<Map<String, Object>> accounts = response.body().getData().getAccounts();
                     if (accounts != null) {
                         for (Map<String, Object> acc : accounts) {
                             String type = (String) acc.get("ACCOUNT_TYPE");
                             if ("CHECKING".equalsIgnoreCase(type)) {
-                                // Tìm thấy tài khoản thanh toán
                                 String accId = (String) acc.get("ACCOUNT_ID");
                                 fetchCheckingBalance(accId);
                                 break;
@@ -121,15 +121,16 @@ public class MortgagePaymentActivity extends AppCompatActivity {
         });
     }
 
-    // Hàm phụ để lấy chi tiết số dư Checking
     private void fetchCheckingBalance(String accId) {
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getAccountSummary(accId).enqueue(new Callback<AccountSummaryResponse>() {
             @Override
             public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
-                if(response.isSuccessful() && response.body() != null) {
-                    if(response.body().balance != null) {
-                        checkingBalance = response.body().balance;
+                if(response.isSuccessful() && response.body() != null && response.body().data != null) {
+                    // SỬA TẠI ĐÂY: Lấy balance từ data bên trong
+                    AccountSummaryResponse.AccountData actualData = response.body().data;
+                    if(actualData.balance != null) {
+                        checkingBalance = actualData.balance;
                         tvCheckingBalance.setText("Số dư: " + formatCurrency(checkingBalance));
                     }
                 }
@@ -140,17 +141,15 @@ public class MortgagePaymentActivity extends AppCompatActivity {
     }
 
     private void handlePayment() {
-        // Validate
         if (checkingBalance < currentPaymentAmount) {
             new AlertDialog.Builder(this)
                     .setTitle("Số dư không đủ")
-                    .setMessage("Tài khoản thanh toán của bạn không đủ để thực hiện giao dịch này.")
+                    .setMessage("Tài khoản thanh toán của bạn không đủ (" + formatCurrency(checkingBalance) + ") để trả khoản vay " + formatCurrency(currentPaymentAmount) + ".")
                     .setPositiveButton("Đóng", null)
                     .show();
             return;
         }
 
-        // Xác nhận thanh toán
         new AlertDialog.Builder(this)
                 .setTitle("Xác nhận thanh toán")
                 .setMessage("Thanh toán " + formatCurrency(currentPaymentAmount) + " cho hợp đồng " + mortgageAccountId + "?")
@@ -167,21 +166,9 @@ public class MortgagePaymentActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 if (response.isSuccessful()) {
-                    // Thành công
-                    new AlertDialog.Builder(MortgagePaymentActivity.this)
-                            .setTitle("Thành công")
-                            .setMessage("Thanh toán khoản vay thành công!")
-                            .setPositiveButton("Về trang chủ", (dialog, which) -> {
-                                // Quay về Home để reload lại dữ liệu
-                                Intent intent = new Intent(MortgagePaymentActivity.this, HomeActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
-                            })
-                            .setCancelable(false)
-                            .show();
+                    showSuccessDialog();
                 } else {
-                    Toast.makeText(MortgagePaymentActivity.this, "Thanh toán thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MortgagePaymentActivity.this, "Thanh toán thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -192,17 +179,32 @@ public class MortgagePaymentActivity extends AppCompatActivity {
         });
     }
 
-    // --- CÁC HÀM HELPER FORMAT ---
+    private void showSuccessDialog() {
+        new AlertDialog.Builder(MortgagePaymentActivity.this)
+                .setTitle("Thành công")
+                .setMessage("Thanh toán khoản vay thành công!")
+                .setPositiveButton("Về trang chủ", (dialog, which) -> {
+                    Intent intent = new Intent(MortgagePaymentActivity.this, HomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
     private String formatCurrency(Double amount) {
         if (amount == null) return "0 VND";
         return NumberFormat.getInstance(new Locale("vi", "VN")).format(amount) + " VND";
     }
 
     private String formatDate(String dateString) {
-        // Copy logic formatDate chuẩn Timezone từ HomeActivity sang đây
-        // (Để code gọn mình không paste lại, bạn hãy copy hàm đó vào nhé)
-        if (dateString == null) return "";
-        // ... logic parse ...
-        return dateString;
+        if (dateString == null || dateString.isEmpty()) return "";
+        try {
+            // Logic đơn giản để parse, bạn nên dùng chung hàm parseDateString từ HomeActivity
+            return dateString.split(" ")[0]; // Tạm thời lấy phần ngày nếu server gửi kèm giờ
+        } catch (Exception e) {
+            return dateString;
+        }
     }
 }

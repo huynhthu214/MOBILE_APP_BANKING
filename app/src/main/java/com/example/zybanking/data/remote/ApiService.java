@@ -106,9 +106,11 @@ public interface ApiService {
 
     @GET("transactions/history")
     Call<TransactionHistoryResponse> getTransactionHistory(
-            @Header("Authorization") String token
+            @Query("account_id") String accountId,
+            @Query("page") int page
     );
-
+    @GET("transactions/lookup/{account_number}")
+    Call<BasicResponse> lookupAccount(@Path("account_number") String accountNumber);
     @POST("transactions/withdraw/create")
     Call<BasicResponse> withdrawCreate(@Body WithdrawRequest request);
 
@@ -150,10 +152,6 @@ public interface ApiService {
             @Query("from_lng") double fromLng
     );
 
-    //NOTI
-    @GET("notifications/{userId}")
-    Call<List<Notification>> getNotifications(@Path("userId") String userId);
-
     //ekyc
         @POST("ekyc/create")
         Call<BasicResponse> submitEKYC(
@@ -194,10 +192,12 @@ public interface ApiService {
 
     @PUT("accounts/rates")
     Call<BasicResponse> updateInterestRates(@Header("Authorization") String token, @Body Map<String, Double> rates);
+    //NOTI
+    @GET("notifications/{userId}")
+    Call<List<Notification>> getNotifications(@Path("userId") String userId);
     @PUT("notifications/{userId}/read")
     Call<BasicResponse> markNotificationsAsRead(@Path("userId") String userId);
     // data/remote/ApiService.java
-
     @PUT("notifications/mark-read/{notiId}")
     Call<BasicResponse> markSingleNotificationAsRead(@Path("notiId") String notiId);
 

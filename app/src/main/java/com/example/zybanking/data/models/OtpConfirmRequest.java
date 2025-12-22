@@ -1,11 +1,16 @@
 package com.example.zybanking.data.models;
+import com.google.gson.annotations.SerializedName;
 
 public class OtpConfirmRequest {
-    public String transaction_id;
-    public String otp;
+    @SerializedName("transaction_id")
+    private String transactionId;
 
-    public OtpConfirmRequest(String transaction_id, String otp) {
-        this.transaction_id = transaction_id;
-        this.otp = otp;
+    @SerializedName("otp_code")
+    private String otpCode;
+
+    // Constructor 2 tham số
+    public OtpConfirmRequest(String transactionId, String otpCode) {
+        this.transactionId = transactionId;
+        this.otpCode = otpCode;
     }
 }

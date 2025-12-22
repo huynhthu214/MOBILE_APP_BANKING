@@ -1,10 +1,7 @@
 package com.example.zybanking.ui.transaction;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,87 +9,70 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.zybanking.R;
 import com.example.zybanking.data.adapter.TransactionAdapter;
 import com.example.zybanking.data.models.TransactionHistoryResponse;
-import com.example.zybanking.data.models.transaction.Transaction; // Import đúng model Transaction
-import com.example.zybanking.data.repository.TransactionRepository;
+import com.example.zybanking.data.remote.ApiService;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.util.List;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    private RecyclerView rvHistory;
-    private TransactionRepository repository;
+    private RecyclerView recyclerView;
+    private TransactionAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_history);
 
-        rvHistory = findViewById(R.id.rv_history);
-        rvHistory.setLayoutManager(new LinearLayoutManager(this));
-        rvHistory.setHasFixedSize(true);
+        // 1. Setup RecyclerView
+        recyclerView = findViewById(R.id.rv_history);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        repository = new TransactionRepository();
+        // --- FIX 1: Khởi tạo Adapter đúng với Constructor mới ---
+        // Chúng ta truyền "this" (Context) và một danh sách rỗng ban đầu (new ArrayList<>())
+        adapter = new TransactionAdapter(this, new ArrayList<>());
+        recyclerView.setAdapter(adapter);
 
-        loadTransactionHistory();
+        // 2. Setup Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:5000/api/v1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        // 3. Gọi API
+        loadData(apiService);
     }
 
-    private void loadTransactionHistory() {
-        // ===== LẤY account_id TỪ SESSION =====
-        SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-        String accountId = pref.getString("account_id", "");
-        Log.d("HISTORY", "accountId = " + accountId);
+    private void loadData(ApiService apiService) {
+        apiService.getTransactionHistory("A001", 1).enqueue(new Callback<TransactionHistoryResponse>() {
+            @Override
+            public void onResponse(Call<TransactionHistoryResponse> call, Response<TransactionHistoryResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if ("success".equals(response.body().getStatus())) {
 
-        if (accountId == null || accountId.isEmpty()) {
-            Toast.makeText(this, "Không tìm thấy tài khoản", Toast.LENGTH_SHORT).show();
-            return;
-        }
+                        // --- FIX 2: Gọi đúng hàm updateData đã viết trong Adapter ---
+                        adapter.updateData(response.body().getData());
 
-        repository.getTransactionHistory(
-                accountId,
-                HistoryActivity.this,
-                new Callback<TransactionHistoryResponse>() {
-                    @Override
-                    public void onResponse(Call<TransactionHistoryResponse> call, Response<TransactionHistoryResponse> response) {
-                        if (!response.isSuccessful()) {
-                            Toast.makeText(HistoryActivity.this, "HTTP lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        TransactionHistoryResponse body = response.body();
-
-                        if (body == null || body.getData() == null) {
-                            Toast.makeText(HistoryActivity.this, "Không có dữ liệu", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        if ("success".equalsIgnoreCase(body.getStatus())) {
-                            // --- SỬA Ở ĐÂY ---
-                            // Không cần mapTransactions nữa.
-                            // Truyền trực tiếp List<Transaction> vào Adapter
-                            List<Transaction> listTransaction = body.getData();
-
-                            TransactionAdapter adapter = new TransactionAdapter(
-                                    HistoryActivity.this,
-                                    listTransaction
-                            );
-                            rvHistory.setAdapter(adapter);
-                            // -----------------
-
-                        } else {
-                            Toast.makeText(HistoryActivity.this, "Lỗi tải lịch sử", Toast.LENGTH_SHORT).show();
-                        }
+                    } else {
+                        Toast.makeText(HistoryActivity.this, "Không lấy được dữ liệu", Toast.LENGTH_SHORT).show();
                     }
-
-                    @Override
-                    public void onFailure(Call<TransactionHistoryResponse> call, Throwable t) {
-                        Toast.makeText(HistoryActivity.this, "Không kết nối được backend", Toast.LENGTH_SHORT).show();
-                    }
+                } else {
+                    Toast.makeText(HistoryActivity.this, "Lỗi server: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
-        );
-    }
+            }
 
+            @Override
+            public void onFailure(Call<TransactionHistoryResponse> call, Throwable t) {
+                Toast.makeText(HistoryActivity.this, "Mất kết nối server", Toast.LENGTH_SHORT).show();
+                t.printStackTrace(); // Log lỗi ra Logcat để debug
+            }
+        });
+    }
 }

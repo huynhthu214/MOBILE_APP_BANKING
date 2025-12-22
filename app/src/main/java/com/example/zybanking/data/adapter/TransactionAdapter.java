@@ -9,66 +9,80 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat; // Dùng cái này để lấy màu an toàn hơn
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zybanking.R;
-// Import đúng đường dẫn model bạn vừa gửi
 import com.example.zybanking.data.models.transaction.Transaction;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
     private Context context;
-    private List<Transaction> list; // Đã đổi sang List<Transaction>
+    private List<Transaction> list;
 
-    // Constructor nhận Context và List<Transaction>
     public TransactionAdapter(Context context, List<Transaction> list) {
         this.context = context;
         this.list = list;
     }
 
+    // Hàm update dữ liệu mới mà không cần tạo lại Adapter
+    public void updateData(List<Transaction> newList) {
+        this.list = newList;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Đảm bảo tên layout đúng với file xml của bạn (VD: item_transaction.xml)
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_transaction_placeholder, parent, false);
+                .inflate(R.layout.basic_list_history, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction item = list.get(position);
+        if (item == null) return;
 
-        // 1. Set Tên giao dịch (Hiển thị người nhận hoặc Loại giao dịch)
-        if (item.getDestName() != null && !item.getDestName().isEmpty()) {
-            holder.tvTitle.setText(item.getDestName());
-        } else {
-            // Nếu không có tên người nhận, hiển thị loại giao dịch
-            holder.tvTitle.setText(item.getType() != null ? item.getType() : "Giao dịch");
-        }
-
-        // 2. Set Thời gian
-        holder.tvTime.setText(item.getCreatedAt());
-
-        // 3. Xử lý logic Tiền và Màu sắc (Thu/Chi)
-        boolean isIncome = checkIsIncome(item);
-        String formattedMoney = formatCurrency(item.getAmount());
+        // --- BƯỚC 1: XÁC ĐỊNH LOẠI GIAO DỊCH & MÀU SẮC ---
+        boolean isIncome = checkIsIncome(item.getType());
 
         if (isIncome) {
-            // Tiền vào (Màu xanh)
-            holder.tvAmount.setText("+ " + formattedMoney);
-            holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.green)); // Đảm bảo bạn có màu này trong colors.xml
-            holder.icon.setImageResource(android.R.drawable.ic_input_add); // Hoặc R.drawable.ic_arrow_down
+            // Nạp tiền: Màu Xanh lá, Dấu +
+            holder.tvAmount.setTextColor(Color.parseColor("#4CAF50"));
+            holder.tvAmount.setText("+ " + formatCurrency(item.getAmount()));
         } else {
-            // Tiền ra (Màu đỏ)
-            holder.tvAmount.setText("- " + formattedMoney);
-            holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.red));   // Đảm bảo bạn có màu này trong colors.xml
-            holder.icon.setImageResource(android.R.drawable.ic_delete); // Hoặc R.drawable.ic_arrow_up
+            // Rút/Chuyển: Màu Đỏ, Dấu -
+            holder.tvAmount.setTextColor(Color.parseColor("#F44336"));
+            holder.tvAmount.setText("- " + formatCurrency(item.getAmount()));
         }
+
+        // --- BƯỚC 2: HIỂN THỊ TIÊU ĐỀ ---
+        String type = item.getType() != null ? item.getType().toUpperCase() : "UNKNOWN";
+
+        if ("DEPOSIT".equals(type)) {
+            holder.tvTitle.setText("Nạp tiền vào tài khoản");
+        } else if ("WITHDRAW".equals(type)) {
+            holder.tvTitle.setText("Rút tiền mặt");
+        } else if ("TRANSFER".equals(type)) {
+            // Nếu có tên người nhận thì hiện tên, không thì hiện chung chung
+            if (item.getDestName() != null && !item.getDestName().isEmpty()) {
+                holder.tvTitle.setText("Chuyển đến: " + item.getDestName());
+            } else {
+                holder.tvTitle.setText("Chuyển khoản");
+            }
+        } else {
+            holder.tvTitle.setText("Giao dịch khác");
+        }
+
+        // --- BƯỚC 3: HIỂN THỊ THỜI GIAN ---
+        holder.tvTime.setText(formatDate(item.getCreatedAt()));
     }
 
     @Override
@@ -76,32 +90,52 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return (list != null) ? list.size() : 0;
     }
 
-    // --- LOGIC KIỂM TRA THU HAY CHI ---
-    // Bạn cần kiểm tra xem backend trả về "TYPE" là từ khóa gì để sửa ở đây
-    private boolean checkIsIncome(Transaction item) {
-        if (item.getType() == null) return false;
+    // ================= HELPER FUNCTIONS =================
 
-        String type = item.getType().toUpperCase();
-        // Ví dụ: Nếu type là DEPOSIT (nạp tiền) hoặc RECEIVE (nhận tiền) -> Là thu nhập
-        return type.contains("DEPOSIT") || type.contains("RECEIVE") || type.contains("INCOMING");
+    // Kiểm tra xem là Thu (+) hay Chi (-)
+    private boolean checkIsIncome(String type) {
+        if (type == null) return false;
+        // Logic: Chỉ có DEPOSIT (nạp) là tiền vào, còn lại là ra
+        return type.toUpperCase().contains("DEPOSIT");
     }
 
+    // Format tiền tệ (VD: 500,000 đ)
     private String formatCurrency(double amount) {
-        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        return format.format(amount);
+        try {
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            return formatter.format(amount) + " đ";
+        } catch (Exception e) {
+            return String.valueOf(amount);
+        }
     }
 
-    // ViewHolder Class
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView icon;
+    // Format ngày giờ (ISO 8601 -> HH:mm dd/MM/yyyy)
+    private String formatDate(String isoDate) {
+        if (isoDate == null) return "";
+        try {
+            // Input: 2023-12-22T14:30:00
+            SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+            Date date = input.parse(isoDate);
+
+            // Output: 14:30 22/12/2023
+            SimpleDateFormat output = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+            return output.format(date);
+        } catch (Exception e) {
+            return isoDate; // Lỗi thì trả về nguyên gốc
+        }
+    }
+
+    // ================= VIEW HOLDER =================
+    // ViewHolder chỉ làm nhiệm vụ ánh xạ View, KHÔNG chứa logic if-else
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvTime, tvAmount;
 
-        ViewHolder(View v) {
-            super(v);
-            icon = v.findViewById(R.id.img_icon);
-            tvTitle = v.findViewById(R.id.tv_title);
-            tvTime = v.findViewById(R.id.tv_time);
-            tvAmount = v.findViewById(R.id.tv_amount);
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            tvTitle = itemView.findViewById(R.id.tvTransactionTitle);
+            tvTime = itemView.findViewById(R.id.tvTransactionDate);
+            tvAmount = itemView.findViewById(R.id.tvTransactionAmount);
         }
     }
 }

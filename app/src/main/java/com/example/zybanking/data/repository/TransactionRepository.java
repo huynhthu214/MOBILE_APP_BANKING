@@ -34,9 +34,11 @@ public class TransactionRepository {
     }
     public void getTransactionHistory(
             String accountId,
+            int page,  // <--- THÊM THAM SỐ NÀY
             Context context,
             Callback<TransactionHistoryResponse> callback
     ) {
-        apiService.getTransactionHistory(accountId).enqueue(callback);
+        // Truyền cả accountId và page vào hàm gọi API
+        apiService.getTransactionHistory(accountId, page).enqueue(callback);
     }
 }
