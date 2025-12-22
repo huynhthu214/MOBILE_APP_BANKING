@@ -11,51 +11,65 @@ public class AccountSummaryResponse {
     @SerializedName("data")
     public AccountData data;
 
-    public static class AccountData { // Nên dùng static để tránh rò rỉ bộ nhớ
-        @SerializedName("account_id")
+    // --- Inner Class chứa dữ liệu thực tế ---
+    public static class AccountData {
+        @SerializedName("ACCOUNT_ID")
         public String accountId;
 
-        @SerializedName("account_number")
+        @SerializedName("ACCOUNT_NUMBER")
         public String accountNumber;
 
-        @SerializedName("balance")
+        @SerializedName("BALANCE")
         public Double balance;
 
-        @SerializedName("type")
-        public String type;
+        @SerializedName("ACCOUNT_TYPE")
+        public String type; // CHECKING, SAVING, MORTGAGE
 
-        @SerializedName("currency")
-        public String currency;
-
-        @SerializedName("interest_rate")
+        @SerializedName("INTEREST_RATE")
         public Double interestRate;
+
+        @SerializedName("FULL_NAME")
+        public String ownerName;
+
+        @SerializedName("STATUS")
+        public String accountStatus;
 
         @SerializedName("last_transactions")
         public List<Transaction> lastTransactions;
 
         // --- CÁC TRƯỜNG CHO MORTGAGE (KHOẢN VAY) ---
-        @SerializedName("payment_amount")
+        @SerializedName("PAYMENT_AMOUNT")
         public Double paymentAmount;
 
-        @SerializedName("next_payment_date")
+        @SerializedName("NEXT_PAYMENT_DATE")
         public String nextPaymentDate;
 
-        @SerializedName("remaining_balance")
+        @SerializedName("REMAINING_BALANCE")
         public Double remainingBalance;
 
-        @SerializedName("total_loan_amount") // Cần thêm trường này
+        @SerializedName("total_loan_amount") // <-- Đã thêm trường bị thiếu
         public Double totalLoanAmount;
 
-        @SerializedName("monthly_interest")
-        public Double monthlyInterest;
-
-        @SerializedName("payment_frequency") // Cần thêm trường này
+        @SerializedName("payment_frequency") // <-- Đã thêm trường bị thiếu
         public String paymentFrequency;
 
-        @SerializedName("principal_amount")
+        // --- CÁC TRƯỜNG CHO SAVING ---
+        @SerializedName("PRINCIPAL_AMOUNT")
         public Double principalAmount;
 
         @SerializedName("maturity_date")
         public String maturityDate;
+        @SerializedName("monthly_interest")
+        public Double monthlyInterest;
     }
+
+
+    public String getType() { return data != null ? data.type : ""; }
+    public Double getBalance() { return data != null ? data.balance : 0.0; }
+    public String getAccountNumber() { return data != null ? data.accountNumber : ""; }
+    public String getOwnerName() { return data != null ? data.ownerName : ""; }
+    public String getStatus() { return data != null ? data.accountStatus : ""; }
+    public Double getPrincipal() { return data != null ? data.principalAmount : 0.0; }
+    public Double getPaymentAmount() { return data != null ? data.paymentAmount : 0.0; }
+    public Double getInterestRate() { return data != null ? data.interestRate : 0.0; }
 }

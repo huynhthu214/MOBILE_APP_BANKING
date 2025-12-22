@@ -18,6 +18,7 @@ import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
 import com.example.zybanking.data.adapter.TransactionAdapter;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
+import com.example.zybanking.data.models.auth.User;
 import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.models.transaction.Transaction;
 import com.example.zybanking.data.remote.ApiService;
@@ -165,87 +166,136 @@ public class HomeActivity extends NavbarActivity {
     }
 
     private void loadUserData() {
+        // KIỂM TRA LẠI: Đảm bảo tên file và key khớp với lúc bạn Lưu ở LoginActivity
+        // Ví dụ: Nếu Login lưu vào "UserPrefs" và key "auth_token", hãy sửa dòng dưới lại cho khớp.
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
         String token = pref.getString("access_token", "");
-        if (token.isEmpty()) return;
+
+        // Debug: In token ra xem có lấy được không
+        Log.d("HomeActivity", "Token loaded: " + token);
+
+        if (token.isEmpty()) {
+            Log.e("HomeActivity", "Token trống! Chuyển về đăng nhập.");
+            redirectToLogin();
+            return;
+        }
 
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getCurrentUser("Bearer " + token).enqueue(new Callback<UserResponse>() {
-            @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    UserResponse.User user = response.body().getData().getUser();
-                    if (tvUserName != null) tvUserName.setText(user.getFullName());
+
+                    // 2. SỬA DÒNG NÀY: Dùng "User" thay vì "UserResponse.User"
+                    User user = response.body().getData().getUser(); // <--- ĐÃ SỬA
+
+                    if (tvUserName != null && user != null) {
+                        tvUserName.setText(user.getFullName());
+                    }
 
                     List<Map<String, Object>> accounts = response.body().getData().getAccounts();
                     if (accounts != null) {
                         for (Map<String, Object> acc : accounts) {
-                            checkAndFetch(acc, "ACCOUNT_ID");
-                            checkAndFetch(acc, "account_id");
-                            checkAndFetch(acc, "SAVING_ACC_ID");
-                            checkAndFetch(acc, "MORTAGE_ACC_ID");
+                            String accId = getSafeStringId(acc, "ACCOUNT_ID");
+                            if (accId == null) accId = getSafeStringId(acc, "account_id");
+                            if (accId != null) fetchAccountDetail(accId);
                         }
                     }
+
+                } else if (response.code() == 401) {
+                    redirectToLogin();
                 }
             }
-            @Override public void onFailure(Call<UserResponse> call, Throwable t) {}
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Log.e("HomeActivity", "Lỗi mạng User: " + t.getMessage());
+            }
         });
     }
 
-    private void checkAndFetch(Map<String, Object> acc, String key) {
-        if (acc.containsKey(key) && acc.get(key) != null) {
-            fetchAccountDetail(String.valueOf(acc.get(key)));
+    // Hàm phụ để chuyển về màn hình đăng nhập
+    private void redirectToLogin() {
+        // Xóa token cũ đi để tránh lỗi lặp lại
+        SharedPreferences.Editor editor = getSharedPreferences("auth", MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
+
+        // Chuyển Activity
+        Intent intent = new Intent(HomeActivity.this, com.example.zybanking.ui.auth.LoginActivity.class); // Đổi LoginActivity cho đúng đường dẫn gói của bạn
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    // Hàm an toàn để lấy ID và tránh lỗi "1.0"
+    private String getSafeStringId(Map<String, Object> map, String key) {
+        if (!map.containsKey(key) || map.get(key) == null) return null;
+        Object val = map.get(key);
+        // Nếu là số, chuyển về long để mất phần thập phân .0
+        if (val instanceof Double) {
+            return String.valueOf(((Double) val).longValue());
         }
+        return String.valueOf(val);
     }
 
     private void fetchAccountDetail(String accountId) {
+        Log.d("HomeActivity", "Đang gọi API chi tiết cho ID: " + accountId);
+
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getAccountSummary(accountId).enqueue(new Callback<AccountSummaryResponse>() {
             @Override
             public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     updateUI(response.body(), accountId);
+                } else {
+                    Log.e("HomeActivity", "Lỗi lấy Account Detail (" + accountId + "): " + response.code());
                 }
             }
-            @Override public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {}
+            @Override
+            public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {
+                Log.e("HomeActivity", "Fail API Detail: " + t.getMessage());
+            }
         });
     }
 
     private void updateUI(AccountSummaryResponse response, String currentAccId) {
-        if (response == null || response.data == null) return;
+        // Kiểm tra null kỹ càng
+        if (response == null || response.data == null) {
+            Log.e("HomeActivity", "Response Data bị NULL. Kiểm tra lại Backend xem có trả về {data: ...} không?");
+            return;
+        }
+
         AccountSummaryResponse.AccountData actualData = response.data;
-        if (actualData.type == null) return;
+
+        // Kiểm tra type null
+        if (actualData.type == null) {
+            Log.e("HomeActivity", "Account Type bị NULL");
+            return;
+        }
 
         String type = actualData.type.toUpperCase().trim();
+        Log.d("HomeActivity", "Cập nhật UI cho loại: " + type);
 
         switch (type) {
             case "CHECKING":
-                final String mainIdForHistory = currentAccId;
-
+                // ... (Code xử lý Checking giữ nguyên như cũ)
                 SharedPreferences.Editor editor = getSharedPreferences("auth", MODE_PRIVATE).edit();
                 editor.putString("main_account_id", currentAccId);
                 editor.apply();
 
-                // Cập nhật lại sự kiện click cho nút Xem tất cả với ID thật
-                if (btnViewAll != null) {
-                    btnViewAll.setOnClickListener(v -> {
-                        Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
-                        intent.putExtra("ACCOUNT_ID", mainIdForHistory); // Dùng ID thật thay vì A001
-                        startActivity(intent);
-                    });
-                }
                 if (tvBalance != null) tvBalance.setText(formatCurrency(actualData.balance));
-                if (tvAccountNumber != null) {
+
+                // Cập nhật số tài khoản thật
+                if (actualData.accountNumber != null) {
                     realAccountNumber = actualData.accountNumber;
                     updateAccountNumberDisplay();
                 }
-                // Hiển thị 3 giao dịch
+
                 if (actualData.lastTransactions != null && rvTransactions != null) {
                     List<Transaction> top3 = actualData.lastTransactions.size() > 3
                             ? actualData.lastTransactions.subList(0, 3)
                             : actualData.lastTransactions;
                     rvTransactions.setAdapter(new TransactionAdapter(this, top3));
-                    rvTransactions.setNestedScrollingEnabled(false);
                 }
                 break;
 
@@ -254,12 +304,15 @@ public class HomeActivity extends NavbarActivity {
                 if (tvNoSaving != null) tvNoSaving.setVisibility(View.GONE);
                 if (layoutSavingInfo != null) layoutSavingInfo.setVisibility(View.VISIBLE);
                 if (tvSavingBalance != null) tvSavingBalance.setText(formatCurrency(actualData.balance));
-                if (tvSavingRate != null && actualData.interestRate != null) {
-                    tvSavingRate.setText("Lãi suất: " + (actualData.interestRate * 100) + "% / năm");
+                // Kiểm tra null cho interestRate
+                if (tvSavingRate != null) {
+                    double rate = actualData.interestRate != null ? actualData.interestRate : 0.0;
+                    tvSavingRate.setText("Lãi suất: " + (rate * 100) + "% / năm");
                 }
                 break;
 
             case "MORTGAGE":
+                // ... (Code xử lý Mortgage giữ nguyên, thêm check null nếu cần) ...
                 mortgageAccountId = currentAccId;
                 if (tvNoMortgage != null) tvNoMortgage.setVisibility(View.GONE);
                 if (layoutMortgageInfo != null) layoutMortgageInfo.setVisibility(View.VISIBLE);

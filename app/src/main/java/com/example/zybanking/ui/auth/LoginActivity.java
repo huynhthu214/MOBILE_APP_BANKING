@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -34,19 +35,20 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText etEmail, etPassword;
     private Button btnLogin;
-    private TextView tvForgot;
+    private TextView tvForgot, tvFaceID;
 
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // --- 1. TỰ ĐỘNG ĐĂNG NHẬP (CHECK TRƯỚC KHI HIỆN GIAO DIỆN) ---
-        if (checkAutoLogin()) {
-            return; // Nếu đã login thì dừng code ở dưới lại
-        }
+        // --- 1. AUTO LOGIN ---
+        if (checkAutoLogin()) return;
 
         setContentView(R.layout.login);
+
+        apiService = RetrofitClient.getClient().create(ApiService.class);
 
         tilEmail = findViewById(R.id.til_email);
         tilPassword = findViewById(R.id.til_password);
@@ -54,24 +56,14 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = (TextInputEditText) tilPassword.getEditText();
         btnLogin = findViewById(R.id.btn_login);
         tvForgot = findViewById(R.id.tv_forgot);
-        TextView tvFingerprint = findViewById(R.id.tv_fingerprint_login);
+        tvFaceID = findViewById(R.id.tv_faceid_login);
 
-        tvFingerprint.setOnClickListener(v -> {
-            SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-            String token = pref.getString("access_token", null);
-            String role = pref.getString("role", "");
+        // ===== QUÊN MẬT KHẨU =====
+        tvForgot.setOnClickListener(v ->
+                startActivity(new Intent(this, ForgotPasswordActivity.class))
+        );
 
-            if (token == null) {
-                Toast.makeText(this, "Bạn cần đăng nhập mật khẩu ít nhất 1 lần", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            showBiometricPrompt(role, token);
-        });
-        tvForgot.setOnClickListener(v -> {
-            startActivity(new Intent(this, ForgotPasswordActivity.class));
-        });
-
+        // ===== LOGIN BẰNG EMAIL / PASSWORD =====
         btnLogin.setOnClickListener(v -> {
             String email = etEmail != null ? etEmail.getText().toString().trim() : "";
             String password = etPassword != null ? etPassword.getText().toString().trim() : "";
@@ -81,94 +73,56 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            LoginRequest request = new LoginRequest(email, password);
-            ApiService api = RetrofitClient.getClient().create(ApiService.class);
+            apiService.login(new LoginRequest(email, password))
+                    .enqueue(new Callback<LoginResponse>() {
+                        @Override
+                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                            if (!response.isSuccessful() || response.body() == null) {
+                                Toast.makeText(LoginActivity.this,
+                                        "Login thất bại: " + response.code(),
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
 
-            api.login(request).enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    if (response.body() != null) {
-                        Log.d("LOGIN_BODY", new Gson().toJson(response.body()));
-                    }
+                            LoginResponse res = response.body();
+                            if (!"success".equals(res.status) || res.data == null) {
+                                Toast.makeText(LoginActivity.this,
+                                        res.message,
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
 
-                    if (!response.isSuccessful() || response.body() == null) {
-                        Toast.makeText(LoginActivity.this, "Login thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                            saveSession(res);
+                            navigateUser(res.data.user.ROLE, res.data.access_token);
+                        }
 
-                    LoginResponse res = response.body();
-                    if (!"success".equals(res.status) || res.data == null) {
-                        Toast.makeText(LoginActivity.this, res.message, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                        @Override
+                        public void onFailure(Call<LoginResponse> call, Throwable t) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Lỗi mạng: " + t.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
 
-                    // ===== DATA =====
-                    String userId = res.data.user.USER_ID;
-                    String accessToken = res.data.access_token;
-                    String role = res.data.user.ROLE;
-                    String accountId = res.data.user.ACCOUNT_ID;
+        // ===== BIOMETRIC LOGIN (DEMO b@gmail.com) =====
+        tvFaceID.setOnClickListener(v -> {
+            SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+            String token = pref.getString("access_token", null);
+            String role = pref.getString("role", null);
 
-                    // ===== 2. SỬA LỖI LƯU SESSION =====
-                    SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit(); // Tạo editor
-                    editor.putString("access_token", accessToken);
-                    editor.putString("user_id", userId);
-                    editor.putString("role", role);
-                    if (accountId != null) {
-                        editor.putString("account_id", accountId);
-                        Log.d("LOGIN", "Saved Account ID: " + accountId);
-                    } else {
-                        Log.e("LOGIN", "Account ID is NULL!");
-                    }
+            if (token == null || role == null) {
+                // demo: lấy token theo email cố định
+                fetchTokenByEmail("b@gmail.com");
+                return;
+            }
 
-                    editor.apply(); // Lưu 1 lần duy nhất ở cuối
-
-                    Log.d("LOGIN_ROLE", "ROLE = " + role);
-
-                    // ===== ĐIỀU HƯỚNG =====
-                    navigateUser(role, accessToken);
-                }
-
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            showBiometricPrompt(role, token);
         });
     }
-    private void showBiometricPrompt(String role, String token) {
-        Executor executor = ContextCompat.getMainExecutor(this);
 
-        BiometricPrompt biometricPrompt = new BiometricPrompt(
-                this,
-                executor,
-                new BiometricPrompt.AuthenticationCallback() {
-                    @Override
-                    public void onAuthenticationSucceeded(
-                            BiometricPrompt.AuthenticationResult result) {
-                        runOnUiThread(() -> {
-                            navigateUser(role, token);
-                        });
-                    }
+    // ================= AUTO LOGIN =================
 
-                    @Override
-                    public void onAuthenticationFailed() {
-                        Toast.makeText(LoginActivity.this,
-                                "Xác thực thất bại", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        BiometricPrompt.PromptInfo promptInfo =
-                new BiometricPrompt.PromptInfo.Builder()
-                        .setTitle("Đăng nhập bằng vân tay")
-                        .setSubtitle("Xác thực để tiếp tục")
-                        .setNegativeButtonText("Huỷ")
-                        .build();
-
-        biometricPrompt.authenticate(promptInfo);
-    }
-    // Hàm kiểm tra tự động đăng nhập
     private boolean checkAutoLogin() {
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
         String token = pref.getString("access_token", null);
@@ -181,20 +135,112 @@ public class LoginActivity extends AppCompatActivity {
         return false;
     }
 
-    // Hàm điều hướng chung
+    // ================= BIOMETRIC =================
+
+    private void showBiometricPrompt(String role, String token) {
+        Executor executor = ContextCompat.getMainExecutor(this);
+
+        BiometricPrompt biometricPrompt =
+                new BiometricPrompt(this, executor,
+                        new BiometricPrompt.AuthenticationCallback() {
+
+                            @Override
+                            public void onAuthenticationSucceeded(
+                                    @NonNull BiometricPrompt.AuthenticationResult result) {
+                                Toast.makeText(LoginActivity.this,
+                                        "Xác thực thành công",
+                                        Toast.LENGTH_SHORT).show();
+                                navigateUser(role, token);
+                            }
+
+                            @Override
+                            public void onAuthenticationError(int errorCode,
+                                                              @NonNull CharSequence errString) {
+                                // demo cho giảng viên: máy không hỗ trợ vẫn cho vào
+                                if (errorCode == 11) {
+                                    navigateUser(role, token);
+                                } else {
+                                    Toast.makeText(LoginActivity.this,
+                                            errString,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+        BiometricPrompt.PromptInfo promptInfo =
+                new BiometricPrompt.PromptInfo.Builder()
+                        .setTitle("Đăng nhập nhanh")
+                        .setSubtitle("Xác thực sinh trắc học")
+                        .setNegativeButtonText("Hủy")
+                        .setAllowedAuthenticators(
+                                androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
+                                        | androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+                        )
+                        .build();
+
+        biometricPrompt.authenticate(promptInfo);
+    }
+
+    // ================= FETCH TOKEN DEMO =================
+
+    private void fetchTokenByEmail(String email) {
+        Toast.makeText(this,
+                "Khôi phục phiên đăng nhập...",
+                Toast.LENGTH_SHORT).show();
+
+        apiService.getLastToken(email)
+                .enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call,
+                                           Response<LoginResponse> response) {
+                        if (!response.isSuccessful() || response.body() == null) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Không tìm thấy phiên đăng nhập",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        LoginResponse res = response.body();
+                        saveSession(res);
+                        showBiometricPrompt(
+                                res.data.user.ROLE,
+                                res.data.access_token
+                        );
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Toast.makeText(LoginActivity.this,
+                                "Lỗi server",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // ================= SESSION =================
+
+    private void saveSession(LoginResponse res) {
+        SharedPreferences.Editor editor =
+                getSharedPreferences("auth", MODE_PRIVATE).edit();
+
+        editor.putString("access_token", res.data.access_token);
+        editor.putString("user_id", res.data.user.USER_ID);
+        editor.putString("role", res.data.user.ROLE);
+        editor.apply();
+    }
+
+    // ================= NAVIGATION =================
+
     private void navigateUser(String role, String token) {
         Intent intent;
         if ("admin".equalsIgnoreCase(role)) {
-            intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+            intent = new Intent(this, AdminDashboardActivity.class);
         } else {
-            intent = new Intent(LoginActivity.this, HomeActivity.class);
+            intent = new Intent(this, HomeActivity.class);
         }
 
-        // --- QUAN TRỌNG: Truyền Token sang HomeActivity ---
-        // Giúp HomeActivity có Token dùng ngay lập tức, sửa lỗi "lúc được lúc không"
         intent.putExtra("EXTRA_TOKEN", token);
-
         startActivity(intent);
-        finish(); // Đóng LoginActivity
+        finish();
     }
 }

@@ -14,14 +14,9 @@ public class EkycResponse {
         @SerializedName("STATUS")
         public String status;
 
-        @SerializedName("IMG_FRONT_URL")
-        public String frontUrl;
-
-        @SerializedName("IMG_BACK_URL")
-        public String backUrl;
-
-        @SerializedName("SELFIE_URL")
-        public String selfieUrl;
+        @SerializedName("IMG_FRONT_URL") public String frontUrl;
+        @SerializedName("IMG_BACK_URL") public String backUrl;
+        @SerializedName("SELFIE_URL") public String selfieUrl;
 
         // Thêm các trường khác nếu cần (ví dụ REVIEWED_AT)
     }

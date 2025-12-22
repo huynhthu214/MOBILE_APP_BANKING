@@ -5,8 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6FA">
+    android:background="#F4F6FA"
+    tools:context=".ui.account.AdminDetailUserActivity">
 
+    <!-- Header Include -->
     <include
         android:id="@+id/layoutHeader"
         layout="@layout/header_admin"/>
@@ -22,11 +24,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Top Blue Background -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:background="#0b5394"/>
 
+            <!-- Main Profile Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,42 +40,73 @@
                 app:cardElevation="8dp"
                 app:cardBackgroundColor="#FFFFFF">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
+                    android:padding="20dp">
 
+                    <!-- Avatar -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/avatar_container"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         app:cardCornerRadius="50dp"
-                        app:cardElevation="0dp">
+                        app:cardElevation="2dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
                         <ImageView
                             android:id="@+id/img_user_avatar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_user"
                             android:scaleType="centerCrop"
-                            android:background="#E0E0E0"/>
+                            android:background="#E0E0E0"
+                            tools:ignore="ContentDescription" />
                     </androidx.cardview.widget.CardView>
 
+                    <!-- Edit Button -->
+                    <ImageView
+                        android:id="@+id/btn_action_edit"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_edit"
+                        android:padding="8dp"
+                        android:elevation="4dp"
+                        android:background="@drawable/bg_circle_light"
+                        android:backgroundTint="#0b5394"
+                        app:tint="#FFFFFF"
+                        app:layout_constraintBottom_toBottomOf="@id/avatar_container"
+                        app:layout_constraintEnd_toEndOf="@id/avatar_container"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:ignore="ContentDescription" />
+
+                    <!-- User Name -->
                     <TextView
                         android:id="@+id/tv_detail_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Nguyễn Văn A"
+                        android:layout_marginTop="16dp"
+                        tools:text="Nguyễn Văn A"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="#111827"/>
+                        android:textColor="#111827"
+                        app:layout_constraintTop_toBottomOf="@id/avatar_container"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
+                    <!-- Status Chips -->
                     <LinearLayout
+                        android:id="@+id/status_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/tv_detail_name"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
 
                         <TextView
                             android:id="@+id/tv_status_verify"
@@ -84,6 +119,7 @@
                             android:backgroundTint="#EFF6FF"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp"/>
+
                         <TextView
                             android:id="@+id/tv_status_active"
                             android:layout_width="wrap_content"
@@ -98,163 +134,112 @@
                             android:paddingVertical="4dp"/>
                     </LinearLayout>
 
+                    <!-- Balance Section -->
                     <LinearLayout
+                        android:id="@+id/balance_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="#F9FAFB"
                         android:orientation="vertical"
                         android:padding="16dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="@id/status_container">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng tài sản"
+                            android:text="Tổng số dư khả dụng"
                             android:textSize="12sp"
                             android:textColor="#6B7280"/>
 
                         <TextView
-                            android:id="@+id/tv_detail_balance"
+                            android:id="@+id/tv_total_balance_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12,500,000 VND"
+                            tools:text="12,500,000 VND"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:textColor="#111827"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
+                    <!-- Info Rows -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        app:layout_constraintTop_toBottomOf="@id/balance_container">
 
+                        <!-- Phone -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
-                            <TextView android:text="Điện thoại:" android:textColor="#6B7280" android:layout_width="100dp" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/tv_detail_phone" android:text="0912 345 678" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Điện thoại:"
+                                android:textColor="#6B7280"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/tv_detail_phone"
+                                tools:text="0912 345 678"
+                                android:textColor="#111827"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6"/>
 
+                        <!-- Email -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
-                            <TextView android:text="Email:" android:textColor="#6B7280" android:layout_width="100dp" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/tv_detail_email" android:text="nguyenvana@gmail.com" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Email:"
+                                android:textColor="#6B7280"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/tv_detail_email"
+                                tools:text="nguyenvana@gmail.com"
+                                android:textColor="#111827"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
 
                         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6"/>
 
+                        <!-- Date -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
-                            <TextView android:text="Ngày tạo:" android:textColor="#6B7280" android:layout_width="100dp" android:layout_height="wrap_content"/>
-                            <TextView android:id="@+id/tv_detail_date" android:text="01/01/2024" android:textColor="#111827" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Ngày tạo:"
+                                android:textColor="#6B7280"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/tv_detail_date"
+                                tools:text="01/01/2024"
+                                android:textColor="#111827"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
                     </LinearLayout>
-
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="3"
-                android:useDefaultMargins="true"
-                android:alignmentMode="alignMargins"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="16dp">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btn_action_lock"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FEF2F2"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:padding="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView android:src="@drawable/ic_lock" app:tint="#DC2626" android:layout_width="24dp" android:layout_height="24dp"/>
-                        <TextView android:text="Khóa TK" android:textColor="#DC2626" android:textStyle="bold" android:textSize="12sp" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btn_action_edit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#EFF6FF"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:id="@+id/edit_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_edit"
-                            app:tint="#2563EB" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Sửa thông tin"
-                            android:textColor="#2563EB"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btn_action_reset"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFF7ED"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:padding="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView android:src="@drawable/ic_refresh" app:tint="#EA580C" android:layout_width="24dp" android:layout_height="24dp"/>
-                        <TextView android:text="Cấp lại MK" android:textColor="#EA580C" android:textStyle="bold" android:textSize="12sp" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </GridLayout>
-
+            <!-- List Section Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -266,6 +251,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- List of Accounts -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_user_accounts"
                 android:layout_width="match_parent"
@@ -273,7 +259,8 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="24dp"
-                tools:listitem="@layout/item_admin_account_card"/>
+                tools:listitem="@layout/item_admin_account_card"
+                tools:itemCount="3"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -1,6 +1,8 @@
 package com.example.zybanking.data.remote;
 
 import com.example.zybanking.data.models.TransactionHistoryResponse;
+import com.example.zybanking.data.models.account.Account;
+import com.example.zybanking.data.models.account.AccountListResponse;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.auth.CreateUserRequest;
@@ -36,6 +38,7 @@ import com.example.zybanking.data.models.transaction.WithdrawRequest;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -231,5 +234,32 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body CreateUserRequest request
     );
+    @GET("users/{id}")
+    Call<UserResponse> getUserDetail(
+            @Header("Authorization") String token,
+            @Path("id") String userId
+    );
+    @GET("accounts")
+    Call<AccountListResponse> getAdminAccounts( // Sửa List<Account> thành AccountListResponse
+                                                @Header("Authorization") String token,
+                                                @Query("search") String search
+    );
+    @Multipart
+    @POST("biometric/face/register")
+    Call<BasicResponse> registerFace(
+            @Header("Authorization") String token,
+            @Part MultipartBody.Part faceImage
+    );
+
+    @Multipart
+    @POST("biometric/face/verify")
+    Call<BasicResponse> verifyFace(
+            @Header("Authorization") String token,
+            @Part MultipartBody.Part faceImage
+    );
+    @GET("auth/last-token")
+    Call<LoginResponse> getLastToken(@Query("email") String email);
+    @PUT("api/v1/users/{id}") // Đường dẫn phải khớp với backend Python route update_user
+    Call<Map<String, Object>> updateUser(@Header("Authorization") String token, @Path("id") String userId, @Body Map<String, Object> body);
 }
 

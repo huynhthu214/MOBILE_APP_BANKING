@@ -18,11 +18,10 @@ import com.example.zybanking.HeaderAdmin;
 import com.example.zybanking.R;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
-import com.example.zybanking.ui.account.AdminEditInforActivity;
+import com.example.zybanking.ui.account.AdminAccountListActivity;
 import com.example.zybanking.ui.account.AdminRatesActivity;
 import com.example.zybanking.ui.account.AdminSettingActivity;
 import com.example.zybanking.ui.account.AdminUserActivity;
-import com.example.zybanking.ui.account.CreateAccountActivity;
 import com.example.zybanking.ui.ekyc.VerifyEkycActivity;
 import com.example.zybanking.ui.transaction.AdminTransaction;
 
@@ -35,8 +34,8 @@ import retrofit2.Response;
 public class AdminDashboardActivity extends HeaderAdmin {
 
     private ImageButton btnAdmin;
-    private LinearLayout btnCreateAccount, btnEkyc, btnRates;
-    private CardView cardEKYC, cardCreate, cardRate, cardEdit;
+    private LinearLayout btnAccount, btnEkyc, btnRates;
+    private CardView cardEKYC, cardRate, cardEdit, cardAccount;
     private TextView tvMore;
     private LinearLayout layoutRecentTransactions;
     private TextView tvTotalUsersVal, tvTotalTransacCountVal, tvTotalTransacMoneyVal;
@@ -60,8 +59,8 @@ public class AdminDashboardActivity extends HeaderAdmin {
     }
 
     private void loadToken() {
-        SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String savedToken = pref.getString("auth_token", "");
+        SharedPreferences pref = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        String savedToken = pref.getString("access_token", "");
         token = savedToken.startsWith("Bearer ") ? savedToken : "Bearer " + savedToken;
     }
 
@@ -198,21 +197,21 @@ public class AdminDashboardActivity extends HeaderAdmin {
     }
     private void initDashboardButtons() {
         // 1. Ánh xạ các nút tác vụ nhanh
-        btnCreateAccount = findViewById(R.id.btn_quick_create_account);
+        btnAccount = findViewById(R.id.btn_quick_create_account);
         btnEkyc = findViewById(R.id.btn_quick_ekyc);
         btnRates = findViewById(R.id.btn_quick_rates);
 
         // 2. Ánh xạ các CardView chính
         cardRate = findViewById(R.id.card_rate);
-        cardCreate = findViewById(R.id.card_create_customer);
+        cardAccount = findViewById(R.id.card_account);
         cardEKYC = findViewById(R.id.card_ekyc);
 
         // 3. Gán sự kiện click (Tập trung)
         if (btnAdmin != null) btnAdmin.setOnClickListener(v -> startActivity(new Intent(this, AdminSettingActivity.class)));
 
-        View.OnClickListener createAccListener = v -> startActivity(new Intent(this, CreateAccountActivity.class));
-        if (btnCreateAccount != null) btnCreateAccount.setOnClickListener(createAccListener);
-        if (cardCreate != null) cardCreate.setOnClickListener(createAccListener);
+        View.OnClickListener createAccListener = v -> startActivity(new Intent(this, AdminAccountListActivity.class));
+        if (btnAccount != null) btnAccount.setOnClickListener(createAccListener);
+        if (cardAccount != null) cardAccount.setOnClickListener(createAccListener);
 
         View.OnClickListener ekycListener = v -> startActivity(new Intent(this, VerifyEkycActivity.class));
         if (btnEkyc != null) btnEkyc.setOnClickListener(ekycListener);

@@ -15,47 +15,63 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <ImageView
-            android:id="@+id/img_acc_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_card"
-            android:padding="8dp"
-            android:background="@drawable/bg_circle_light"
-            app:tint="#0b5394" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F3F4F6">
+            <ImageView
+                android:id="@+id/img_acc_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_card"
+                app:tint="#0b5394"/>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginHorizontal="12dp">
 
             <TextView
                 android:id="@+id/tv_acc_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Checking Account"
-                android:textColor="#111827"
                 android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:textColor="#1F2937"
+                android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/tv_acc_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="9901234567"
+                android:text="**** 1234"
                 android:textColor="#6B7280"
-                android:textSize="12sp"/>
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/tvOwnerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owner Name"
+                android:textColor="#9CA3AF"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
         <TextView
             android:id="@+id/tv_acc_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5,000,000đ"
-            android:textColor="#16A34A"
+            android:text="5.000.000 đ"
             android:textStyle="bold"
+            android:textColor="#0b5394"
             android:textSize="15sp"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

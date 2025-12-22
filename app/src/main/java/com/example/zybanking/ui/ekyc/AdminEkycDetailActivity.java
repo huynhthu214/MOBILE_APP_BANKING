@@ -14,6 +14,7 @@ import com.example.zybanking.HeaderAdmin;
 import com.example.zybanking.R;
 import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.ekyc.EkycListResponse;
+import com.example.zybanking.data.models.ekyc.EkycResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 
@@ -57,25 +58,24 @@ public class AdminEkycDetailActivity extends HeaderAdmin {
         btnBack.setOnClickListener(v -> finish());
     }
     private void loadEkycImages(String userId) {
-        // Gọi API getMyEkyc (API này trả về full ảnh)
-        apiService.getMyEkyc(userId).enqueue(new Callback<com.example.zybanking.data.models.ekyc.EkycResponse>() {
+        // Gọi API lấy chi tiết EKYC của user
+        apiService.getMyEkyc(userId).enqueue(new Callback<EkycResponse>() { // Dùng class EkycResponse chuẩn
             @Override
-            public void onResponse(Call<com.example.zybanking.data.models.ekyc.EkycResponse> call, Response<com.example.zybanking.data.models.ekyc.EkycResponse> response) {
+            public void onResponse(Call<EkycResponse> call, Response<EkycResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().data != null) {
-                    // Lấy dữ liệu ảnh từ Server về
-                    com.example.zybanking.data.models.ekyc.EkycResponse.EkycData data = response.body().data;
+                    EkycResponse.EkycData data = response.body().data;
 
-                    // Hiển thị lên màn hình
+                    // Hiển thị ảnh (Sử dụng hàm displayBase64 đã được tối ưu)
                     displayBase64(data.frontUrl, imgFront);
                     displayBase64(data.backUrl, imgBack);
                     displayBase64(data.selfieUrl, imgSelfie);
                 } else {
-                    Toast.makeText(AdminEkycDetailActivity.this, "Không tải được ảnh chi tiết", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminEkycDetailActivity.this, "Không có dữ liệu ảnh", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<com.example.zybanking.data.models.ekyc.EkycResponse> call, Throwable t) {
+            public void onFailure(Call<EkycResponse> call, Throwable t) {
                 Toast.makeText(AdminEkycDetailActivity.this, "Lỗi tải ảnh: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -107,12 +107,23 @@ public class AdminEkycDetailActivity extends HeaderAdmin {
     }
 
     private void displayBase64(String base64Str, ImageView imgView) {
-        if (base64Str == null || base64Str.isEmpty()) return;
+        if (base64Str == null || base64Str.isEmpty()) {
+            // Nếu không có ảnh, set ảnh mặc định hoặc ẩn đi
+            imgView.setImageResource(R.drawable.ic_image_placeholder); // Tạo ảnh placeholder nếu cần
+            return;
+        }
         try {
-            String cleanBase64 = base64Str.replaceAll("\\s+", "");
+            String cleanBase64 = base64Str;
+            if (base64Str.contains(",")) cleanBase64 = base64Str.split(",")[1];
+            cleanBase64 = cleanBase64.replaceAll("\\s+", "");
+
             byte[] decodedString = Base64.decode(cleanBase64, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            imgView.setImageBitmap(decodedByte);
+
+            if (decodedByte != null) {
+                imgView.setImageBitmap(decodedByte);
+                imgView.setScaleType(ImageView.ScaleType.FIT_CENTER); // Dùng FIT_CENTER để thấy toàn bộ ảnh CMND
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

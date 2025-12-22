@@ -1,7 +1,9 @@
 package com.example.zybanking.data.remote;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -16,11 +18,13 @@ public class RetrofitClient {
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
                     .writeTimeout(30, TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(true)
+                    .protocols(Collections.singletonList(Protocol.HTTP_1_1))
                     .build();
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(client) //
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

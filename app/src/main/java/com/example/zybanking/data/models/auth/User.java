@@ -3,7 +3,6 @@ package com.example.zybanking.data.models.auth;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-    // Ánh xạ tên cột trong JSON (viết hoa từ Database) sang biến Java
     @SerializedName("USER_ID")
     private String userId;
 
@@ -19,14 +18,18 @@ public class User {
     @SerializedName("ROLE")
     private String role;
 
-    @SerializedName("IS_ACTIVE")
-    private int isActive; // Database lưu bool/tinyint thường trả về 0 hoặc 1
+    @SerializedName("CREATED_AT")
+    private String createdAt;
 
-    // Constructor, Getters
+    @SerializedName("IS_ACTIVE")
+    private int isActive;
+
+    // Getters
     public String getUserId() { return userId; }
     public String getFullName() { return fullName; }
     public String getEmail() { return email; }
     public String getPhone() { return phone; }
     public String getRole() { return role; }
+    public String getCreatedAt() { return createdAt; }
     public boolean isActive() { return isActive == 1; }
 }

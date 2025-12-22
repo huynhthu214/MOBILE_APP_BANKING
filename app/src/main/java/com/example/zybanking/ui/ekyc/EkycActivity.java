@@ -45,7 +45,7 @@ public class EkycActivity extends AppCompatActivity {
     private LinearLayout layoutIconFront, layoutIconBack, layoutIconSelfie;
     private TextView tvKycStatus;
     private Button btnSubmitKyc;
-
+    private boolean isUpdateMode = false;
     // Data & API
     private ApiService apiService;
     private String userToken;
@@ -142,53 +142,50 @@ public class EkycActivity extends AppCompatActivity {
     }
 
     private void updateUIWithExistingData(EkycResponse.EkycData data) {
-        if (data == null || data.status == null) return;
+        if (data == null || data.status == null) {
+            isUpdateMode = false;
+            return;
+        }
 
-        // Chuẩn hóa chuỗi trạng thái về chữ thường để so sánh
         String status = data.status.toLowerCase().trim();
 
         switch (status) {
             case "pending":
                 tvKycStatus.setText("Trạng thái: Đang chờ duyệt");
-                tvKycStatus.setTextColor(Color.parseColor("#FFA500")); // Màu cam
-                disableForm(); // Không cho phép sửa đổi khi đang chờ
+                tvKycStatus.setTextColor(Color.parseColor("#FFA500"));
+                disableForm();
+                isUpdateMode = true;
                 break;
 
             case "approved":
                 tvKycStatus.setText("Trạng thái: Đã xác thực");
-                tvKycStatus.setTextColor(Color.parseColor("#008000")); // Màu xanh lá
-                disableForm(); // Đã xác thực thì khóa form
+                tvKycStatus.setTextColor(Color.parseColor("#008000"));
+                disableForm();
+                isUpdateMode = true;
                 break;
 
-            case "rejected": // Khớp với Database "rejected"
+            case "rejected":
                 tvKycStatus.setText("Trạng thái: Bị từ chối - Hãy gửi lại");
                 tvKycStatus.setTextColor(Color.RED);
-                btnSubmitKyc.setEnabled(true); // Cho phép gửi lại
-                btnSubmitKyc.setAlpha(1.0f);
-                btnSubmitKyc.setText("Gửi lại yêu cầu");
-
-                // Cho phép click lại vào ảnh để chọn ảnh mới
+                btnSubmitKyc.setEnabled(true);
+                btnSubmitKyc.setText("Cập nhật lại hồ sơ");
                 enableFormImages();
+                isUpdateMode = true;
                 break;
 
             default:
+                // Status lạ (ví dụ: null, rỗng, draft...)
                 tvKycStatus.setText("Trạng thái: Chưa xác thực");
                 tvKycStatus.setTextColor(Color.GRAY);
+
+                // --- SỬA: Nếu đã có data rác, vẫn coi là Update để Backend không báo lỗi trùng ---
+                isUpdateMode = true;
                 break;
         }
         // 2. Hiển thị ảnh cũ (Decode Base64 -> Bitmap)
-        if (data.frontUrl != null) {
-            displayBase64Image(data.frontUrl, imgFrontPreview, layoutIconFront);
-            frontUrl = data.frontUrl; // Lưu lại để gửi nếu cần sửa
-        }
-        if (data.backUrl != null) {
-            displayBase64Image(data.backUrl, imgBackPreview, layoutIconBack);
-            backUrl = data.backUrl;
-        }
-        if (data.selfieUrl != null) {
-            displayBase64Image(data.selfieUrl, imgSelfiePreview, layoutIconSelfie);
-            selfieUrl = data.selfieUrl;
-        }
+        if (data.frontUrl != null) displayBase64Image(data.frontUrl, imgFrontPreview, layoutIconFront);
+        if (data.backUrl != null) displayBase64Image(data.backUrl, imgBackPreview, layoutIconBack);
+        if (data.selfieUrl != null) displayBase64Image(data.selfieUrl, imgSelfiePreview, layoutIconSelfie);
     }
     private void enableFormImages() {
         cardFront.setClickable(true);
@@ -200,19 +197,26 @@ public class EkycActivity extends AppCompatActivity {
         if (base64Str == null || base64Str.isEmpty()) return;
         try {
             String cleanBase64 = base64Str;
+            // 1. Tách header nếu có (data:image/jpeg;base64,...)
             if (base64Str.contains(",")) {
                 cleanBase64 = base64Str.split(",")[1];
             }
-            // QUAN TRỌNG: Xóa ký tự xuống dòng
+            // 2. Xóa khoảng trắng và xuống dòng (QUAN TRỌNG)
             cleanBase64 = cleanBase64.replaceAll("\\s+", "");
 
+            // 3. Decode
             byte[] decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT);
             Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
 
             if (decodedBitmap != null) {
                 imageView.setImageBitmap(decodedBitmap);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                // 4. Ẩn icon upload đi để hiện ảnh
                 if (iconLayout != null) iconLayout.setVisibility(View.GONE);
+
+                // 5. Hiện ImageView lên (nếu nó đang bị GONE)
+                imageView.setVisibility(View.VISIBLE);
             }
         } catch (Exception e) {
             Log.e("EKYC_IMG", "Lỗi decode ảnh: " + e.getMessage());
@@ -267,42 +271,42 @@ public class EkycActivity extends AppCompatActivity {
 
         String authHeader = userToken.startsWith("Bearer ") ? userToken : "Bearer " + userToken;
 
-        apiService.createEkyc(authHeader, currentUserId, request).enqueue(new Callback<BasicResponse>() {
+        // Callback chung để xử lý kết quả (đỡ viết lại 2 lần)
+        Callback<BasicResponse> commonCallback = new Callback<BasicResponse>() {
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(EkycActivity.this, "Gửi hồ sơ thành công!", Toast.LENGTH_LONG).show();
-
-                    // 1. CẬP NHẬT GIAO DIỆN NGAY LẬP TỨC
-                    tvKycStatus.setText("Trạng thái: Đang chờ duyệt");
-                    tvKycStatus.setTextColor(Color.parseColor("#FFA500"));
-                    disableForm();
-
-                    // 2. QUAN TRỌNG: XÓA DÒNG NÀY ĐI
-                    // checkExistingEkyc(); <--- Nguyên nhân gây lỗi đây!
-
-                    // 3. Trả kết quả về Home
                     setResult(RESULT_OK);
-
-                    // Nếu muốn chắc chắn, có thể đóng màn hình này luôn để user quay lại Home
-                    // finish();
+                    finish();
                 } else {
-                    // ... Xử lý lỗi như cũ ...
-                    if (response.code() == 400) {
-                        // Chỉ gọi check lại nếu bị báo lỗi trùng để xem trạng thái thực là gì
-                        checkExistingEkyc();
-                        Toast.makeText(EkycActivity.this, "Hồ sơ đã tồn tại", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(EkycActivity.this, "Lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
+                    try {
+                        // In lỗi chi tiết từ server nếu có
+                        String errorBody = response.errorBody().string();
+                        Log.e("EKYC_SUBMIT", "Lỗi: " + errorBody);
+                        Toast.makeText(EkycActivity.this, "Lỗi: " + response.message(), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(EkycActivity.this, "Lỗi server: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<BasicResponse> call, Throwable t) {
-                Toast.makeText(EkycActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EkycActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+
+        // --- KIỂM TRA ĐỂ GỌI API ĐÚNG ---
+        if (isUpdateMode) {
+            // Nếu đã tồn tại (bị từ chối), gọi hàm UPDATE (PATCH)
+            Log.d("EKYC_SUBMIT", "Đang gọi API Update (PATCH)...");
+            apiService.updateEkyc(authHeader, currentUserId, request).enqueue(commonCallback);
+        } else {
+            // Nếu chưa có, gọi hàm CREATE (POST)
+            Log.d("EKYC_SUBMIT", "Đang gọi API Create (POST)...");
+            apiService.createEkyc(authHeader, currentUserId, request).enqueue(commonCallback);
+        }
     }
 
     private String encodeImageToBase64(Uri imageUri) {

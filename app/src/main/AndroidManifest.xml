@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.zybanking">
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -23,7 +22,122 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE" />
+        <activity android:name=".ui.map.MapActivity" />
+        <activity
+            android:name=".ui.transaction.TransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.MortgageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.SavingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.WithdrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.WithdrawOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.AdminTransaction"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.DepositActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.DepositOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.ElectricWaterPayment"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.WithdrawSavingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.DepositSavingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.MortgagePaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.transaction.PhonePayment"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.CreateAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminRatesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminDetailTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminDetailUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminAccountListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminEditInforActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.ItemUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.ItemTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminAccountDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dashboard.HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dashboard.HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dashboard.AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationAdminActivity"
+            android:exported="false" />
 
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.OtpVerificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ekyc.AdminEkycDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ekyc.VerifyEkycActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ekyc.EkycActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
