@@ -22,12 +22,14 @@ import com.example.zybanking.data.models.transaction.MortgagePaymentRequest;
 import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.models.OtpConfirmRequest;
 import com.example.zybanking.data.models.auth.ResetPasswordRequest;
+import com.example.zybanking.data.models.transaction.PaymentResponse;
 import com.example.zybanking.data.models.transaction.Transaction;
 import com.example.zybanking.data.models.transaction.TransactionListResponse;
 import com.example.zybanking.data.models.transaction.TransferRequest;
 import com.example.zybanking.data.models.auth.UserResponse;
-import com.example.zybanking.data.models.utils.UtilityResponse;
-import com.example.zybanking.data.models.utils.UtilityTopupRequest;
+import com.example.zybanking.data.models.transaction.VerifyPinRequest;
+import com.example.zybanking.data.models.utility.UtilityConfirmRequest;
+import com.example.zybanking.data.models.utility.UtilityRequest;
 import com.example.zybanking.data.models.auth.VerifyOtpRequest;
 import com.example.zybanking.data.models.transaction.WithdrawRequest;
 
@@ -91,12 +93,16 @@ public interface ApiService {
 
     @POST("transactions/transfer/confirm")
     Call<BasicResponse> transferConfirm(@Body OtpConfirmRequest body);
+    @POST("/api/v1/transactions/verify-pin")
+    Call<BasicResponse> verifyPin(@Body VerifyPinRequest request);
 
     @POST("transactions/deposit/create")
     Call<BasicResponse> deposit(
             @Header("Authorization") String token,
             @Body DepositRequest request
     );
+    @POST("/api/v1/payments/create")
+    Call<PaymentResponse> createPayment(@Body Map<String, Object> body);
 
     @POST("transactions/deposit/confirm")
     Call<BasicResponse> depositConfirm(@Body OtpConfirmRequest body);
@@ -124,13 +130,17 @@ public interface ApiService {
     @POST("bills/pay")
     Call<BasicResponse> payBill(@Body BillPayRequest body);
 
-    // UTILITY
-    @POST("utility/topup")
-    Call<BasicResponse> utilityTopup(@Body UtilityTopupRequest body);
-    @POST("utility/confirm")
-    Call<BasicResponse> utilityConfirm(@Body OtpConfirmRequest body);
-    @GET("utility/{utility_payment_id}")
-    Call<UtilityResponse> getUtilityDetail(@Path("utility_payment_id") String id);
+    // Bước 1: Tạo lệnh thanh toán
+    @POST("api/v1/utility/topup")
+    Call<BasicResponse> createUtilityPayment(@Body UtilityRequest request);
+
+    // Bước 2: Xác nhận OTP
+    @POST("api/v1/utility/confirm")
+    Call<BasicResponse> confirmUtilityPayment(@Body UtilityConfirmRequest request);
+
+    // Lấy chi tiết (nếu cần)
+    @GET("api/v1/utility/{id}")
+    Call<BasicResponse> getUtilityDetail(@Path("id") String paymentId);
     @POST("transactions/mortgage/pay")
     Call<BasicResponse> payMortgage(@Body MortgagePaymentRequest body);
 

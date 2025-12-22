@@ -2,9 +2,7 @@ package com.example.zybanking.ui.dashboard;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,15 +25,14 @@ import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.ui.ekyc.EkycActivity;
 import com.example.zybanking.ui.map.MapActivity;
 import com.example.zybanking.ui.transaction.DepositActivity;
-import com.example.zybanking.ui.transaction.ElectricWaterPayment;
+import com.example.zybanking.ui.utilities.ElectricWaterPayment;
 import com.example.zybanking.ui.transaction.MortgageActivity;
-import com.example.zybanking.ui.transaction.PhonePayment;
+import com.example.zybanking.ui.utilities.PhonePayment;
 import com.example.zybanking.ui.transaction.SavingsActivity;
 import com.example.zybanking.ui.transaction.WithdrawActivity;
 import com.example.zybanking.ui.utilities.UtilitiesActivity;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;

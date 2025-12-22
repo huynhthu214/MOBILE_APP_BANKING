@@ -160,6 +160,12 @@ public class TransactionActivity extends NavbarActivity {
         String recipient = etRecipient.getText().toString().trim();
         String amountStr = etAmount.getText().toString().trim();
         String message = etMessage.getText().toString().trim();
+        if (message.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập nội dung chuyển khoản", Toast.LENGTH_SHORT).show();
+            etMessage.requestFocus();
+            return;
+        }
+
         String bankCode = spinnerBank.getSelectedItem().toString();
 
         if (recipient.isEmpty() || amountStr.isEmpty()) {

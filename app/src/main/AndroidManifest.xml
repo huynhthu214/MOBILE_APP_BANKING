@@ -48,11 +48,11 @@
         <activity android:name=".ui.transaction.AdminTransaction" android:exported="false" />
         <activity android:name=".ui.transaction.DepositActivity" android:exported="false" />
         <activity android:name=".ui.transaction.DepositOtpActivity" android:exported="false" />
-        <activity android:name=".ui.transaction.ElectricWaterPayment" android:exported="false" />
+        <activity android:name=".ui.utilities.ElectricWaterPayment" android:exported="false" />
         <activity android:name=".ui.transaction.WithdrawSavingActivity" android:exported="false" />
         <activity android:name=".ui.transaction.DepositSavingActivity" android:exported="false" />
         <activity android:name=".ui.transaction.MortgagePaymentActivity" android:exported="false" />
-        <activity android:name=".ui.transaction.PhonePayment" android:exported="false" />
+        <activity android:name=".ui.utilities.PhonePayment" android:exported="false" />
         <activity android:name=".ui.account.ProfileActivity" android:exported="false" />
         <activity android:name=".ui.account.CreateAccountActivity" android:exported="false" />
         <activity android:name=".ui.account.AdminRatesActivity" android:exported="false" />
@@ -76,6 +76,7 @@
         <activity android:name=".ui.ekyc.EkycActivity" android:exported="false" />
         <activity android:name=".NotificationAdminActivity" android:exported="false" />
         <activity android:name=".NotificationUserActivity" android:exported="false" />
+        <activity android:name=".ui.transaction.PaymentWebViewActivity" android:exported="false"/>
 
     </application>
 </manifest>
