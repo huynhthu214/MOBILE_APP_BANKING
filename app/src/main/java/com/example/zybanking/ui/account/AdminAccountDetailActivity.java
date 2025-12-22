@@ -82,37 +82,54 @@ public class AdminAccountDetailActivity extends HeaderAdmin {
         });
     }
 
-    private void displayData(AccountSummaryResponse data) {
-        String type = data.getType().toLowerCase();
+    private void displayData(AccountSummaryResponse response) {
+        // 1. Kiểm tra null an toàn
+        if (response == null || response.data == null) {
+            Toast.makeText(this, "Dữ liệu trống", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 2. Lấy object data bên trong ra
+        AccountSummaryResponse.AccountData info = response.data;
+
+        String type = (info.type != null) ? info.type.toLowerCase() : "checking";
         NumberFormat fmt = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-        // 1. Cập nhật loại tài khoản & Số dư theo nghiệp vụ
+        // 3. Cập nhật UI dựa trên biến 'info' (thay vì 'data.getType()')
         switch (type) {
             case "saving":
                 tvType.setText("TÀI KHOẢN TIẾT KIỆM");
                 tvBalanceLabel.setText("Số tiền tiết kiệm");
-                tvBalance.setText(fmt.format(data.getPrincipal())); // Saving hiện Principal
-                tvRate.setText(data.getInterestRate() + "% / năm");
+                // Dùng info.principalAmount, kiểm tra null nếu cần
+                double principal = info.principalAmount != null ? info.principalAmount : 0.0;
+                tvBalance.setText(fmt.format(principal));
+                tvRate.setText(info.interestRate + "% / năm");
                 break;
+
             case "mortgage":
                 tvType.setText("TÀI KHOẢN THẾ CHẤP");
                 tvBalanceLabel.setText("Thanh toán kỳ tới");
-                tvBalance.setText(fmt.format(data.getPaymentAmount())); // Mortgage hiện Payment định kỳ
-                tvRate.setText(data.getInterestRate() + "% / năm");
+                double payment = info.paymentAmount != null ? info.paymentAmount : 0.0;
+                tvBalance.setText(fmt.format(payment));
+                tvRate.setText(info.interestRate + "% / năm");
                 break;
+
             default: // checking
                 tvType.setText("TÀI KHOẢN THANH TOÁN");
                 tvBalanceLabel.setText("Số dư hiện tại");
-                tvBalance.setText(fmt.format(data.getBalance()));
+                double balance = info.balance != null ? info.balance : 0.0;
+                tvBalance.setText(fmt.format(balance));
                 tvRate.setText("Không áp dụng");
                 break;
         }
 
-        tvNumber.setText(data.getAccountNumber());
-        tvOwner.setText(data.getOwnerName());
-        updateStatusUI(data.getStatus());
-    }
+        // 4. Các thông tin chung
+        tvNumber.setText(info.accountNumber);
+        tvOwner.setText(info.ownerName);
 
+        // Sửa status
+        updateStatusUI(info.accountStatus);
+    }
     private void updateStatusUI(String status) {
         if ("active".equalsIgnoreCase(status)) {
             tvStatus.setText("Đang hoạt động");

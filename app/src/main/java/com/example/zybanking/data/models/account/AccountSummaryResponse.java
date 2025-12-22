@@ -7,77 +7,12 @@ import java.util.List;
 public class AccountSummaryResponse {
     @SerializedName("status")
     public String status;
-    @SerializedName("type")
-    public String type; // "checking", "saving", "mortgage"
-    // Dữ liệu chung
-    @SerializedName("balance")
-    public Double balance;
-    // Dữ liệu Checking
-    @SerializedName("last_transactions")
-    public List<Transaction> lastTransactions;
-    // Dữ liệu Saving
-    @SerializedName("interest_rate")
-    public Double interestRate;
-    @SerializedName("monthly_interest")
-    public Double monthlyInterest;
-    // Dữ liệu Mortgage
-    @SerializedName("remaining_balance")
-    public Double remainingBalance;
-    @SerializedName("next_payment_date")
-    public String nextPaymentDate;
-    @SerializedName("account_number")
-    public String accountNumber;
-    @SerializedName("payment_amount")
-    public Double paymentAmount;
-    @SerializedName("principal_amount")
-    public Double principalAmount;
-    @SerializedName("maturity_date")
-    public String maturityDate; // Ngày đáo hạn (cho cả Saving và Mortgage)
-    @SerializedName("payment_frequency")
-    public String paymentFrequency;
-    @SerializedName("total_loan_amount")
-    public Double totalLoanAmount;
-    @SerializedName("status_acc") public String statusAcc;
-    @SerializedName("full_name")
-    private String ownerName;
-    public String getStatusAcc() { return statusAcc; }
-
-    public String getType() {
-        return type;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public double getInterestRate() {
-        return interestRate;
-    }
-
-    public double getPrincipal() {
-        return principalAmount;
-    }
-
-    public double getPaymentAmount() {
-        return paymentAmount;
-    }
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-    public String getStatus() { return status; }
-    public double getRemainingBalance() {
-        return remainingBalance;
-    }
 
     @SerializedName("data")
     public AccountData data;
 
-    public static class AccountData { // Nên dùng static để tránh rò rỉ bộ nhớ
+    // --- Inner Class chứa dữ liệu thực tế ---
+    public static class AccountData {
         @SerializedName("account_id")
         public String accountId;
 
@@ -88,13 +23,16 @@ public class AccountSummaryResponse {
         public Double balance;
 
         @SerializedName("type")
-        public String type;
-
-        @SerializedName("currency")
-        public String currency;
+        public String type; // CHECKING, SAVING, MORTGAGE
 
         @SerializedName("interest_rate")
         public Double interestRate;
+
+        @SerializedName("full_name")
+        public String ownerName;
+
+        @SerializedName("status_acc")
+        public String accountStatus;
 
         @SerializedName("last_transactions")
         public List<Transaction> lastTransactions;
@@ -109,19 +47,29 @@ public class AccountSummaryResponse {
         @SerializedName("remaining_balance")
         public Double remainingBalance;
 
-        @SerializedName("total_loan_amount") // Cần thêm trường này
+        @SerializedName("total_loan_amount") // <-- Đã thêm trường bị thiếu
         public Double totalLoanAmount;
 
-        @SerializedName("monthly_interest")
-        public Double monthlyInterest;
-
-        @SerializedName("payment_frequency") // Cần thêm trường này
+        @SerializedName("payment_frequency") // <-- Đã thêm trường bị thiếu
         public String paymentFrequency;
 
+        // --- CÁC TRƯỜNG CHO SAVING ---
         @SerializedName("principal_amount")
         public Double principalAmount;
 
         @SerializedName("maturity_date")
         public String maturityDate;
+        @SerializedName("monthly_interest")
+        public Double monthlyInterest;
     }
+
+
+    public String getType() { return data != null ? data.type : ""; }
+    public Double getBalance() { return data != null ? data.balance : 0.0; }
+    public String getAccountNumber() { return data != null ? data.accountNumber : ""; }
+    public String getOwnerName() { return data != null ? data.ownerName : ""; }
+    public String getStatus() { return data != null ? data.accountStatus : ""; }
+    public Double getPrincipal() { return data != null ? data.principalAmount : 0.0; }
+    public Double getPaymentAmount() { return data != null ? data.paymentAmount : 0.0; }
+    public Double getInterestRate() { return data != null ? data.interestRate : 0.0; }
 }

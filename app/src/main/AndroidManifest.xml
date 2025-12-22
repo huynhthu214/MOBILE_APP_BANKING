@@ -90,6 +90,15 @@
             android:name=".ui.account.AdminUserActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.account.ItemUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.ItemTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AdminAccountDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.dashboard.HomeActivity"
             android:exported="false" />
         <activity
@@ -99,12 +108,36 @@
             android:name=".ui.dashboard.AdminDashboardActivity"
             android:exported="false" />
         <activity
+            android:name=".NotificationUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationAdminActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".ui.auth.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.OtpVerificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ekyc.AdminEkycDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ekyc.VerifyEkycActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ekyc.EkycActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
