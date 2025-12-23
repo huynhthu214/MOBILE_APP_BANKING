@@ -4,36 +4,28 @@ import com.google.gson.annotations.SerializedName;
 
 public class DepositRequest {
 
-    // Backend Python bắt buộc phải thấy chữ "account_id" này
     @SerializedName("account_id")
-    private String accountId;
+    public String accountId;
 
     @SerializedName("amount")
-    private double amount;
+    public double amount;
+    @SerializedName("pin")
+    private String pin;
+    @SerializedName("saving_acc_id")
+    private String savingAccId;
+    @SerializedName("payment_method")
+    public String paymentMethod;
 
-    // Constructor rỗng (để tránh lỗi)
-    public DepositRequest() {}
-
-    // Constructor có tham số
-    public DepositRequest(String accountId, double amount) {
+    public DepositRequest(String accountId, double amount, String paymentMethod) {
         this.accountId = accountId;
         this.amount = amount;
+        this.paymentMethod = paymentMethod;
     }
-
-    // Getter và Setter
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
+    public DepositRequest(String accountId, String savingAccId, double amount, String pin) {
         this.accountId = accountId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
+        this.savingAccId = savingAccId;
         this.amount = amount;
+        this.pin = pin;
     }
+
 }

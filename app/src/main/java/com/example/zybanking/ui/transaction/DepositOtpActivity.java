@@ -13,6 +13,7 @@ import com.example.zybanking.data.models.OtpConfirmRequest;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.MainActivity;
+import com.example.zybanking.ui.dashboard.HomeActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -99,7 +100,7 @@ public class DepositOtpActivity extends AppCompatActivity {
                     Toast.makeText(DepositOtpActivity.this, "Nạp tiền thành công!", Toast.LENGTH_LONG).show();
 
                     // 1. Đảm bảo đích đến là MainActivity (Trang chủ)
-                    Intent intent = new Intent(DepositOtpActivity.this, MainActivity.class);
+                    Intent intent = new Intent(DepositOtpActivity.this, HomeActivity.class);
 
                     // 2. Dùng cờ này: Nếu MainActivity đang chạy ngầm, nó sẽ lôi lên và đóng các trang khác (Deposit, OTP)
                     // Cách này giữ nguyên được trạng thái đăng nhập tốt hơn

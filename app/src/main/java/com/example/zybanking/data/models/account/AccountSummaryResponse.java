@@ -27,7 +27,8 @@ public class AccountSummaryResponse {
 
         @SerializedName("INTEREST_RATE")
         public Double interestRate;
-
+        @SerializedName("TERM_MONTHS")
+        public Integer termMonths;
         @SerializedName("FULL_NAME")
         public String ownerName;
 
@@ -38,6 +39,15 @@ public class AccountSummaryResponse {
         public List<Transaction> lastTransactions;
 
         // --- CÁC TRƯỜNG CHO MORTGAGE (KHOẢN VAY) ---
+
+        @SerializedName(value = "TOTAL_LOAN_AMOUNT", alternate = {"total_loan_amount"})
+        public Double totalLoanAmount;
+
+        // 2. Sửa khớp với lỗi chính tả PAYMEN_FREQUENCY trong DB
+        @SerializedName(value = "PAYMEN_FREQUENCY", alternate = {"payment_frequency", "PAYMENT_FREQUENCY"})
+        public String paymentFrequency;
+
+        // Các trường này có vẻ đã đúng nếu backend trả về viết hoa
         @SerializedName("PAYMENT_AMOUNT")
         public Double paymentAmount;
 
@@ -46,13 +56,6 @@ public class AccountSummaryResponse {
 
         @SerializedName("REMAINING_BALANCE")
         public Double remainingBalance;
-
-        @SerializedName("total_loan_amount") // <-- Đã thêm trường bị thiếu
-        public Double totalLoanAmount;
-
-        @SerializedName("payment_frequency") // <-- Đã thêm trường bị thiếu
-        public String paymentFrequency;
-
         // --- CÁC TRƯỜNG CHO SAVING ---
         @SerializedName("PRINCIPAL_AMOUNT")
         public Double principalAmount;

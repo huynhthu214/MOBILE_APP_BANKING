@@ -1,7 +1,6 @@
 package com.example.zybanking.data.remote;
 
 import com.example.zybanking.data.models.TransactionHistoryResponse;
-import com.example.zybanking.data.models.account.Account;
 import com.example.zybanking.data.models.account.AccountListResponse;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
@@ -20,6 +19,7 @@ import com.example.zybanking.data.models.auth.ForgotPasswordRequest;
 import com.example.zybanking.data.models.auth.ForgotPasswordResponse;
 import com.example.zybanking.data.models.auth.LoginRequest;
 import com.example.zybanking.data.models.auth.LoginResponse;
+import com.example.zybanking.data.models.transaction.DepositResponse;
 import com.example.zybanking.data.models.transaction.MortgagePaymentRequest;
 import com.example.zybanking.data.models.Notification;
 import com.example.zybanking.data.models.OtpConfirmRequest;
@@ -38,7 +38,6 @@ import com.example.zybanking.data.models.transaction.WithdrawRequest;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -96,14 +95,24 @@ public interface ApiService {
 
     @POST("transactions/transfer/confirm")
     Call<BasicResponse> transferConfirm(@Body OtpConfirmRequest body);
-    @POST("/api/v1/transactions/verify-pin")
+    @POST("transactions/verify-pin")
     Call<BasicResponse> verifyPin(@Body VerifyPinRequest request);
 
-    @POST("transactions/deposit/create")
-    Call<BasicResponse> deposit(
+    @POST("/api/v1/transactions/deposit/create")
+    Call<DepositResponse> deposit(
             @Header("Authorization") String token,
             @Body DepositRequest request
     );
+    // Bước 1: Tạo yêu cầu thanh toán (trả về transaction_id)
+    @POST("transactions/mortgage/pay/create")
+    Call<BasicResponse> createMortgagePayment(
+            @Header("Authorization") String token,
+            @Body MortgagePaymentRequest request
+    );
+
+    // Bước 2: Xác nhận bằng OTP (hàm bạn sẽ dùng trong MortgageOtpActivity)
+    @POST("transactions/mortgage/pay/confirm")
+    Call<BasicResponse> mortgagePaymentConfirm(@Body OtpConfirmRequest request);
     @POST("/api/v1/payments/create")
     Call<PaymentResponse> createPayment(@Body Map<String, Object> body);
 
@@ -122,7 +131,14 @@ public interface ApiService {
 
     @POST("transactions/withdraw/confirm")
     Call<BasicResponse> withdrawConfirm(@Body OtpConfirmRequest request);
+    @POST("transactions/savings/withdraw/create")
+    Call<BasicResponse> savingsWithdrawCreate(@Body WithdrawRequest request);
 
+    @POST("transactions/savings/withdraw/confirm")
+    Call<BasicResponse> savingsWithdrawConfirm(@Body OtpConfirmRequest request);
+
+    @POST("transactions/savings/deposit")
+    Call<BasicResponse> depositSavings(@Body DepositRequest request);
     // BILL
     @GET("bills")
     Call<BillListResponse> listBills(@Query("keyword") String keyword);
@@ -144,10 +160,14 @@ public interface ApiService {
     // Lấy chi tiết (nếu cần)
     @GET("api/v1/utility/{id}")
     Call<BasicResponse> getUtilityDetail(@Path("id") String paymentId);
-    @POST("transactions/mortgage/pay")
-    Call<BasicResponse> payMortgage(@Body MortgagePaymentRequest body);
+    @POST("/api/v1/transactions/mortgage/pay")
+    Call<BasicResponse> payMortgage(
+            @Header("Authorization") String token,
+            @Body MortgagePaymentRequest body
+    );
 
-//LOCATON
+
+    //LOCATON
     @GET("branches/nearby")
     Call<List<Branch>> getNearbyBranches(
             @Query("lat") double lat,
@@ -163,11 +183,11 @@ public interface ApiService {
     );
 
     //ekyc
-        @POST("ekyc/create")
-        Call<BasicResponse> submitEKYC(
-                @Header("Authorization") String token,
-                @Body EkycRequest request
-        );
+    @POST("ekyc/create")
+    Call<BasicResponse> submitEKYC(
+            @Header("Authorization") String token,
+            @Body EkycRequest request
+    );
 
     @POST("users/{user_id}/ekyc")
     Call<BasicResponse> createEkyc(
@@ -220,8 +240,11 @@ public interface ApiService {
     Call<List<Map<String, Object>>> getWeeklyTransactions(
             @Header("Authorization") String token
     );
-    @GET("admin/users")
-    Call<UserListResponse> getAdminUsers(@Header("Authorization") String token, @Query("search") String search);
+    @GET("accounts")
+    Call<AccountListResponse> getAdminAccounts(
+            @Header("Authorization") String token,
+            @Query("search") String search
+    );
 
     @GET("admin/transactions")
     Call<TransactionListResponse> getAdminTransactions(
@@ -229,37 +252,25 @@ public interface ApiService {
             @Query("search") String search,
             @Query("status") String status
     );
-    @POST("admin/users/create")
-    Call<BasicResponse> createCustomer(
-            @Header("Authorization") String token,
-            @Body CreateUserRequest request
-    );
     @GET("users/{id}")
     Call<UserResponse> getUserDetail(
             @Header("Authorization") String token,
             @Path("id") String userId
     );
-    @GET("accounts")
-    Call<AccountListResponse> getAdminAccounts( // Sửa List<Account> thành AccountListResponse
-                                                @Header("Authorization") String token,
-                                                @Query("search") String search
-    );
-    @Multipart
-    @POST("biometric/face/register")
-    Call<BasicResponse> registerFace(
+    @POST("admin/users/create")
+    Call<BasicResponse> createCustomer(
             @Header("Authorization") String token,
-            @Part MultipartBody.Part faceImage
+            @Body CreateUserRequest request
     );
-
-    @Multipart
-    @POST("biometric/face/verify")
-    Call<BasicResponse> verifyFace(
+    @PUT("users/{id}")
+    Call<Map<String, Object>> updateUser(
             @Header("Authorization") String token,
-            @Part MultipartBody.Part faceImage
+            @Path("id") String userId,
+            @Body Map<String, Object> body
     );
     @GET("auth/last-token")
     Call<LoginResponse> getLastToken(@Query("email") String email);
-    @PUT("api/v1/users/{id}") // Đường dẫn phải khớp với backend Python route update_user
-    Call<Map<String, Object>> updateUser(@Header("Authorization") String token, @Path("id") String userId, @Body Map<String, Object> body);
+    @GET("admin/users")
+    Call<UserListResponse> getAdminUsers(@Header("Authorization") String token, @Query("search") String search);
 }
 

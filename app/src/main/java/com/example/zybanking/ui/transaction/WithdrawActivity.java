@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.zybanking.R;
 import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
+import com.example.zybanking.data.models.transaction.VerifyPinRequest;
 import com.example.zybanking.data.models.transaction.WithdrawRequest;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
@@ -92,9 +93,8 @@ public class WithdrawActivity extends AppCompatActivity {
 
         double amount = Double.parseDouble(amountStr);
 
-        // Kiểm tra số dư khả dụng ngay tại máy trước khi gọi API
         if (amount > currentAvailableBalance) {
-            Toast.makeText(this, "Số dư không đủ để thực hiện giao dịch", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Số dư không đủ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -103,36 +103,101 @@ public class WithdrawActivity extends AppCompatActivity {
             return;
         }
 
-        btnConfirm.setEnabled(false);
-        btnConfirm.setText("Đang xử lý...");
+        // Thay vì gọi API luôn, hãy hiện Dialog nhập PIN
+        showPinDialog(amount);
+    }
 
-        WithdrawRequest req = new WithdrawRequest(mainAccountId, amount);
+    private void showPinDialog(double amount) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        // Sử dụng layout dialog_pin_confirmation đã tạo ở bước trước
+        android.view.View view = getLayoutInflater().inflate(R.layout.dialog_pin_confirmation, null);
+        EditText edtPin = view.findViewById(R.id.edt_pin_code);
+
+        builder.setView(view)
+                .setPositiveButton("Xác nhận", (dialog, which) -> {
+                    String pin = edtPin.getText().toString().trim();
+                    if (pin.length() < 4) {
+                        Toast.makeText(this, "Vui lòng nhập mã PIN hợp lệ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Gọi hàm thực thi API với đầy đủ tham số
+                        executeWithdrawApi(amount, pin);
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void executeWithdrawApi(double amount, String pin) {
+        btnConfirm.setEnabled(false); // Vô hiệu hóa nút
+        btnConfirm.setText("Đang khởi tạo...");
+
+        // Sử dụng Constructor phù hợp cho rút tiền thường
+        WithdrawRequest req = new WithdrawRequest(mainAccountId, amount, "ATM_WITHDRAW");
+
         apiService.withdrawCreate(req).enqueue(new Callback<BasicResponse>() {
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
-                btnConfirm.setEnabled(true);
-                btnConfirm.setText("Tiếp tục");
-
                 if (response.isSuccessful() && response.body() != null) {
-                    BasicResponse body = response.body();
-                    if ("success".equals(body.status)) {
-                        Intent intent = new Intent(WithdrawActivity.this, WithdrawOtpActivity.class);
-                        intent.putExtra("transaction_id", body.transaction_id);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(WithdrawActivity.this, body.message, Toast.LENGTH_SHORT).show();
-                    }
+                    String txId = response.body().transaction_id;
+                    verifyPinForWithdraw(txId, pin);
+                } else {
+                    resetConfirmButton();
+                    handleErrorResponse(response);
                 }
             }
 
             @Override
             public void onFailure(Call<BasicResponse> call, Throwable t) {
-                btnConfirm.setEnabled(true);
-                btnConfirm.setText("Tiếp tục");
-                Toast.makeText(WithdrawActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                resetConfirmButton();
+                Toast.makeText(WithdrawActivity.this, "Lỗi kết nối Server", Toast.LENGTH_SHORT).show();
             }
         });
     }
+    private void handleErrorResponse(Response<BasicResponse> response) {
+        try {
+            if (response.errorBody() != null) {
+                String errorJson = response.errorBody().string();
+                // Bạn có thể dùng Gson để parse errorJson lấy message nếu cần
+                android.util.Log.e("API_ERROR", errorJson);
+                Toast.makeText(this, "Lỗi từ hệ thống: " + response.code(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void resetConfirmButton() {
+        btnConfirm.setEnabled(true);
+        btnConfirm.setText("Xác nhận");
+    }
+    private void verifyPinForWithdraw(String txId, String pin) {
+        // Sử dụng VerifyPinRequest giống như bên ConfirmTransactionActivity
+        VerifyPinRequest verifyRequest = new VerifyPinRequest(txId, pin);
+
+        apiService.verifyPin(verifyRequest).enqueue(new Callback<BasicResponse>() {
+            @Override
+            public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
+                if (response.isSuccessful()) {
+                    // PIN ĐÚNG -> Chuyển sang màn hình OTP giống như luồng bạn đã làm
+                    Toast.makeText(WithdrawActivity.this, "PIN chính xác!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(WithdrawActivity.this, WithdrawOtpActivity.class);
+                    intent.putExtra("transaction_id", txId);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    // PIN SAI
+                    Toast.makeText(WithdrawActivity.this, "Mã PIN không chính xác", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BasicResponse> call, Throwable t) {
+                Toast.makeText(WithdrawActivity.this, "Lỗi xác thực PIN", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private String formatCurrency(Double amount) {
         if (amount == null) return "0 VND";

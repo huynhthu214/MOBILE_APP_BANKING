@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.zybanking.data.models.BasicResponse;
 import com.example.zybanking.data.models.transaction.DepositRequest;
 import com.example.zybanking.data.models.TransactionHistoryResponse;
+import com.example.zybanking.data.models.transaction.DepositResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
 import com.example.zybanking.utils.TokenManager;
@@ -27,11 +28,12 @@ public class TransactionRepository {
     public void createDeposit(
             Context context,
             DepositRequest request,
-            Callback<BasicResponse> callback
+            Callback<DepositResponse> callback
     ) {
         String token = "Bearer " + TokenManager.getAccessToken(context);
         apiService.deposit(token, request).enqueue(callback);
     }
+
     public void getTransactionHistory(
             String accountId,
             int page,  // <--- THÊM THAM SỐ NÀY

@@ -6,23 +6,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.zybanking.R;
-import com.example.zybanking.data.models.BasicResponse;
-import com.example.zybanking.data.models.transaction.DepositRequest;
 import com.example.zybanking.data.models.transaction.PaymentResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
-import com.example.zybanking.data.repository.TransactionRepository;
-import com.google.gson.Gson; // Cần import Gson để soi JSON
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,51 +28,84 @@ import retrofit2.Response;
 
 public class DepositActivity extends AppCompatActivity {
 
+    private static final String TAG = "DEBUG_DEPOSIT";
+
     private EditText etDepositAmount;
     private Button btnConfirmDeposit;
     private ImageView btnBack;
     private TextView tvSuggest100, tvSuggest200, tvSuggest500;
 
-    private TransactionRepository repository;
     private RadioButton rbVnpay, rbStripe;
-
-
-    // Tag để lọc log cho dễ
-    private static final String TAG = "DEBUG_DEPOSIT";
+    private CardView cardVnpay, cardStripe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deposit);
 
-        // ===== Bind view =====
+        bindViews();
+        setupEvents();
+        setupPaymentMethod();
+    }
+
+    // ================== INIT ==================
+
+    private void bindViews() {
         btnBack = findViewById(R.id.btn_back_deposit);
         btnConfirmDeposit = findViewById(R.id.btn_confirm_deposit);
         etDepositAmount = findViewById(R.id.et_deposit_amount);
+
         tvSuggest100 = findViewById(R.id.tv_suggest_100);
         tvSuggest200 = findViewById(R.id.tv_suggest_200);
         tvSuggest500 = findViewById(R.id.tv_suggest_500);
+
         rbVnpay = findViewById(R.id.rb_vnpay);
         rbStripe = findViewById(R.id.rb_stripe);
 
-        repository = new TransactionRepository();
+        cardVnpay = findViewById(R.id.card_vnpay);
+        cardStripe = findViewById(R.id.card_stripe);
+    }
 
+    private void setupEvents() {
         btnBack.setOnClickListener(v -> finish());
+
         btnConfirmDeposit.setOnClickListener(v -> handleDeposit());
+
         tvSuggest100.setOnClickListener(v -> updateAmount("100000"));
         tvSuggest200.setOnClickListener(v -> updateAmount("200000"));
         tvSuggest500.setOnClickListener(v -> updateAmount("500000"));
     }
 
-    private void updateAmount(String amount) {
-        // Set text cho EditText
-        etDepositAmount.setText(amount);
+    // ================== PAYMENT METHOD ==================
 
-        // Di chuyển con trỏ chuột về cuối dòng (để user dễ nhập thêm nếu muốn)
-        etDepositAmount.setSelection(etDepositAmount.getText().length());
+    private void setupPaymentMethod() {
+        // Mặc định VNPay
+        selectVnpay();
+
+        cardVnpay.setOnClickListener(v -> selectVnpay());
+        cardStripe.setOnClickListener(v -> selectStripe());
     }
+
+    private void selectVnpay() {
+        rbVnpay.setChecked(true);
+        rbStripe.setChecked(false);
+    }
+
+    private void selectStripe() {
+        rbStripe.setChecked(true);
+        rbVnpay.setChecked(false);
+    }
+
+    // ================== LOGIC ==================
+
+    private void updateAmount(String amount) {
+        etDepositAmount.setText(amount);
+        etDepositAmount.setSelection(amount.length());
+    }
+
     private void handleDeposit() {
         String amountStr = etDepositAmount.getText().toString().trim();
+
         if (amountStr.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
             return;
@@ -87,21 +116,43 @@ public class DepositActivity extends AppCompatActivity {
             return;
         }
 
-        double amount = Double.parseDouble(amountStr);
+        double amount;
+        try {
+            amount = Double.parseDouble(amountStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
-        String accountId = pref.getString("account_id", "");
+        String accountId = pref.getString("main_account_id", "");
 
         if (accountId.isEmpty()) {
             Toast.makeText(this, "Không tìm thấy tài khoản", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 👇 Xác định provider
         String provider = rbVnpay.isChecked() ? "vnpay" : "stripe";
 
-        createPayment(accountId, amount, provider);
+        Log.d(TAG, "Deposit: " + amount + " | provider=" + provider);
+
+        Intent intent;
+
+        if (provider.equals("vnpay")) {
+            intent = new Intent(this, VnpayMockActivity.class);
+        } else {
+            intent = new Intent(this, StripeMockActivity.class);
+        }
+
+        intent.putExtra("account_id", accountId);
+        intent.putExtra("amount", amount);
+        intent.putExtra("provider", provider);
+
+        startActivity(intent);
+
     }
+
+    // ================== API ==================
 
     private void createPayment(String accountId, double amount, String provider) {
 
@@ -110,7 +161,7 @@ public class DepositActivity extends AppCompatActivity {
         Map<String, Object> body = new HashMap<>();
         body.put("account_id", accountId);
         body.put("amount", amount);
-        body.put("provider", provider); // 👈 vnpay | stripe
+        body.put("provider", provider);
         body.put("type", "DEPOSIT");
 
         api.createPayment(body).enqueue(new Callback<PaymentResponse>() {
@@ -120,7 +171,8 @@ public class DepositActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
 
                     String paymentUrl = response.body().payment_url;
-                    Log.e("CHECK_URL", "Link nhan duoc: " + paymentUrl);
+                    Log.d(TAG, "Payment URL: " + paymentUrl);
+
                     Intent intent = new Intent(
                             DepositActivity.this,
                             PaymentWebViewActivity.class
@@ -147,5 +199,4 @@ public class DepositActivity extends AppCompatActivity {
             }
         });
     }
-
 }

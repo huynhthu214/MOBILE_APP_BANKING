@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,36 +29,39 @@ public class MortgageActivity extends AppCompatActivity {
     private TextView tvPaymentAmount, tvDueDate, tvRemainingBalance, tvAccNo, tvInterestRate;
     private TextView tvFrequency, tvPaidAmount, tvTotalLoan;
     private ProgressBar pbLoanProgress;
+    private Double currentPaymentAmount;
     private boolean isHidden = true;
     private String realAccNo = "";
     private String accountId;
-
+    private Button btnPay;// Biến này lưu ID lấy từ Intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_mortgage);
-
+        // Lấy dữ liệu từ Intent truyền sang
         accountId = getIntent().getStringExtra("ACCOUNT_ID");
-
         initViews();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (accountId != null) {
             loadData();
         }
     }
-
     private void initViews() {
         btnBack = findViewById(R.id.btnBackMortgage);
         btnBack.setOnClickListener(v -> finish());
 
-        // Ánh xạ theo basic_mortgage.xml
-        tvPaymentAmount = findViewById(R.id.tv_payment_amount); // Số tiền phải trả kỳ này
-        tvDueDate = findViewById(R.id.tv_mortgage_due_date);    // Ngày hết hạn (đổi ID trong xml cho khớp nếu cần)
-        tvRemainingBalance = findViewById(R.id.tv_mortgage_remaining); // Dư nợ còn lại
+        // Ánh xạ View
+        tvPaymentAmount = findViewById(R.id.tv_payment_amount);
+        tvDueDate = findViewById(R.id.tv_mortgage_due_date);
+        tvRemainingBalance = findViewById(R.id.tv_mortgage_remaining);
 
-        // Số tài khoản
-        tvAccNo = findViewById(R.id.tv_mortgage_acc_no);        // Thêm ID này vào XML
-        imgToggleAcc = findViewById(R.id.img_toggle_mortgage_acc); // Thêm ID này vào XML
+        tvAccNo = findViewById(R.id.tv_mortgage_acc_no);
+        imgToggleAcc = findViewById(R.id.img_toggle_mortgage_acc);
         tvFrequency = findViewById(R.id.tv_frequency);
         tvPaidAmount = findViewById(R.id.tv_paid_amount);
         tvTotalLoan = findViewById(R.id.tv_total_loan);
@@ -70,54 +74,60 @@ public class MortgageActivity extends AppCompatActivity {
                 updateAccNoDisplay();
             });
         }
-        Button btnPay = findViewById(R.id.btn_pay_mortgage);
+
+        btnPay = findViewById(R.id.btn_pay_mortgage); // Ánh xạ nút
         btnPay.setOnClickListener(v -> {
             Intent intent = new Intent(MortgageActivity.this, MortgagePaymentActivity.class);
-            intent.putExtra("ACCOUNT_ID", accountId); // Truyền ID khoản vay (ví dụ M004)
+            intent.putExtra("ACCOUNT_ID", accountId);
             startActivity(intent);
         });
     }
 
     private void loadData() {
+        // SỬA: Dùng đúng tên biến accountId đã khai báo ở trên
+        if (accountId == null) return;
+
         ApiService api = RetrofitClient.getClient().create(ApiService.class);
         api.getAccountSummary(accountId).enqueue(new Callback<AccountSummaryResponse>() {
             @Override
             public void onResponse(Call<AccountSummaryResponse> call, Response<AccountSummaryResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && response.body().data != null) {
+                    // SỬA: Gọi hàm updateUI để cập nhật giao diện
+                    // Không tự set text thủ công ở đây để tránh lỗi logic
                     updateUI(response.body());
                 }
             }
+
             @Override
             public void onFailure(Call<AccountSummaryResponse> call, Throwable t) {
                 Log.e("MortgageActivity", "Error: " + t.getMessage());
             }
         });
-    }
+    } // <-- Đã thêm dấu đóng ngoặc hàm loadData (Lỗi của bạn nằm ở việc thiếu dấu này)
 
     private void updateUI(AccountSummaryResponse response) {
-        // 1. Kiểm tra an toàn: vì dữ liệu nằm trong response.data
         if (response == null || response.data == null) {
-            Log.e("MortgageActivity", "Dữ liệu trả về bị NULL");
             return;
         }
-
-        // 2. Lấy object chứa dữ liệu thực tế
         AccountSummaryResponse.AccountData actualData = response.data;
-
-        // 3. Sử dụng actualData thay vì data cũ
+        this.currentPaymentAmount = actualData.paymentAmount;
+        // 1. Số tài khoản
         if (actualData.accountNumber != null) {
             realAccNo = actualData.accountNumber;
             updateAccNoDisplay();
         }
 
+        // 2. Số tiền thanh toán kx`ỳ này
         if (tvPaymentAmount != null) {
             tvPaymentAmount.setText(formatCurrency(actualData.paymentAmount));
         }
 
+        // 3. Ngày đến hạn
         if (tvDueDate != null && actualData.nextPaymentDate != null) {
             tvDueDate.setText(formatDate(actualData.nextPaymentDate));
         }
 
+        // 4. Lãi suất
         if (tvInterestRate != null) {
             if (actualData.interestRate != null) {
                 tvInterestRate.setText(actualData.interestRate + "%/năm");
@@ -126,7 +136,7 @@ public class MortgageActivity extends AppCompatActivity {
             }
         }
 
-        // Cập nhật Tần suất
+        // 5. Tần suất
         if (tvFrequency != null) {
             String freq = "N/A";
             if (actualData.paymentFrequency != null) {
@@ -138,7 +148,7 @@ public class MortgageActivity extends AppCompatActivity {
             tvFrequency.setText(freq);
         }
 
-        // Tính toán Dư nợ & Progress Bar
+        // 6. Tính toán Dư nợ & Progress Bar
         if (actualData.totalLoanAmount != null && actualData.remainingBalance != null) {
             double total = actualData.totalLoanAmount;
             double remaining = actualData.remainingBalance;
@@ -164,6 +174,60 @@ public class MortgageActivity extends AppCompatActivity {
                 pbLoanProgress.setProgress(progress);
             }
         }
+
+        if (actualData.nextPaymentDate != null) {
+            checkPaymentStatus(actualData.nextPaymentDate);
+        }
+    }
+
+    private void checkPaymentStatus(String nextPaymentDateStr) {
+        Date nextDate = parseDateString(nextPaymentDateStr);
+        if (nextDate == null) return;
+
+        Date now = new Date();
+        // Xóa phần giờ phút giây để so sánh ngày chính xác
+        now.setHours(0); now.setMinutes(0); now.setSeconds(0);
+
+        long diffInMillis = nextDate.getTime() - now.getTime();
+        long daysDiff = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
+
+        // TRƯỜNG HỢP 1: QUÁ HẠN (Ngày hạn nhỏ hơn ngày hiện tại)
+        if (diffInMillis < 0) {
+            btnPay.setEnabled(true);
+            btnPay.setText("Thanh toán ngay (Quá hạn)");
+            btnPay.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.RED)); // Nút màu đỏ
+
+            tvDueDate.setText(formatDate(nextPaymentDateStr) + " (Quá hạn)");
+            tvDueDate.setTextColor(android.graphics.Color.RED); // Chữ màu đỏ
+
+            // Vẫn hiện số tiền cần đóng
+            if (tvPaymentAmount != null && currentPaymentAmount != null) {
+                tvPaymentAmount.setText(formatCurrency(currentPaymentAmount));
+            }
+        }
+        // TRƯỜNG HỢP 2: ĐÃ THANH TOÁN (Ngày hạn còn xa, ví dụ > 20 ngày nữa mới tới)
+        else if (daysDiff > 20) {
+            btnPay.setEnabled(false);
+            btnPay.setText("Đã thanh toán kỳ này");
+            btnPay.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.GRAY));
+
+            tvDueDate.setText(formatDate(nextPaymentDateStr));
+            tvDueDate.setTextColor(android.graphics.Color.parseColor("#10B981")); // Màu xanh lá
+
+            // Cập nhật payment amount hiển thị về 0
+            if (tvPaymentAmount != null) {
+                tvPaymentAmount.setText("0 VND");
+            }
+        }
+        // TRƯỜNG HỢP 3: ĐẾN KỲ THANH TOÁN (Sắp đến hạn hoặc đang trong kỳ)
+        else {
+            btnPay.setEnabled(true);
+            btnPay.setText("Thanh toán kỳ này");
+            btnPay.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#0b5394")));
+
+            tvDueDate.setText(formatDate(nextPaymentDateStr));
+            tvDueDate.setTextColor(android.graphics.Color.parseColor("#111827")); // Màu đen
+        }
     }
     private String formatCompactCurrency(double amount) {
         if (amount >= 1_000_000_000) {
@@ -174,6 +238,7 @@ public class MortgageActivity extends AppCompatActivity {
             return formatCurrency(amount);
         }
     }
+
     private String formatDate(String dateString) {
         Date date = parseDateString(dateString);
         if (date != null) {
@@ -182,6 +247,7 @@ public class MortgageActivity extends AppCompatActivity {
         }
         return dateString;
     }
+
     private Date parseDateString(String dateString) {
         if (dateString == null || dateString.isEmpty()) return null;
         String[] formats = {
@@ -202,6 +268,7 @@ public class MortgageActivity extends AppCompatActivity {
         }
         return null;
     }
+
     private void updateAccNoDisplay() {
         if (tvAccNo == null) return;
 
@@ -221,6 +288,7 @@ public class MortgageActivity extends AppCompatActivity {
     }
 
     private String formatAccountNumber(String accNum) {
+        if (accNum == null) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < accNum.length(); i++) {
             if (i > 0 && i % 4 == 0) sb.append(" ");

@@ -1,6 +1,7 @@
 package com.example.zybanking.ui.transaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.zybanking.data.remote.RetrofitClient;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,19 +33,35 @@ public class SavingsActivity extends AppCompatActivity {
     private String realAccNo = "";
     private String accountId;
     private Button btnDeposit, btnWithdraw;
+    private ApiService apiService;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_savings);
 
+        // BƯỚC 1: Ưu tiên lấy ID tài khoản tiết kiệm từ Intent (HomeActivity gửi sang)
         accountId = getIntent().getStringExtra("ACCOUNT_ID");
+
+        // BƯỚC 2: Nếu Intent không có, mới tìm trong SharedPreferences
+        if (accountId == null || accountId.isEmpty()) {
+            SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+            token = pref.getString("access_token", "");
+            // Lưu ý: Đảm bảo ở HomeActivity bạn đã lưu ID này với key "saving_account_id"
+            accountId = pref.getString("saving_account_id", "");
+        }
+
         initViews();
 
-        if (accountId != null) {
+        // BƯỚC 3: Kiểm tra và load dữ liệu
+        if (accountId != null && !accountId.isEmpty()) {
+            Log.d("SavingsActivity", "Loading data for Saving Account ID: " + accountId);
             loadData();
         } else {
-            Toast.makeText(this, "Không tìm thấy tài khoản!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không xác định được tài khoản tiết kiệm", Toast.LENGTH_SHORT).show();
+            // Có thể kết thúc Activity nếu không có ID
+            // finish();
         }
     }
 
@@ -133,16 +151,21 @@ public class SavingsActivity extends AppCompatActivity {
             tvPrincipal.setText(formatCurrency(principal));
         }
 
-        if (tvRate != null && actualData.interestRate != null) {
-            // Giả sử server trả về 0.05 nghĩa là 5%
-            tvRate.setText((actualData.interestRate * 100) + "% / Năm");
-        }
+        double annualRate = (actualData.interestRate != null) ? actualData.interestRate : 0.045; // Mặc định 4.5% nếu null
+        tvRate.setText((annualRate) + "% / Năm");
 
-        if (tvProfit != null && actualData.monthlyInterest != null) {
-            tvProfit.setText("+" + formatCurrency(actualData.monthlyInterest));
-        } else if (tvProfit != null) {
-            tvProfit.setText("+0 VND");
+        // --- PHẦN THÊM MỚI ĐỂ HIỂN THỊ LÃI TẠM TÍNH ---
+        if (tvProfit != null) {
+            if (actualData.monthlyInterest != null && actualData.monthlyInterest > 0) {
+                // Ưu tiên dùng dữ liệu tính toán từ Server trả về
+                tvProfit.setText("+" + formatCurrency(actualData.monthlyInterest));
+            } else {
+                // Nếu server chưa có, dùng logic tạm tính tại Client để không bị hiện +0 VND
+                double calculatedProfit = (actualData.balance * annualRate) * ((actualData.termMonths != null ? actualData.termMonths : 12) / 12.0);
+                tvProfit.setText("+" + formatCurrency(calculatedProfit));
+            }
         }
+        // ----------------------------------------------
 
         if (tvMaturity != null && actualData.maturityDate != null) {
             tvMaturity.setText(formatDate(actualData.maturityDate));
@@ -160,6 +183,16 @@ public class SavingsActivity extends AppCompatActivity {
         return dateString;
     }
 
+    // Hàm tính lãi dự tính (Giả sử trả lãi cuối kỳ)
+    private double calculateExpectedInterest(double principal, double annualRate, String frequency) {
+        double monthlyRate = annualRate / 100 / 12;
+        if ("MONTHLY".equalsIgnoreCase(frequency)) {
+            return principal * monthlyRate;
+        } else if ("YEARLY".equalsIgnoreCase(frequency)) {
+            return principal * (annualRate / 100);
+        }
+        return 0;
+    }
     private Date parseDateString(String dateString) {
         if (dateString == null || dateString.isEmpty()) return null;
         String[] formats = {"EEE, dd MMM yyyy HH:mm:ss 'GMT'", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
@@ -188,6 +221,43 @@ public class SavingsActivity extends AppCompatActivity {
     private String formatCurrency(Double amount) {
         if (amount == null) return "0 VND";
         return NumberFormat.getInstance(new Locale("vi", "VN")).format(amount) + " VND";
+    }
+    private void loadInterestRates() {
+        apiService.getInterestRates("Bearer " + token).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Giả sử server trả về Map chứa "SAVINGS_RATE"
+                    Double rate = (Double) response.body().get("SAVINGS_RATE");
+                    tvRate.setText(rate + "%/năm");
+
+                    updateInterestPreview(rate);
+                }
+            }
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {}
+        });
+    }
+    // Logic để tính toán lại các con số khi lãi suất thay đổi
+    private void updateInterestPreview(Double rate) {
+        if (tvPrincipal != null && !tvPrincipal.getText().toString().isEmpty()) {
+            try {
+                // Lấy số dư hiện tại để tính toán lãi dự tính
+                // Lưu ý: Bạn cần lọc bỏ chữ "VND" và dấu phân cách để parse số
+                String principalStr = tvPrincipal.getText().toString()
+                        .replaceAll("[^\\d]", "");
+                double principal = Double.parseDouble(principalStr);
+
+                // Tính lãi 1 năm
+                double yearlyProfit = principal * (rate / 100);
+
+                if (tvProfit != null) {
+                    tvProfit.setText("+" + formatCurrency(yearlyProfit));
+                }
+            } catch (Exception e) {
+                Log.e("SavingsActivity", "Lỗi tính toán xem trước lãi: " + e.getMessage());
+            }
+        }
     }
 
     private String formatAccountNumber(String accNum) {

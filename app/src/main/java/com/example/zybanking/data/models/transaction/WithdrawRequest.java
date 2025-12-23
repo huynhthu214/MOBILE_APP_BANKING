@@ -1,35 +1,35 @@
 package com.example.zybanking.data.models.transaction;
 
+import com.google.gson.annotations.SerializedName;
+
 public class WithdrawRequest {
-    private String account_id;
-    private double amount;
-    private String currency;
-    private String otp;
+    @SerializedName("account_id") // Ánh xạ sang account_id cho Flask
+    public String accountId;
 
-    public WithdrawRequest(String account_id, double amount) {
-        this.account_id = account_id;
+    @SerializedName("amount")
+    public double amount;
+
+    @SerializedName("pin")
+    public String pin;
+
+    @SerializedName("saving_acc_id")
+    public String savingAccId;
+
+    @SerializedName("payment_method")
+    public String paymentMethod;
+
+    // Constructor cho rút tiền thường (ATM)
+    public WithdrawRequest(String accountId, double amount, String paymentMethod) {
+        this.accountId = accountId;
         this.amount = amount;
-        this.currency = "VND";
+        this.paymentMethod = paymentMethod;
     }
-    public WithdrawRequest() {}
-    public WithdrawRequest(String account_id, double amount, String otp) {
-        this.account_id = account_id;
+
+    // Constructor dùng cho rút tiền tiết kiệm (Savings Withdrawal)
+    public WithdrawRequest(String accountId, String savingAccId, double amount, String pin) {
+        this.accountId = accountId;
+        this.savingAccId = savingAccId;
         this.amount = amount;
-        this.otp = otp;
-    }
-    public String getAccountId() {
-        return account_id;
-    }
-
-    public void setAccountId(String accountId) {
-        this.account_id = accountId;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
+        this.pin = pin;
     }
 }

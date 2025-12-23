@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (token == null || role == null) {
                 // demo: lấy token theo email cố định
-                fetchTokenByEmail("b@gmail.com");
+                fetchTokenByEmail("phanthuyvi1004@gmail.com");
                 return;
             }
 
@@ -184,9 +184,6 @@ public class LoginActivity extends AppCompatActivity {
     // ================= FETCH TOKEN DEMO =================
 
     private void fetchTokenByEmail(String email) {
-        Toast.makeText(this,
-                "Khôi phục phiên đăng nhập...",
-                Toast.LENGTH_SHORT).show();
 
         apiService.getLastToken(email)
                 .enqueue(new Callback<LoginResponse>() {

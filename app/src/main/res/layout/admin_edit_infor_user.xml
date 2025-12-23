@@ -142,7 +142,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Họ và tên"
                             android:inputType="textPersonName"
-                            android:text="Nguyễn Văn A"/>
+                            android:text="Huỳnh Minh Thư"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -183,7 +183,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Ngày sinh (DD/MM/YYYY)"
                             android:inputType="date"
-                            android:text="01/01/1990"/>
+                            android:text="01/01/2004"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
@@ -250,7 +250,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Email"
                             android:inputType="textEmailAddress"
-                            android:text="nguyenvana@gmail.com"/>
+                            android:text="huynhminhthu@gmail.com"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout

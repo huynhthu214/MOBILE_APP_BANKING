@@ -89,7 +89,7 @@
                             android:textColor="#2563EB"/>
 
                         <TextView
-                            android:text="%/năm"
+                            android:text="%/tháng"
                             android:layout_marginStart="8dp"
                             android:textColor="#6B7280"
                             android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
                             android:textColor="#2563EB"/>
 
                         <TextView
-                            android:text="%/năm"
+                            android:text="%/tháng"
                             android:layout_marginStart="8dp"
                             android:textColor="#6B7280"
                             android:layout_width="wrap_content"
@@ -154,7 +154,7 @@
                             android:textColor="#2563EB"/>
 
                         <TextView
-                            android:text="%/năm"
+                            android:text="%/tháng"
                             android:layout_marginStart="8dp"
                             android:textColor="#6B7280"
                             android:layout_width="wrap_content"

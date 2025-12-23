@@ -3,6 +3,7 @@ package com.example.zybanking.ui.dashboard;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -69,10 +70,15 @@ public class HomeActivity extends NavbarActivity {
 
         initViews();
         setupNavigation();
-        loadUserData();
+//        loadUserData();
         initNavbar();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserData(); // Gọi ở đây để mỗi lần màn hình hiện lên là tải lại dữ liệu mới
+    }
     private void initViews() {
         tvUserName = findViewById(R.id.tv_user_name);
         tvBalance = findViewById(R.id.tv_balance);
@@ -284,6 +290,8 @@ public class HomeActivity extends NavbarActivity {
                 editor.apply();
 
                 if (tvBalance != null) tvBalance.setText(formatCurrency(actualData.balance));
+                SharedPreferences pref = getSharedPreferences("auth", MODE_PRIVATE);
+                pref.getFloat("balance", 0);
 
                 // Cập nhật số tài khoản thật
                 if (actualData.accountNumber != null) {
@@ -300,26 +308,59 @@ public class HomeActivity extends NavbarActivity {
                 break;
 
             case "SAVING":
+                // Lưu lại ID để khi click vào Card sẽ mở đúng tài khoản này
                 savingAccountId = currentAccId;
-                if (tvNoSaving != null) tvNoSaving.setVisibility(View.GONE);
+
                 if (layoutSavingInfo != null) layoutSavingInfo.setVisibility(View.VISIBLE);
-                if (tvSavingBalance != null) tvSavingBalance.setText(formatCurrency(actualData.balance));
-                // Kiểm tra null cho interestRate
+                if (tvNoSaving != null) tvNoSaving.setVisibility(View.GONE);
+
+                // Hiển thị số dư tiết kiệm
+                if (tvSavingBalance != null) {
+                    // Nếu Backend trả về principalAmount thì lấy, không thì dùng balance
+                    Double displayBalance = (actualData.principalAmount != null) ?
+                            actualData.principalAmount : actualData.balance;
+                    tvSavingBalance.setText(formatCurrency(displayBalance));
+                }
+
+                // Hiển thị lãi suất
                 if (tvSavingRate != null) {
-                    double rate = actualData.interestRate != null ? actualData.interestRate : 0.0;
-                    tvSavingRate.setText("Lãi suất: " + (rate * 100) + "% / năm");
+                    double rate = (actualData.interestRate != null) ? actualData.interestRate : 0.0;
+                    // Nhân 100 nếu server trả về dạng thập phân (0.05 -> 5%)
+                    tvSavingRate.setText("Lãi suất: " + (rate) + "% / năm");
                 }
                 break;
 
             case "MORTGAGE":
-                // ... (Code xử lý Mortgage giữ nguyên, thêm check null nếu cần) ...
+                // 1. Lưu lại ID khoản vay để sử dụng cho các màn hình sau
                 mortgageAccountId = currentAccId;
+
+                // 2. Cập nhật trạng thái hiển thị Layout
                 if (tvNoMortgage != null) tvNoMortgage.setVisibility(View.GONE);
                 if (layoutMortgageInfo != null) layoutMortgageInfo.setVisibility(View.VISIBLE);
-                if (tvMortgagePaymentAmount != null) tvMortgagePaymentAmount.setText(formatCurrency(actualData.paymentAmount));
-                if (tvMortgageRemaining != null) tvMortgageRemaining.setText(formatCurrency(actualData.remainingBalance));
+                // 3. Hiển thị số tiền phải trả kỳ này (Gốc + Lãi)
+                if (tvMortgagePaymentAmount != null) {
+                    tvMortgagePaymentAmount.setText(formatCurrency(actualData.paymentAmount));
+                }
+
+                // 4. Hiển thị dư nợ còn lại hiện tại
+                if (tvMortgageRemaining != null) {
+                    tvMortgageRemaining.setText("Dư nợ: " + formatCurrency(actualData.remainingBalance));
+                }
+
+                // 5. Hiển thị ngày đến hạn thanh toán gần nhất
                 if (tvMortgageDueDate != null && actualData.nextPaymentDate != null) {
+                    // Hiển thị dạng: (Hạn: 25/12/2025)
                     tvMortgageDueDate.setText("(Hạn: " + formatDate(actualData.nextPaymentDate) + ")");
+                }
+
+                // 6. Cấu hình sự kiện Click vào Card để mở trang chi tiết MortgageActivity
+                // QUAN TRỌNG: Cập nhật lại sự kiện click ở đây để đảm bảo biến mortgageAccountId mới nhất được truyền đi
+                if (cardMortgage != null) {
+                    cardMortgage.setOnClickListener(v -> {
+                        Intent intent = new Intent(HomeActivity.this, MortgageActivity.class);
+                        intent.putExtra("ACCOUNT_ID", mortgageAccountId);
+                        startActivity(intent);
+                    });
                 }
                 break;
         }
