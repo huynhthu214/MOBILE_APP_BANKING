@@ -2,7 +2,7 @@ package com.example.zybanking.ui.dashboard;
 
 import android.os.Bundle;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,9 +11,10 @@ import com.example.zybanking.NavbarActivity;
 import com.example.zybanking.R;
 // Import Adapter và Models
 import com.example.zybanking.data.adapter.TransactionAdapter;
-import com.example.zybanking.data.models.TransactionHistoryResponse;
+import com.example.zybanking.data.models.transaction.TransactionHistoryResponse;
 import com.example.zybanking.data.remote.ApiService;
 import com.example.zybanking.data.remote.RetrofitClient;
+
 
 import java.util.ArrayList;
 

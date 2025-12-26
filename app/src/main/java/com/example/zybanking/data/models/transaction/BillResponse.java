@@ -8,4 +8,6 @@ public class BillResponse {
     public int amount;
     public String status;
     public String created_at;
+    public Bill data;
+    public String message;
 }

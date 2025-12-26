@@ -72,12 +72,10 @@ public class AdminDetailUserActivity extends HeaderAdmin {
         tvStatusVerify = findViewById(R.id.tv_status_verify);
         tvStatusActive = findViewById(R.id.tv_status_active);
         btnEdit = findViewById(R.id.btn_action_edit);
-
         rvAccounts = findViewById(R.id.rv_user_accounts);
         rvAccounts.setLayoutManager(new LinearLayoutManager(this));
         accountAdapter = new AdminAccountAdapter(this, accountList);
         rvAccounts.setAdapter(accountAdapter);
-
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminEditInforActivity.class);
             intent.putExtra("USER_ID", userId != null ? userId : "U_008");

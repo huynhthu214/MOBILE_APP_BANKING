@@ -12,14 +12,12 @@
         android:background="#0b5394"
         android:gravity="center_vertical"
         android:padding="16dp">
-
         <ImageView
             android:id="@+id/btn_back_bill"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_back"
             app:tint="@color/white" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,44 +39,50 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Loại dịch vụ"
-                android:textColor="#6B7280" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Điện Lực"
-                    android:backgroundTint="#3d85c6"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginEnd="8dp"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Cấp Nước"
-                    android:backgroundTint="#E0E7FF"
-                    android:textColor="#2563EB"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin tra cứu"
+                        android:textColor="#0b5394"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp"/>
+
+                    <EditText
+                        android:id="@+id/et_customer_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_edittext_rounded"
+                        android:hint="Nhập mã hóa đơn (Vd: B001)"
+                        android:paddingHorizontal="12dp"
+                        android:singleLine="true"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_provider"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="12dp"
+                        android:background="#F3F4F6"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_bill_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -87,35 +91,79 @@
                     android:padding="20dp">
 
                     <TextView
+                        android:id="@+id/tv_bill_type_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mã khách hàng / Mã hóa đơn"
+                        android:text="Hóa đơn tiền điện"
                         android:textColor="#111827"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_customer_code"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/bg_edittext_rounded"
-                        android:hint="Ví dụ: PE0100..."
-                        android:paddingHorizontal="12dp"
-                        android:singleLine="true"/>
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="12dp"
+                        android:background="#EEEEEE" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Số tiền cần trả:"
+                            android:textColor="#6B7280" />
+                        <TextView
+                            android:id="@+id/tv_bill_amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="500.000đ"
+                            android:textColor="#E53935"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hạn thanh toán:"
+                            android:textColor="#6B7280" />
+                        <TextView
+                            android:id="@+id/tv_bill_due_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="2025-12-31"
+                            android:textColor="#111827" />
+                    </RelativeLayout>
+
                     <TextView
+                        android:id="@+id/tv_bill_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nhà cung cấp"
-                        android:textColor="#111827"
-                        android:textStyle="bold"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"/>
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_status_unpaid"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:text="Chưa thanh toán"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
 
-                    <Spinner
-                        android:id="@+id/spinner_provider"
+                    <Button
+                        android:id="@+id/btn_pay_now"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="#F3F4F6"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="#0b5394"
+                        android:text="Thanh toán ngay"
+                        android:textColor="@color/white"
+                        app:cornerRadius="8dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

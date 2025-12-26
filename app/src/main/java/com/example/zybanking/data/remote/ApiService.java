@@ -1,6 +1,5 @@
 package com.example.zybanking.data.remote;
 
-import com.example.zybanking.data.models.TransactionHistoryResponse;
 import com.example.zybanking.data.models.account.AccountListResponse;
 import com.example.zybanking.data.models.account.AccountSummaryResponse;
 import com.example.zybanking.data.models.BasicResponse;
@@ -28,6 +27,7 @@ import com.example.zybanking.data.models.transaction.PaymentResponse;
 import com.example.zybanking.data.models.transaction.Transaction;
 import com.example.zybanking.data.models.transaction.TransactionListResponse;
 import com.example.zybanking.data.models.transaction.TransferRequest;
+import com.example.zybanking.data.models.transaction.TransactionHistoryResponse;
 import com.example.zybanking.data.models.auth.UserResponse;
 import com.example.zybanking.data.models.transaction.VerifyPinRequest;
 import com.example.zybanking.data.models.utility.UtilityConfirmRequest;
@@ -119,9 +119,9 @@ public interface ApiService {
     @POST("transactions/deposit/confirm")
     Call<BasicResponse> depositConfirm(@Body OtpConfirmRequest body);
 
-    @GET("transactions/history")
+    @GET("transactions/history/{account_id}")
     Call<TransactionHistoryResponse> getTransactionHistory(
-            @Query("account_id") String accountId,
+            @Path("account_id") String accountId,
             @Query("page") int page
     );
     @GET("transactions/lookup/{account_number}")
@@ -140,14 +140,14 @@ public interface ApiService {
     @POST("transactions/savings/deposit")
     Call<BasicResponse> depositSavings(@Body DepositRequest request);
     // BILL
-    @GET("bills")
-    Call<BillListResponse> listBills(@Query("keyword") String keyword);
+    @GET("bills/{id}")
+    Call<BillResponse> getBillDetail(@Path("id") String billId);
 
-    @GET("bills/{bill_id}")
-    Call<BillResponse> getBill(@Path("bill_id") String billId);
+    @POST("bill-pay/create")
+    Call<BasicResponse> createBillPayment(@Body Map<String, String> body);
 
-    @POST("bills/pay")
-    Call<BasicResponse> payBill(@Body BillPayRequest body);
+    @POST("bill-pay/confirm")
+    Call<BasicResponse> confirmBillPayment(@Body Map<String, String> body);
 
     // Bước 1: Tạo lệnh thanh toán
     @POST("api/v1/utility/topup")

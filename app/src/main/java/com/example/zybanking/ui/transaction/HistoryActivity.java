@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zybanking.R;
 import com.example.zybanking.data.adapter.TransactionAdapter;
-import com.example.zybanking.data.models.TransactionHistoryResponse;
+import com.example.zybanking.data.models.transaction.TransactionHistoryResponse;
 import com.example.zybanking.data.remote.ApiService;
 
 import java.util.ArrayList;
